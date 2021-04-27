@@ -1,0 +1,40 @@
+.body {
+    display: inline-block;
+    position: relative;
+    color: yellow;
+    background-color: rgb(24, 23, 23);
+    width: 25%;
+    right: 0;
+    top: 0;
+    padding-top: 20px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: bolder;
+}
+
+.input_message{
+    width: 100%;
+    display: block;
+    position: absolute;
+    bottom: 0;
+}
+
+.input_message input {
+    width: 70%;
+    top: 90%;
+    height: 50px;
+    margin-right:10px;
+    font-family: inherit;
+    border-radius: 5px;
+    outline: none;
+
+}
+
+.input_message button {
+    text-transform: uppercase;
+    font-family: inherit;
+    border: none;
+    outline: none;
+    border-radius: 4px;
+    height: 40px;
+    width: 80px;
+}

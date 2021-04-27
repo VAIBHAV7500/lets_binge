@@ -1,0 +1,16 @@
+
+.player {
+    width: 70%;
+    height: 100%;
+    margin: 20px;
+    box-shadow: 7px 10px 20px 0px rgba(51, 50, 50, 0.75);
+    -webkit-box-shadow: 7px 10px 20px 0px rgba(51, 50, 50, 0.75);
+    -moz-box-shadow: 7px 10px 20px 0px rgba(51, 50, 50, 0.75);
+    z-index: 10;
+}
+.react_player {
+    border-radius: 10px;
+    overflow: hidden;
+    z-index: 1;
+}
+

@@ -1,0 +1,58 @@
+.room_container{
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    background-color: rgb(24, 23, 23);
+}
+
+.wrapper{
+    display: flex;
+    width: 100%;
+    height: 70%;
+}
+
+.wave {
+    margin-top: -1%;
+    width: 100%;
+    height: 100px;
+    position: fixed;
+}
+
+.wave svg{
+    bottom: 0;
+}
+
+.details{
+    left: 0;
+    padding: 20px;
+    display: block;
+    z-index: 10;
+    position: inherit;
+    margin-top: 20px;
+}
+
+.details input {
+    outline: none;
+    border-width: 2px;
+    border-style: solid;
+    border-color: rgb(134, 134, 134);
+    border-radius: 5px;
+    width: 500px;
+    height: 50px;
+    background-color: transparent;
+    color: white;
+    font-family: inherit;
+    z-index: 10;
+}
+
+.details button {
+    margin-left: 10px;
+    outline: none;
+    border: none;
+    width: 100px;
+    height: 50px;
+    font-family: inherit;
+    font-weight: bold;
+    border-radius: 4px;
+    z-index: 10;
+}
