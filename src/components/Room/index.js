@@ -12,16 +12,18 @@ import {
 import LocalStorage from '../utils/local_storage';
 import firestore from '../../config/firestore';
 
+let members = new Map();
+
 function Room() {
 
     const [src, setSrc] = useState(config.DEFAULT_SRC);
     const [ name, setName ] = useState('USER');
     const [ playing, setPlaying ] = useState(false);
+    const [seek, setSeek] = useState(0);
     let [messages, setMessages] = useState([]);
+    let isHost = false;
     let { id } = useParams();
     let [userId, setUserId] = useState(null);
-
-    let members = new Map();
 
     const checkDomain = (url) => {
         let matched_domain = '';
@@ -58,13 +60,12 @@ function Room() {
         const url = element.value;
         const finalSrc = checkURL(url); 
         setSrc(finalSrc);
+        firestore.createEvent(id,config.EVENT.LOAD.KEYWORD,userId,finalSrc);
     }
 
     const checkUsername = () => {
-        console.log('Checking');
         const key = config.USERNAME_KEY;
         let username = LocalStorage.get(key);
-        console.log(username);
         if(username){
             return username;
         }else{
@@ -77,7 +78,7 @@ function Room() {
     const updateMembers = async () => {
         const result = await firestore.getMembers(id);
         result.forEach((res) => {
-            members.set(res.id,res.data().name);
+            members.set(res.id,res.data());
         });
     }
 
@@ -94,74 +95,112 @@ function Room() {
                 member: userId
             }
             LocalStorage.set(id, roomJson);
+            members.set(userId, {
+                name: username,
+                isHost: isOwner
+            });
         }
-        members.set(userId, username);
         firestore.createEvent(id, config.EVENT.ADD.KEYWORD, userId, '');
     }
 
     const addMessage = (msg) => {
-        console.log(userId);
         firestore.createEvent(id, config.EVENT.MESSAGE.KEYWORD, userId, msg);
     }
 
-    const getUsername = (id) => {
-        let username = members.get(id);
-        return username === undefined ? firestore.findMember(id) : username;
+    const getUsername = async (id) => {
+        let username = members.get(id)?.name;
+        return username === undefined ? await firestore.findMember(id) : username;
     }
 
-    const handleEvent = (event) => {
+    const checkRoomDetails = async () => {
+        const res = await firestore.getARoom(id);
+        if(res){
+            const data = res.data();
+            if(data.url){
+                setSrc(data.url);
+            }
+            if(data.progress){
+                setSeek(data.progress);
+            }
+        }
+    }
+
+    const getMessage = (messageArray, username) => {
+        const length = messageArray.length;
+        const index = Math.floor(Math.random() * length);
+        const message = messageArray[index];
+        return message.replace('${user}',username);
+    }
+
+    const handleEvent = async (event) => {
         const user = event.user;
-        const username = getUsername(user);
+        const username = await getUsername(user);
         switch (event.type) {
             case config.EVENT.ADD.KEYWORD:
                 return {
-                    message: `${username} is here!`
+                    message: getMessage(config.EVENT.ADD.MESSAGE, username)
                 };
                 break;
-            
+
             case config.EVENT.REMOVE.KEYWORD:
                 return {
-                    message: `${username} left!`
+                    message: getMessage(config.EVENT.REMOVE.MESSAGE, username)
+                };
+                break;
+            case config.EVENT.LOAD.KEYWORD:
+                setSrc(event.message);
+                return {
+                    message: getMessage(config.EVENT.LOAD.MESSAGE, username)
                 };
                 break;
             case config.EVENT.MESSAGE.KEYWORD:
                 return {
                     message: event.message,
-                    username: username
+                        username: username
                 }
                 break;
             case config.EVENT.PLAYER.PLAY.KEYWORD:
                 setPlaying(true);
                 return {
-                    message: `${username} played the video`
+                    message: getMessage(config.EVENT.PLAYER.PLAY.MESSAGE, username)
                 }
                 break;
             case config.EVENT.PLAYER.PAUSE.KEYWORD:
                 setPlaying(false);
                 return {
-                    message: `${username} paused the video`
+                    message: getMessage(config.EVENT.PLAYER.PAUSE.MESSAGE, username)
                 }
         }
     }
 
+    const updateRoomProgress = (progress) => {
+        if(members?.get(userId)?.isHost){
+            firestore.updateRoomDetails(id, src, progress);
+        }
+    }
+
     useEffect(()=>{
+        checkRoomDetails();
         const username = checkUsername();
         setName(username);
         updateMembers().then((res)=> {
             createMember(username).then((res) => {
                 firestore.events(id).onSnapshot(querySnapshot => {
-                    const newMessages = []
+                    const promiseArray = [];
                     const changes = querySnapshot.docChanges()
                     changes.forEach(change => {
-                        const msg = handleEvent(change.doc.data());
-                        if (msg) {
-                            newMessages.push(msg);
-                        }
+                        promiseArray.push(new Promise((res,rej)=>{
+                            handleEvent(change.doc.data())?.then((result) => {
+                                res(result);
+                            }).catch((ex) => {
+                                rej(ex);
+                            })
+                        }))
                     });
-                    console.log(newMessages);
-                    console.log(messages.concat(newMessages))
-                    messages = messages.concat(newMessages);
-                    setMessages(messages);
+                    Promise.all(promiseArray).then((newMessages) => {
+                        messages = messages.concat(newMessages);
+                        setMessages(messages);
+                    }); 
                 })
             });
         });
@@ -178,7 +217,7 @@ function Room() {
     return (
         <div className={styles.room_container}>
             <div className={styles.wrapper}>
-                <Player className="player" src={src} createEvent = {createEvent} playing={playing} />
+                <Player className="player" src={src} createEvent = {createEvent} playing={playing} updateRoomProgress={updateRoomProgress} seek={seek} />
                 <Chat className="chat" messages = {messages} addMessage = {addMessage} />
             </div>
             <div className={styles.details}>

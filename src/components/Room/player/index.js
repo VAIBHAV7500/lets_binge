@@ -1,12 +1,18 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useRef} from 'react';
 import { useLocation, useHistory, Link } from 'react-router-dom';
 import ReactPlayer from 'react-player';
 import CONFIG from '../../../config';
 
 import styles from './player.module.css';
 
-function Player({src, createEvent, playing}) {
-
+function Player({
+    src,
+    createEvent,
+    playing,
+    updateRoomProgress,
+    seek
+}) {
+    const player = useRef();
     const PLAYER_CONFIG = CONFIG.EVENT.PLAYER;
     const config = {
         youtube: {
@@ -49,21 +55,20 @@ function Player({src, createEvent, playing}) {
     }
 
     const updateProgress = (data) => {
-        console.log(data);
+        updateRoomProgress(data.played);
     }
 
     useEffect(()=>{
-        console.log(src);
-    },[src]);
-
-    useEffect(()=>{
-        console.log(playing);
-    },[playing])
+        if(seek){
+            player.current.seekTo(seek, "fraction");
+        }
+    },[seek])
 
     return (
         <div className={styles.player}>
             <ReactPlayer
                 url={src}
+                ref={player}
                 playing = {playing}
                 className={styles.react_player}
                 width={'100%'}

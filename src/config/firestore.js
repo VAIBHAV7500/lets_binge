@@ -37,7 +37,6 @@ const createRoom = async () => {
         name: 'Tokyo',
         country: 'Japan'
     });
-    console.log(res);
     return res.id;
 }
 
@@ -52,7 +51,6 @@ const createMember = async (room, name, isHost) => {
 
 const createEvent = async (room, type, user, message) => {
     const firestore = getFireStore();
-    console.log(type,user,message);
     var d = new Date();
     var n = d.getTime();
     const res = await firestore.collection(room_collection).doc(room).collection(event_collection).add({
@@ -101,6 +99,20 @@ const findMember = async (id,room) => {
     return result;
 }
 
+const updateRoomDetails = (room,url,progress) => {
+    const firestore = getFireStore();
+    const res = firestore.collection(room_collection).doc(room).update({
+        url,
+        progress
+    });
+}
+
+const getARoom = async (room) => {
+    const firestore = getFireStore();
+    const memberRef = firestore.collection(room_collection).doc(room);
+    return await memberRef.get();
+}
+
 export default {
     initializeFirebase,
     createRoom,
@@ -111,5 +123,7 @@ export default {
     members,
     getLastEvents,
     getMembers,
-    findMember
+    findMember,
+    updateRoomDetails,
+    getARoom
 }

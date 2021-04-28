@@ -1,8 +1,4 @@
 import React, {useEffect,useState, useRef} from 'react';
-import firestore from '../../../config/firestore';
-import {
-    useCollectionData
-} from 'react-firebase-hooks/firestore';
 import styles from './chat.module.css';
 
 function Chat({messages, addMessage}) {
@@ -33,8 +29,6 @@ function Chat({messages, addMessage}) {
             sendMessage();
         }
     }
-
-    const query = firestore.rooms();
 
     return (
         <div className={styles.body}>
