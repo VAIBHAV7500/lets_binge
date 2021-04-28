@@ -16,6 +16,7 @@ function Room() {
 
     const [src, setSrc] = useState(config.DEFAULT_SRC);
     const [ name, setName ] = useState('USER');
+    const [ playing, setPlaying ] = useState(false);
     let [messages, setMessages] = useState([]);
     let { id } = useParams();
     let [userId, setUserId] = useState(null);
@@ -86,19 +87,21 @@ function Room() {
             userId = room.member;
             setUserId(userId);
         }else{
-            userId = await firestore.createMember(id, username);
+            const isOwner = members.size === 0 ? true : false;
+            userId = await firestore.createMember(id, username, isOwner);
             setUserId(userId);
             const roomJson = {
                 member: userId
             }
             LocalStorage.set(id, roomJson);
         }
-        firestore.createEvent(id, config.EVENT.ADD, userId, '');
+        members.set(userId, username);
+        firestore.createEvent(id, config.EVENT.ADD.KEYWORD, userId, '');
     }
 
     const addMessage = (msg) => {
         console.log(userId);
-        firestore.createEvent(id,config.EVENT.MESSAGE, userId, msg);
+        firestore.createEvent(id, config.EVENT.MESSAGE.KEYWORD, userId, msg);
     }
 
     const getUsername = (id) => {
@@ -110,57 +113,72 @@ function Room() {
         const user = event.user;
         const username = getUsername(user);
         switch (event.type) {
-            case config.EVENT.ADD:
+            case config.EVENT.ADD.KEYWORD:
                 return {
                     message: `${username} is here!`
                 };
                 break;
             
-            case config.EVENT.REMOVE:
+            case config.EVENT.REMOVE.KEYWORD:
                 return {
                     message: `${username} left!`
                 };
                 break;
-            case config.EVENT.MESSAGE:
+            case config.EVENT.MESSAGE.KEYWORD:
                 return {
                     message: event.message,
                     username: username
                 }
                 break;
+            case config.EVENT.PLAYER.PLAY.KEYWORD:
+                setPlaying(true);
+                return {
+                    message: `${username} played the video`
+                }
+                break;
+            case config.EVENT.PLAYER.PAUSE.KEYWORD:
+                setPlaying(false);
+                return {
+                    message: `${username} paused the video`
+                }
         }
     }
 
     useEffect(()=>{
         const username = checkUsername();
         setName(username);
-        createMember(username);
         updateMembers().then((res)=> {
-            firestore.events(id).onSnapshot(querySnapshot => {
-                const newMessages = []
-                const changes = querySnapshot.docChanges()
-                changes.forEach(change => {
-                    const msg = handleEvent(change.doc.data());
-                    console.log(msg.createdAt);
-                    if (msg) {
-                        newMessages.push(msg);
-                    }
-                });
-                console.log(newMessages);
-                console.log(messages.concat(newMessages))
-                messages = messages.concat(newMessages);
-                setMessages(messages);
-            })
+            createMember(username).then((res) => {
+                firestore.events(id).onSnapshot(querySnapshot => {
+                    const newMessages = []
+                    const changes = querySnapshot.docChanges()
+                    changes.forEach(change => {
+                        const msg = handleEvent(change.doc.data());
+                        if (msg) {
+                            newMessages.push(msg);
+                        }
+                    });
+                    console.log(newMessages);
+                    console.log(messages.concat(newMessages))
+                    messages = messages.concat(newMessages);
+                    setMessages(messages);
+                })
+            });
         });
 
         return () => {
-            firestore.createEvent(id,config.EVENT.REMOVE,userId,'');
+            firestore.createEvent(id, config.EVENT.REMOVE.KEYWORD, userId, '');
         }
     },[]);
+
+    const createEvent = (type,message = '') => {
+        firestore.createEvent(id,type,userId,message);
+    }
     
     return (
         <div className={styles.room_container}>
             <div className={styles.wrapper}>
-                <Player className="player" src={src} />
+                <Player className="player" src={src} createEvent = {createEvent} playing={playing} />
                 <Chat className="chat" messages = {messages} addMessage = {addMessage} />
             </div>
             <div className={styles.details}>

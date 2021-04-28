@@ -12,5 +12,39 @@ export default {
         MESSAGING_SENDER_ID: "sender_id",
         APP_ID: "app_id",
         MEASUREMENT_ID: "measurement_id"
-    }
+    },
+    USERNAME_KEY: 'username',
+        EVENT: {
+            ADD: {
+                KEYWORD: 'add',
+                MESSAGE: [
+                    'Say Hi to ${user}',
+                    '${user} is here!',
+                    'Look ${user} is here'
+                ]
+            },
+            REMOVE: {
+                KEYWORD: 'remove',
+                MESSAGE: [
+                    '${user} left'
+                ]
+            },
+            MESSAGE: {
+                KEYWORD: 'message'
+            },
+            PLAYER: {
+                PLAY: {
+                    KEYWORD: 'play',
+                    MESSAGE: [
+                        '${user} started playing!'
+                    ]
+                },
+                PAUSE: {
+                    KEYWORD: 'pause',
+                    MESSAGE: [
+                        '${user} paused the video!'
+                    ]
+                }
+            }
+        }
 }

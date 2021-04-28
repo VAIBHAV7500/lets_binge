@@ -16,7 +16,7 @@ function Chat({messages, addMessage}) {
     });
 
     useEffect(() => {
-        dummy.current.scrollIntoView({ behavior: 'smooth' });
+        dummy.current.scrollIntoView();
     }, [messages])
 
     const sendMessage = () => {

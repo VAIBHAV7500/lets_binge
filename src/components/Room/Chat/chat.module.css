@@ -26,7 +26,11 @@
     font-family: inherit;
     border-radius: 5px;
     outline: none;
+}
 
+.input_message input:focus {
+    border: rgb(7, 177, 177) solid 3px;
+    border-radius: 4px;
 }
 
 .input_message button {

@@ -41,10 +41,11 @@ const createRoom = async () => {
     return res.id;
 }
 
-const createMember = async (room, name) => {
+const createMember = async (room, name, isHost) => {
     const firestore = getFireStore();
     const res = await firestore.collection(room_collection).doc(room).collection(member_collection).add({
-        name
+        name,
+        isHost
     });
     return res.id;
 }

@@ -37,12 +37,17 @@
     border-style: solid;
     border-color: rgb(134, 134, 134);
     border-radius: 5px;
-    width: 500px;
+    width: 200px;
     height: 50px;
     background-color: transparent;
     color: white;
     font-family: inherit;
     z-index: 10;
+    transition: all 0.5s;
+}
+
+.details input:focus {
+    width: 500px;
 }
 
 .details button {
