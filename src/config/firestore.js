@@ -8,6 +8,7 @@ const FIREBASE = config.FIREBASE;
 const room_collection = "rooms";
 const member_collection = "members";
 const message_collection = "message";
+const event_collection = "events";
 
 
 const initializeFirebase = () => {
@@ -40,11 +41,24 @@ const createRoom = async () => {
     return res.id;
 }
 
-const createMember = async (room) => {
+const createMember = async (room, name) => {
     const firestore = getFireStore();
     const res = await firestore.collection(room_collection).doc(room).collection(member_collection).add({
-        name: 'Test',
-        value: 'Test123'
+        name
+    });
+    return res.id;
+}
+
+const createEvent = async (room, type, user, message) => {
+    const firestore = getFireStore();
+    console.log(type,user,message);
+    var d = new Date();
+    var n = d.getTime();
+    const res = await firestore.collection(room_collection).doc(room).collection(event_collection).add({
+        type,
+        user,
+        message,
+        createdAt: n
     });
     return res.id;
 }
@@ -56,9 +70,45 @@ const rooms = () => {
     return query;
 }
 
+const events = (room) => {
+    const firestore = getFireStore();
+    const query = firestore.collection('rooms').doc(room).collection('events').orderBy('createdAt')
+    return query;
+}
+
+const members = (room) => {
+    const firestore = getFireStore();
+    const query = firestore.collection('rooms').doc(room).collection('members');
+    return query;
+}
+
+const getLastEvents = async (room) => {
+    const firestore = getFireStore();
+    const eventRef = firestore.collection('rooms').doc(room).collection('events');
+    return await eventRef.limit(25).get();
+}
+
+const getMembers = async (room) => {
+    const firestore = getFireStore();
+    const memberRef = firestore.collection(room_collection).doc(room).collection(member_collection);
+    return await memberRef.get();
+}
+
+const findMember = async (id,room) => {
+    const firestore = getFireStore();
+    const result = await firestore.collection(room_collection).doc(room).collection(member_collection).where('id','==', id).get();
+    return result;
+}
+
 export default {
     initializeFirebase,
     createRoom,
     createMember,
-    rooms
+    rooms,
+    createEvent,
+    events,
+    members,
+    getLastEvents,
+    getMembers,
+    findMember
 }
