@@ -60,4 +60,6 @@
     font-weight: bold;
     border-radius: 4px;
     z-index: 10;
+    background-color: rgb(155, 47, 255);
+    color: white;
 }

@@ -9,6 +9,7 @@
     padding-top: 20px;
     font-family: 'IBM Plex Mono', monospace;
     font-weight: bolder;
+    margin-top: 20px;
 }
 
 .input_message{
@@ -41,6 +42,8 @@
     border-radius: 4px;
     height: 40px;
     width: 80px;
+    background-color: rgb(155, 47, 255);
+    color: white;
 }
 
 .message_area{
@@ -48,13 +51,19 @@
     height: 80%;
     width: 100%;
     position: relative;
-    margin: 10px;
     padding: 10px;
+    border: 2px solid white;
+    border-radius: 5px;
 }
 
 .bubble{
+    padding: 5px;
     padding-top: 3px;
     border-bottom: 1px solid rgba(245, 245, 220, 0.144);
+}
+
+.bubble:hover{
+    background-color: rgb(66, 66, 66);
 }
 
 .username {
