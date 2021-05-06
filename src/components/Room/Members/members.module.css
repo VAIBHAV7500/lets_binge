@@ -1,0 +1,43 @@
+.body {
+    display: inline-block;
+    position: relative;
+    color: yellow;
+    background-color: rgb(24, 23, 23);
+    width: 25%;
+    right: 0;
+    top: 0;
+    padding-top: 20px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: bolder;
+    margin-top: 20px;
+}
+
+.message_area {
+    overflow-y: auto;
+    overflow-wrap: break-word;
+    height: 80%;
+    width: 100%;
+    position: relative;
+    padding: 10px;
+    border: 2px solid white;
+    border-radius: 5px;
+}
+
+.bubble {
+    padding: 5px;
+    padding-top: 3px;
+    border-bottom: 1px solid rgba(245, 245, 220, 0.144);
+}
+
+.bubble:hover {
+    background-color: rgb(66, 66, 66);
+}
+
+.bubble:hover .delete {
+    opacity: 1;
+}
+
+.message {
+    padding: 5px;
+    padding-left: 20px;
+}

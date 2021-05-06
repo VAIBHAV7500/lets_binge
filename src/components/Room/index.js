@@ -2,6 +2,7 @@ import React,{useEffect, useState} from 'react';
 import Player from './player';
 import Chat from './Chat';
 import PlayList from './PlayList';
+import Members from './Members';
 import styles from './room.module.css';
 import config from '../../config';
 import {
@@ -21,6 +22,7 @@ function Room() {
     const [seek, setSeek] = useState(0);
     let [messages, setMessages] = useState([]);
     let [playlist, setPlaylist] = useState([]);
+    let [memberlist, setMember] = useState([]);
     let isHost = false;
     let { id } = useParams();
     let [userId, setUserId] = useState(null);
@@ -82,6 +84,9 @@ function Room() {
                 username: checkUsername(),
                 userId
             });
+            if(playlist.length === 1){
+                loadMedia(url);
+            }
             setPlaylist([...playlist]);
         }
     }
@@ -94,12 +99,17 @@ function Room() {
             if(playlist.length > 0){
                 const playnode = playlist[0];
                 loadMedia(playnode.url);
+            }else{
+                setSrc(undefined);
             }
         }
         setPlaylist([...playlist]);
     }
 
     const deletePlaylistItem = (index) => {
+        if(playlist[index].url === src){
+            mediaEnd();
+        }
         playlist = playlist.filter((_, i) => i !== index);
         setPlaylist([...playlist]);
     }
@@ -138,7 +148,14 @@ function Room() {
         const result = await firestore.getMembers(id);
         result.forEach((res) => {
             members.set(res.id,res.data());
+            memberlist.push({
+                id: res.id,
+                name: res.data().name,
+                isHost: res.data().isHost
+            });
         });
+        memberlist = [...new Set(memberlist)];
+        setMember([...memberlist]);
     }
 
     const createMember = async (username) => {
@@ -158,13 +175,20 @@ function Room() {
                 name: username,
                 isHost: isOwner
             });
+            memberlist.push({
+                id: userId,
+                name,
+                isHost: isOwner
+            });
+            memberlist = [...new Set(memberlist)];
+            setMember([...memberlist]);
         }
         firestore.createEvent(id, config.EVENT.ADD.KEYWORD, userId, '');
     }
 
-    const getUsername = async (id) => {
-        let username = members.get(id)?.name;
-        return username === undefined ? await firestore.findMember(id) : username;
+    const getUsername = async (user) => {
+        let username = members.get(user)?.name;
+        return username === undefined ? await firestore.findMember(user,id) : username;
     }
 
     const checkRoomDetails = async () => {
@@ -178,10 +202,12 @@ function Room() {
                 setSeek(data.progress);
             }
             if(data.playlist){
-                setPlaylist([...data.playlist]);
+                playlist = data.playlist
+                setPlaylist([...playlist]);
             }else{
                 if(data.url){
-                    setPlaylist([data.url]);
+                    playlist = [data.url]
+                    setPlaylist([...playlist]);
                 }else{
                     setPlaylist([]);
                 }
@@ -196,17 +222,35 @@ function Room() {
         return message.replace('${user}',username);
     }
 
+    const memberAction = (type, id, name = 'dummy') => {
+        if (type === 1) {
+            if(memberlist.filter((val) => val.id === id).length === 0){
+                memberlist.push({
+                    id,
+                    name
+                });
+            }
+        }else if(type === 2){
+            memberlist = memberlist.filter((val) => val.id !== id);
+        }
+        memberlist = memberlist.filter((x, i, a) => a.indexOf(x) == i);
+        memberlist = [...new Set(memberlist)];
+        setMember([...memberlist]);
+    }
+
     const handleEvent = async (event) => {
         const user = event.user;
         const username = await getUsername(user);
         switch (event.type) {
             case config.EVENT.ADD.KEYWORD:
+                memberAction(1, user, username);
                 return {
                     message: getMessage(config.EVENT.ADD.MESSAGE, username)
                 };
                 break;
 
             case config.EVENT.REMOVE.KEYWORD:
+                memberAction(2, user, username);
                 return {
                     message: getMessage(config.EVENT.REMOVE.MESSAGE, username)
                 };
@@ -246,18 +290,26 @@ function Room() {
     const navigation = [{
         key: 'Chat',
         component: <Chat className="chat" messages = {messages} addMessage = {addMessage} />
-    }, {
-        key: 'PlayList',
-        component: <PlayList 
-                        className="chat" 
-                        playlist = {playlist} 
-                        loadMedia = {loadMedia} 
-                        appendToPlaylist = {appendToPlaylist} 
-                        mediaEnd = {mediaEnd} 
-                        playListAction = {playListAction}
-                        setPlaylist = {setPlaylist}
-                    />
-    }]
+        }, 
+        {
+            key: 'PlayList',
+            component: <PlayList 
+                            className="chat" 
+                            playlist = {playlist} 
+                            loadMedia = {loadMedia} 
+                            appendToPlaylist = {appendToPlaylist} 
+                            mediaEnd = {mediaEnd} 
+                            playListAction = {playListAction}
+                            setPlaylist = {setPlaylist}
+                        />
+        },
+        {
+            key: 'Members',
+            component: <Members
+                            members = {memberlist}
+                        />
+        }
+    ]
 
     useEffect(()=>{
         checkRoomDetails();
@@ -284,7 +336,6 @@ function Room() {
                 })
             });
         });
-
         return () => {
             firestore.createEvent(id, config.EVENT.REMOVE.KEYWORD, userId, '');
         }
