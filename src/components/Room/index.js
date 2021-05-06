@@ -6,6 +6,7 @@ import Members from './Members';
 import styles from './room.module.css';
 import config from '../../config';
 import {
+    useLocation,
     useParams
 } from "react-router-dom";
 import LocalStorage from '../utils/local_storage';
@@ -14,7 +15,7 @@ import firestore from '../../config/firestore';
 let members = new Map();
 
 function Room() {
-
+    const location = useLocation();
     const [src, setSrc] = useState(config.DEFAULT_SRC);
     const [ name , setName ] = useState('USER');
     const [active, setActive] = useState(0);
@@ -24,7 +25,7 @@ function Room() {
     let [playlist, setPlaylist] = useState([]);
     let [memberlist, setMember] = useState([]);
     let isHost = false;
-    let { id } = useParams();
+    let [id, setId] = useState(null);
     let [userId, setUserId] = useState(null);
 
     const addMessage = (msg) => {
@@ -84,7 +85,7 @@ function Room() {
                 username: checkUsername(),
                 userId
             });
-            if(playlist.length === 1){
+            if(playlist.length === 1 && !src){
                 loadMedia(url);
             }
             setPlaylist([...playlist]);
@@ -101,6 +102,7 @@ function Room() {
                 loadMedia(playnode.url);
             }else{
                 setSrc(undefined);
+                updateRoomProgress(1);
             }
         }
         setPlaylist([...playlist]);
@@ -311,7 +313,15 @@ function Room() {
         }
     ]
 
+    const setRoomId = () => {
+         const search = location.search;
+         const roomId = new URLSearchParams(search).get('track');
+         id = roomId;
+         setId(id);
+    }
+
     useEffect(()=>{
+        setRoomId();
         checkRoomDetails();
         const username = checkUsername();
         setName(username);

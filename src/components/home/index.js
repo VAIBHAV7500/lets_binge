@@ -12,7 +12,8 @@ const Home = () => {
     const goToRoom = (roomId) => {
         if (roomId) {
             history.push({
-                pathname: `/room/${roomId}`,
+                pathname: `/room`,
+                search: `?track=${roomId}`
             });
         }
     }

@@ -23,3 +23,12 @@ yarn-debug.log*
 yarn-error.log*
 
 /src/config/index.js
+
+build.zip
+
+.github
+
+.firebase
+.firebaserc
+firestore.*
+firebase.*

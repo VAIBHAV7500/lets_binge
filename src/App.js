@@ -2,7 +2,7 @@ import Home from './components/home';
 import Room from './components/Room'; 
 
 import {
-  BrowserRouter as Router,
+  HashRouter as Router,
   Redirect,
   Route,
   Switch,
@@ -15,7 +15,7 @@ function App() {
       <Router>
         <Switch>
           <Route exact path="/" component={Home}/>
-          <Route path="/room/:id" component={Room}/>
+          <Route path="/room" component={Room}/>
           <Redirect to='/'></Redirect>
         </Switch>
       </Router>
