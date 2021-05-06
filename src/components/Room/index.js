@@ -1,12 +1,10 @@
 import React,{useEffect, useState} from 'react';
 import Player from './player';
 import Chat from './Chat';
+import PlayList from './PlayList';
 import styles from './room.module.css';
 import config from '../../config';
 import {
-    BrowserRouter as Router,
-    Switch,
-    Route,
     useParams
 } from "react-router-dom";
 import LocalStorage from '../utils/local_storage';
@@ -17,13 +15,19 @@ let members = new Map();
 function Room() {
 
     const [src, setSrc] = useState(config.DEFAULT_SRC);
-    const [ name, setName ] = useState('USER');
+    const [ name , setName ] = useState('USER');
+    const [active, setActive] = useState(0);
     const [ playing, setPlaying ] = useState(false);
     const [seek, setSeek] = useState(0);
     let [messages, setMessages] = useState([]);
+    let [playlist, setPlaylist] = useState([]);
     let isHost = false;
     let { id } = useParams();
     let [userId, setUserId] = useState(null);
+
+    const addMessage = (msg) => {
+        firestore.createEvent(id, config.EVENT.MESSAGE.KEYWORD, userId, msg);
+    }
 
     const checkDomain = (url) => {
         let matched_domain = '';
@@ -55,12 +59,67 @@ function Room() {
         }
     }  
 
-    const loadMedia = () => {
-        const element = document.getElementById('link');
-        const url = element.value;
+    const loadMedia = (url, force = false) => {
         const finalSrc = checkURL(url); 
         setSrc(finalSrc);
         firestore.createEvent(id,config.EVENT.LOAD.KEYWORD,userId,finalSrc);
+        if(force){
+            playlist.shift();
+            playlist.unshift({
+                url,
+                username: checkUsername(),
+                userId
+            });
+            setPlaylist([...playlist]);
+        }
+    }
+
+    const appendToPlaylist = (url) => {
+        const finalSrc = checkURL(url);
+        if(finalSrc){
+            playlist.push({
+                url,
+                username: checkUsername(),
+                userId
+            });
+            setPlaylist([...playlist]);
+        }
+    }
+
+    const mediaEnd = () => {
+        if(playlist.length > 0){
+            if(playlist[0].url === src){
+                playlist.shift();
+            }
+            if(playlist.length > 0){
+                const playnode = playlist[0];
+                loadMedia(playnode.url);
+            }
+        }
+        setPlaylist([...playlist]);
+    }
+
+    const deletePlaylistItem = (index) => {
+        playlist = playlist.filter((_, i) => i !== index);
+        setPlaylist([...playlist]);
+    }
+
+    const playListAction = (type,url='',force = false, index = 0) => {
+        switch(type) {
+            case 0:
+                loadMedia(url,force);
+                break;
+            case 1:
+                appendToPlaylist(url);
+                break;
+            case 2:
+                mediaEnd();
+                break;
+            case 3:
+                deletePlaylistItem(index);
+                break;
+        }
+        firestore.updatePlaylist(playlist, id);
     }
 
     const checkUsername = () => {
@@ -103,10 +162,6 @@ function Room() {
         firestore.createEvent(id, config.EVENT.ADD.KEYWORD, userId, '');
     }
 
-    const addMessage = (msg) => {
-        firestore.createEvent(id, config.EVENT.MESSAGE.KEYWORD, userId, msg);
-    }
-
     const getUsername = async (id) => {
         let username = members.get(id)?.name;
         return username === undefined ? await firestore.findMember(id) : username;
@@ -117,10 +172,19 @@ function Room() {
         if(res){
             const data = res.data();
             if(data.url){
-                setSrc(data.url);
+               setSrc(data.url);
             }
             if(data.progress){
                 setSeek(data.progress);
+            }
+            if(data.playlist){
+                setPlaylist([...data.playlist]);
+            }else{
+                if(data.url){
+                    setPlaylist([data.url]);
+                }else{
+                    setPlaylist([]);
+                }
             }
         }
     }
@@ -175,9 +239,25 @@ function Room() {
 
     const updateRoomProgress = (progress) => {
         if(members?.get(userId)?.isHost){
-            firestore.updateRoomDetails(id, src, progress);
+            firestore.updateRoomDetails(id, src, progress, playlist);
         }
     }
+
+    const navigation = [{
+        key: 'Chat',
+        component: <Chat className="chat" messages = {messages} addMessage = {addMessage} />
+    }, {
+        key: 'PlayList',
+        component: <PlayList 
+                        className="chat" 
+                        playlist = {playlist} 
+                        loadMedia = {loadMedia} 
+                        appendToPlaylist = {appendToPlaylist} 
+                        mediaEnd = {mediaEnd} 
+                        playListAction = {playListAction}
+                        setPlaylist = {setPlaylist}
+                    />
+    }]
 
     useEffect(()=>{
         checkRoomDetails();
@@ -216,13 +296,23 @@ function Room() {
     
     return (
         <div className={styles.room_container}>
+            <nav className={styles.options}>
+                {navigation.map((nav, index) => {
+                    return <a className={`${active === index ? styles.nav_active : ''}`} onClick={() => { setActive(index) }}>{nav.key}</a>
+                })}
+            </nav>
             <div className={styles.wrapper}>
-                <Player className="player" src={src} createEvent = {createEvent} playing={playing} updateRoomProgress={updateRoomProgress} seek={seek} />
-                <Chat className="chat" messages = {messages} addMessage = {addMessage} />
+                <Player 
+                    className="player" 
+                    src={src} 
+                    createEvent = {createEvent} 
+                    playing={playing} 
+                    updateRoomProgress= {updateRoomProgress} 
+                    playListAction= {playListAction} 
+                    seek={seek} />
+                {navigation[active].component}
             </div>
             <div className={styles.details}>
-                <input type="text" id='link' placeholder=" DROP YOUR LINK HERE"/>
-                <button onClick={loadMedia}>LOAD</button>
                 {!isHost && <button onClick={checkRoomDetails}>RE-SYNC</button>}
             </div>
             <div className={styles.wave}>

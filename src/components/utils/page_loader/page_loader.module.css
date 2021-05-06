@@ -16,6 +16,7 @@
 
 .title {
     color: white;
+    font-family: 'IBM Plex Mono', monospace;
     position: fixed;
     top: 50%;
     left: 50%;

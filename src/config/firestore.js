@@ -7,7 +7,6 @@ const FIREBASE = config.FIREBASE;
 
 const room_collection = "rooms";
 const member_collection = "members";
-const message_collection = "message";
 const event_collection = "events";
 
 
@@ -34,8 +33,8 @@ const getFireStore = () => {
 const createRoom = async () => {
     const firestore = getFireStore();
     const res = await firestore.collection(room_collection).add({
-        name: 'Tokyo',
-        country: 'Japan'
+        name: 'Demo Room',
+        playlist: [config.DEFAULT_SRC]
     });
     return res.id;
 }
@@ -99,12 +98,22 @@ const findMember = async (id,room) => {
     return result;
 }
 
-const updateRoomDetails = (room,url,progress) => {
+const updateRoomDetails = (room,url,progress,playlist) => {
     const firestore = getFireStore();
     const res = firestore.collection(room_collection).doc(room).update({
         url,
-        progress
+        progress,
+        playlist
     });
+    return res.id;
+}
+
+const updatePlaylist = (playlist,room) => {
+    const firestore = getFireStore();
+    const res = firestore.collection(room_collection).doc(room).update({
+        playlist
+    });
+    return res.id;
 }
 
 const getARoom = async (room) => {
@@ -125,5 +134,6 @@ export default {
     getMembers,
     findMember,
     updateRoomDetails,
-    getARoom
+    getARoom,
+    updatePlaylist
 }

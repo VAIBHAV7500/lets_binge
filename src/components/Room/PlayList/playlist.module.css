@@ -1,0 +1,87 @@
+.body {
+    display: inline-block;
+    position: relative;
+    color: yellow;
+    background-color: rgb(24, 23, 23);
+    width: 25%;
+    right: 0;
+    top: 0;
+    padding-top: 20px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: bolder;
+    margin-top: 20px;
+}
+
+.input_message{
+    width: 100%;
+    display: block;
+    position: absolute;
+    bottom: 0;
+}
+
+.input_message input {
+    top: 90%;
+    height: 50px;
+    margin-right:10px;
+    font-family: inherit;
+    border-radius: 5px;
+    outline: none;
+}
+
+.input_message button {
+    text-transform: uppercase;
+    font-family: inherit;
+    border: none;
+    outline: none;
+    border-radius: 4px;
+    height: 40px;
+    background-color: rgb(155, 47, 255);
+    color: white;
+    margin-right: 5px;
+}
+
+.message_area{
+    overflow-y: auto;
+    overflow-wrap: break-word;
+    height: 80%;
+    width: 100%;
+    position: relative;
+    padding: 10px;
+    border: 2px solid white;
+    border-radius: 5px;
+}
+
+.bubble{
+    padding: 5px;
+    padding-top: 3px;
+    border-bottom: 1px solid rgba(245, 245, 220, 0.144);
+}
+
+.bubble:hover{
+    background-color: rgb(66, 66, 66);
+}
+
+.bubble:hover .delete{
+    opacity: 1;
+}
+
+.delete{
+    font-size: x-small;
+    opacity: 0;
+}
+
+.delete:hover{
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+
+
+.username {
+    font-size: small;
+}
+
+.message {
+    padding: 5px;
+    padding-left: 20px;
+}

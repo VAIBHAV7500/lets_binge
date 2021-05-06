@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import { useParams, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import firestore from '../../config/firestore';
 import PageLoader from '../utils/page_loader';
 

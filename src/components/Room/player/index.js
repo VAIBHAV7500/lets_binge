@@ -10,21 +10,11 @@ function Player({
     createEvent,
     playing,
     updateRoomProgress,
-    seek
+    seek,
+    playListAction
 }) {
     const player = useRef();
     const PLAYER_CONFIG = CONFIG.EVENT.PLAYER;
-    const config = {
-        youtube: {
-            playerVars: {
-                showinfo: 0,
-                autoplay: 0
-            }
-        },
-        facebook: {
-            appId: '12345'
-        }
-    }
 
     
     useEffect(() => {
@@ -54,6 +44,11 @@ function Player({
         console.log('Seekingg');
     }
 
+    const onEnded = () => {
+        console.log('Ended!!!');
+        playListAction(2);
+    }
+
     const updateProgress = (data) => {
         updateRoomProgress(data.played);
     }
@@ -64,6 +59,21 @@ function Player({
         }
     },[seek])
 
+    const config = {
+        youtube: {
+            playerVars: {
+                showinfo: 0,
+                autoplay: 0
+            },
+            events: {
+                'onStateChange': onEnded
+            }
+        },
+        facebook: {
+            appId: '12345'
+        }
+    }
+
     return (
         <div className={styles.player}>
             <ReactPlayer
@@ -71,6 +81,7 @@ function Player({
                 ref={player}
                 playing = {playing}
                 className={styles.react_player}
+                loop={false}
                 width={'100%'}
                 height={'100%'}
                 config={config}
@@ -79,6 +90,7 @@ function Player({
                 onBuffer = {onBuffer}
                 onSeek = {onSeek}
                 onPlay = {onPlay}
+                onEnded = {onEnded}
                 onProgress = {updateProgress}
             />
         </div>

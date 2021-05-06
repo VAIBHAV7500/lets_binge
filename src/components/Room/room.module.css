@@ -63,3 +63,31 @@
     background-color: rgb(155, 47, 255);
     color: white;
 }
+
+.options{
+    position: fixed;
+    right: 0;
+    top: 0;
+    margin: 10px;
+    margin-bottom: 20px;
+    z-index: 1;
+}
+
+.options a {
+    padding: 5px;
+    color: white;
+    margin-right: 5px;;
+    border: 2px solid white;
+}
+
+.options a:hover{
+    background-color: white;
+    color: black;
+    cursor: pointer;
+}
+
+.nav_active{
+    background-color: white;
+    color: black !important;
+    cursor: pointer;
+}
