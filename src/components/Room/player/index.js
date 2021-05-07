@@ -1,9 +1,11 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect, useRef, useImperativeHandle, forwardRef} from 'react';
 import { useLocation, useHistory, Link } from 'react-router-dom';
 import ReactPlayer from 'react-player';
 import CONFIG from '../../../config';
 
 import styles from './player.module.css';
+
+let prevTime = 0;
 
 function Player({
     src,
@@ -12,7 +14,7 @@ function Player({
     updateRoomProgress,
     seek,
     playListAction
-}) {
+}, ref) {
     const player = useRef();
     const PLAYER_CONFIG = CONFIG.EVENT.PLAYER;
 
@@ -23,6 +25,21 @@ function Player({
         //player.destroy();
         }
     });
+
+    useImperativeHandle(ref, () => ({
+        seek: (type, duration) => {
+            let seekTime = 0;
+            const currTime = player.current.getCurrentTime();
+            const seekDuration = parseInt(duration);
+            if(type == 'forward'){
+                seekTime = currTime + seekDuration;
+            }else{
+                seekTime = currTime - seekDuration;
+            }
+            prevTime = seekTime;
+            player.current.seekTo(seekTime, "seconds");
+        }
+    }));
 
     const onPlay = () => {
         if(playing === false){
@@ -45,12 +62,26 @@ function Player({
     }
 
     const onEnded = () => {
-        console.log('Ended!!!');
+        prevTime = 0;
         playListAction(2);
     }
 
     const updateProgress = (data) => {
         updateRoomProgress(data.played);
+        const currTime = player.current.getCurrentTime();
+        const bufferTime = CONFIG.BUFFER_TIME;
+        if(prevTime + bufferTime < currTime && prevTime != 0){
+            console.log('Forward Seeking by ' + (currTime - prevTime));
+            createEvent(PLAYER_CONFIG.SEEK_FORWARD.KEYWORD, (currTime - prevTime));
+        }else if(currTime + bufferTime - 2 < prevTime && prevTime != 0){
+            console.log('Backward Seeking by ' + (prevTime - currTime));
+            createEvent(PLAYER_CONFIG.SEEK_BACKWARD.KEYWORD, (prevTime - currTime));
+        }
+        prevTime = currTime;
+    }
+
+    const onDuration = (data) => {
+        console.log(data);
     }
 
     useEffect(()=>{
@@ -92,9 +123,10 @@ function Player({
                 onPlay = {onPlay}
                 onEnded = {onEnded}
                 onProgress = {updateProgress}
+                onDuration = {onDuration}
             />
         </div>
     )
 }
 
-export default Player
+export default forwardRef(Player)

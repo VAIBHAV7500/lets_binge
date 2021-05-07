@@ -34,10 +34,10 @@ function Chat({messages, addMessage}) {
         <div className={styles.body}>
             <div className={styles.message_area}>
                 {messages && messages.map((msg,index) => {
-                    return <div className={styles.bubble} key={index}>
+                    return (msg) ? <div className={styles.bubble} key={index}>
                         {msg.username && <div className={styles.username}>{msg.username}:</div>}
                         <div className={styles.message}>{msg.message}</div>
-                    </div>
+                    </div> : ''
                 })}
                 <span ref={dummy}></span>
             </div>

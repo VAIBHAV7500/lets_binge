@@ -1,4 +1,4 @@
-import React,{useEffect, useState} from 'react';
+import React,{useEffect, useState, useRef} from 'react';
 import Player from './player';
 import Chat from './Chat';
 import PlayList from './PlayList';
@@ -16,6 +16,7 @@ let members = new Map();
 
 function Room() {
     const location = useLocation();
+    const ref = useRef();
     const [src, setSrc] = useState(config.DEFAULT_SRC);
     const [ name , setName ] = useState('USER');
     const [active, setActive] = useState(0);
@@ -62,12 +63,16 @@ function Room() {
         }
     }  
 
-    const loadMedia = (url, force = false) => {
+    const loadMedia = (url, force = false, event = true) => {
         const finalSrc = checkURL(url); 
         setSrc(finalSrc);
-        firestore.createEvent(id,config.EVENT.LOAD.KEYWORD,userId,finalSrc);
+        if(event){
+            firestore.createEvent(id, config.EVENT.LOAD.KEYWORD, userId, finalSrc);
+        }
         if(force){
-            playlist.shift();
+            if(playlist.length !== 0){
+                playlist.shift();
+            }
             playlist.unshift({
                 url,
                 username: checkUsername(),
@@ -92,14 +97,14 @@ function Room() {
         }
     }
 
-    const mediaEnd = () => {
+    const mediaEnd = (event = true) => {
         if(playlist.length > 0){
             if(playlist[0].url === src){
                 playlist.shift();
             }
             if(playlist.length > 0){
                 const playnode = playlist[0];
-                loadMedia(playnode.url);
+                loadMedia(playnode.url,false,event);
             }else{
                 setSrc(undefined);
                 updateRoomProgress(1);
@@ -131,7 +136,11 @@ function Room() {
                 deletePlaylistItem(index);
                 break;
         }
-        firestore.updatePlaylist(playlist, id);
+        firestore.updatePlaylist(playlist, id).then(() => {
+            if([1,3].includes(type)){
+                createEvent(config.EVENT.PLAYLIST.KEYWORD);
+            }
+        });
     }
 
     const checkUsername = () => {
@@ -208,7 +217,9 @@ function Room() {
                 setPlaylist([...playlist]);
             }else{
                 if(data.url){
-                    playlist = [data.url]
+                    playlist = [{
+                        url: data.url
+                    }]
                     setPlaylist([...playlist]);
                 }else{
                     setPlaylist([]);
@@ -258,7 +269,7 @@ function Room() {
                 };
                 break;
             case config.EVENT.LOAD.KEYWORD:
-                setSrc(event.message);
+                mediaEnd(false);
                 return {
                     message: getMessage(config.EVENT.LOAD.MESSAGE, username)
                 };
@@ -280,6 +291,23 @@ function Room() {
                 return {
                     message: getMessage(config.EVENT.PLAYER.PAUSE.MESSAGE, username)
                 }
+            case config.EVENT.PLAYER.SEEK_FORWARD.KEYWORD:
+                if(user !== userId){
+                    ref.current.seek('forward', event.message);
+                }
+                return {
+                    message: getMessage(config.EVENT.PLAYER.SEEK_FORWARD.MESSAGE, username)
+                }
+            case config.EVENT.PLAYER.SEEK_BACKWARD.KEYWORD:
+                if(user !== userId){
+                    ref.current.seek('backward', event.message);
+                }
+                return {
+                    message: getMessage(config.EVENT.PLAYER.SEEK_BACKWARD.MESSAGE, username)
+                }
+            case config.EVENT.PLAYLIST.KEYWORD:
+                checkRoomDetails(); // [TODO] This is supposed to check just the playlist and not the whole room details.
+                break;
         }
     }
 
@@ -370,7 +398,9 @@ function Room() {
                     playing={playing} 
                     updateRoomProgress= {updateRoomProgress} 
                     playListAction= {playListAction} 
-                    seek={seek} />
+                    seek={seek} 
+                    ref = {ref}
+                />
                 {navigation[active].component}
             </div>
             <div className={styles.details}>

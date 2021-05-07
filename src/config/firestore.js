@@ -108,12 +108,11 @@ const updateRoomDetails = (room,url,progress,playlist) => {
     return res.id;
 }
 
-const updatePlaylist = (playlist,room) => {
+const updatePlaylist = async (playlist,room) => {
     const firestore = getFireStore();
-    const res = firestore.collection(room_collection).doc(room).update({
+    await firestore.collection(room_collection).doc(room).update({
         playlist
     });
-    return res.id;
 }
 
 const getARoom = async (room) => {
