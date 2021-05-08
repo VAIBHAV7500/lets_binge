@@ -4,6 +4,8 @@
   "private": true,
   "homepage": "http://orbital-scene-200115.web.app/",
   "dependencies": {
+    "@giphy/js-fetch-api": "^3.0.0",
+    "@giphy/react-components": "^2.4.0",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",

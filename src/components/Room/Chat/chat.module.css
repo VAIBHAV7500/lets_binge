@@ -74,3 +74,58 @@
     padding: 5px;
     padding-left: 20px;
 }
+
+.overlay {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    color: white;
+    justify-content: center;
+    align-items: center;
+}
+
+.send{
+    overflow:hidden;
+    color:#7408f0;
+    padding: 0px 10px;
+    border:2px solid #7408f0;
+    background-color:white;
+    text-align: center;
+    cursor:pointer;
+    margin:0;
+    text-transform: uppercase;
+    border-radius:1.5rem;
+    font-size:1.125rem;
+    transition: all 0.5s;
+}
+
+.overlay:hover{
+    border:#7408f0 solid 4px;
+}
+
+.overlay:active{
+    border:rgb(244, 248, 6) solid 4px;
+}
+
+.giphy_text{
+    font-size: small;
+    padding: 10px 0;
+}
+
+.giphy_close{
+    float: right;
+    height: fit-content;
+}
+
+.giphy_close:hover{
+    text-decoration: underline;
+}
+
+.single_giphy{
+    text-align: center;
+    object-position: center;
+    width: 100%;
+}

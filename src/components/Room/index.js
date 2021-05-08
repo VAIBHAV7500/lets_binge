@@ -13,6 +13,7 @@ import LocalStorage from '../utils/local_storage';
 import firestore from '../../config/firestore';
 
 let members = new Map();
+let prevMsg = 0;
 
 function Room() {
     const location = useLocation();
@@ -25,13 +26,10 @@ function Room() {
     let [messages, setMessages] = useState([]);
     let [playlist, setPlaylist] = useState([]);
     let [memberlist, setMember] = useState([]);
+    let [msgCounter, setMsgCounter] = useState(0);
     let isHost = false;
     let [id, setId] = useState(null);
     let [userId, setUserId] = useState(null);
-
-    const addMessage = (msg) => {
-        firestore.createEvent(id, config.EVENT.MESSAGE.KEYWORD, userId, msg);
-    }
 
     const checkDomain = (url) => {
         let matched_domain = '';
@@ -277,7 +275,7 @@ function Room() {
             case config.EVENT.MESSAGE.KEYWORD:
                 return {
                     message: event.message,
-                        username: username
+                    username: username
                 }
                 break;
             case config.EVENT.PLAYER.PLAY.KEYWORD:
@@ -308,6 +306,13 @@ function Room() {
             case config.EVENT.PLAYLIST.KEYWORD:
                 checkRoomDetails(); // [TODO] This is supposed to check just the playlist and not the whole room details.
                 break;
+            case config.EVENT.GIF.KEYWORD:
+                return {
+                    message: event.message,
+                    type: event.type,
+                    username: username
+                }
+                break;
         }
     }
 
@@ -317,9 +322,18 @@ function Room() {
         }
     }
 
+    const createEvent = (type, message = '') => {
+        firestore.createEvent(id, type, userId, message);
+    }
+
     const navigation = [{
-        key: 'Chat',
-        component: <Chat className="chat" messages = {messages} addMessage = {addMessage} />
+            key: 'Chat',
+            counter: msgCounter,
+            component: <Chat 
+                className="chat" 
+                messages = {messages} 
+                createEvent = {createEvent}
+            />
         }, 
         {
             key: 'PlayList',
@@ -369,6 +383,13 @@ function Room() {
                     });
                     Promise.all(promiseArray).then((newMessages) => {
                         messages = messages.concat(newMessages);
+                        if (active == 0) {
+                            prevMsg = 0;
+                            setMsgCounter(0);
+                        }else if (prevMsg != messages.length) {
+                            setMsgCounter(messages.length - prevMsg);
+                            prevMsg = messages.length;
+                        }
                         setMessages(messages);
                     }); 
                 })
@@ -379,15 +400,19 @@ function Room() {
         }
     },[]);
 
-    const createEvent = (type,message = '') => {
-        firestore.createEvent(id,type,userId,message);
+    const onNavClick = (index) => {
+        setActive(index);
+        if(index == 0){
+            prevMsg = 0;
+            setMsgCounter(0);
+        }
     }
     
     return (
         <div className={styles.room_container}>
             <nav className={styles.options}>
                 {navigation.map((nav, index) => {
-                    return <a className={`${active === index ? styles.nav_active : ''}`} onClick={() => { setActive(index) }}>{nav.key}</a>
+                    return <a key={index} className={`${active === index ? styles.nav_active : ''}`} onClick={() => { onNavClick(index) }}>{nav.key}{(nav?.counter ? `(${nav.counter})` : '' )}</a>
                 })}
             </nav>
             <div className={styles.wrapper}>
