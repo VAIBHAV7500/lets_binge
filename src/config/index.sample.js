@@ -14,37 +14,68 @@ export default {
         MEASUREMENT_ID: "measurement_id"
     },
     USERNAME_KEY: 'username',
-        EVENT: {
-            ADD: {
-                KEYWORD: 'add',
+    BUFFER_TIME: 5,
+    GIPHY: {
+        KEY: 'some_key'
+    },
+    USERNAME_KEY: 'username',
+    EVENT: {
+        ADD: {
+            KEYWORD: 'add',
+            MESSAGE: [
+                'Say Hi to ${user}',
+                '${user} is here!',
+                'Look ${user} is here'
+            ]
+        },
+        REMOVE: {
+            KEYWORD: 'remove',
+            MESSAGE: [
+                '${user} left'
+            ]
+        },
+        MESSAGE: {
+            KEYWORD: 'message'
+        },
+        LOAD: {
+            KEYWORD: 'load',
+            MESSAGE: [
+                '${user} has loaded another video'
+            ]
+        },
+        GIF: {
+            KEYWORD: 'giphy',
+            MESSAGE: []
+        },
+        PLAYLIST: {
+            KEYWORD: 'playlist_update',
+            MESSAGE: []
+        },
+        PLAYER: {
+            PLAY: {
+                KEYWORD: 'play',
                 MESSAGE: [
-                    'Say Hi to ${user}',
-                    '${user} is here!',
-                    'Look ${user} is here'
+                    '${user} started playing!'
                 ]
             },
-            REMOVE: {
-                KEYWORD: 'remove',
+            PAUSE: {
+                KEYWORD: 'pause',
                 MESSAGE: [
-                    '${user} left'
+                    '${user} paused the video!'
                 ]
             },
-            MESSAGE: {
-                KEYWORD: 'message'
+            SEEK_FORWARD: {
+                KEYWORD: 'seek_forward',
+                MESSAGE: [
+                    '${user} forwarded it!'
+                ]
             },
-            PLAYER: {
-                PLAY: {
-                    KEYWORD: 'play',
-                    MESSAGE: [
-                        '${user} started playing!'
-                    ]
-                },
-                PAUSE: {
-                    KEYWORD: 'pause',
-                    MESSAGE: [
-                        '${user} paused the video!'
-                    ]
-                }
-            }
+            SEEK_BACKWARD: {
+                KEYWORD: 'seek_backward',
+                MESSAGE: [
+                    '${user} backwarded it!'
+                ]
+            },
         }
+    }
 }
