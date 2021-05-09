@@ -30,11 +30,18 @@ function Player({
         seek: (type, duration) => {
             let seekTime = 0;
             const currTime = player.current.getCurrentTime();
+            const totalDuration = player.current.getDuration();
             const seekDuration = parseInt(duration);
             if(type == 'forward'){
                 seekTime = currTime + seekDuration;
+                if(seekTime > totalDuration){
+                    seekTime = totalDuration;
+                }
             }else{
                 seekTime = currTime - seekDuration;
+                if(seekTime < 0){
+                    seekTime = 0;
+                }
             }
             prevTime = seekTime;
             player.current.seekTo(seekTime, "seconds");
@@ -87,6 +94,8 @@ function Player({
     useEffect(()=>{
         if(seek){
             player.current.seekTo(seek, "fraction");
+            const currTime = player.current.getCurrentTime();
+            prevTime = currTime;
         }
     },[seek])
 

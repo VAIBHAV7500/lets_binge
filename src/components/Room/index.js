@@ -51,6 +51,11 @@ function Room() {
         return [matched_domain, final_domain];
     }
 
+    const getTimeDiff = (time) => {
+        const currTime = new Date().getTime();
+        return (currTime - time)/1000; // returning seconds
+    }
+
     const checkURL = (url) => {
         url = url.trim();
         const result = checkDomain(url);
@@ -267,7 +272,7 @@ function Room() {
                 };
                 break;
             case config.EVENT.LOAD.KEYWORD:
-                mediaEnd(false);
+                loadMedia(event.message,true,false);
                 return {
                     message: getMessage(config.EVENT.LOAD.MESSAGE, username)
                 };
@@ -291,14 +296,14 @@ function Room() {
                 }
             case config.EVENT.PLAYER.SEEK_FORWARD.KEYWORD:
                 if(user !== userId){
-                    ref.current.seek('forward', event.message);
+                    ref.current.seek('forward', event.message + getTimeDiff(event.createdAt));
                 }
                 return {
                     message: getMessage(config.EVENT.PLAYER.SEEK_FORWARD.MESSAGE, username)
                 }
             case config.EVENT.PLAYER.SEEK_BACKWARD.KEYWORD:
                 if(user !== userId){
-                    ref.current.seek('backward', event.message);
+                    ref.current.seek('backward', event.message - getTimeDiff(event.createdAt));
                 }
                 return {
                     message: getMessage(config.EVENT.PLAYER.SEEK_BACKWARD.MESSAGE, username)

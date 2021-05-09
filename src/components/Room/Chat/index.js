@@ -16,7 +16,6 @@ function GiphyGrid({
 
     const onClickGif = (g,e) => {
         e.preventDefault();
-        console.log(g);
         const gifId = g.id;
         if(gifId){
             createEvent(config.EVENT.GIF.KEYWORD, gifId);
@@ -43,10 +42,6 @@ function GiphyGrid({
             });
         }
     };
-
-    useEffect(()=>{
-        console.log('IN giphy' + search);
-    },[search])
 
 
     const [width, setWidth] = useState(0.3 * window.innerWidth);
