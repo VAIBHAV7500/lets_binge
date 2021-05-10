@@ -265,9 +265,19 @@ function Room() {
             type: event.type,
             username
         }
+        let keySearch = true;
+
         for(let key in config.EVENT){
             if(config.EVENT[key].KEYWORD === event.type){
+                keySearch = false;
                 data.message = getMessage(config.EVENT[key].MESSAGE, username);
+            }
+        }
+        if(keySearch){
+            for (let key in config.EVENT.PLAYER) {
+                if (config.EVENT.PLAYER[key].KEYWORD === event.type) {
+                    data.message = getMessage(config.EVENT.PLAYER[key].MESSAGE, username);
+                }
             }
         }
         switch (event.type) {
