@@ -68,12 +68,10 @@ function GifSingle({gifId}) {
   const [gif, setGif] = useState(null);
   useEffect(() => {
     giphyFetch.gif(gifId).then(({data}) => {
-        console.log('Data: ');
-        console.log(data);
         setGif(data);
     })
   },[]);
-  return gif && <Gif gif={gif} width={200} className={styles.single_giphy}/>;
+  return gif && <Gif gif={gif} width={250} className={styles.single_giphy}/>;
 }
 
 function Chat({messages, createEvent}) {
@@ -82,12 +80,6 @@ function Chat({messages, createEvent}) {
 
     const [gif, setGif] = useState(false);
     const [search, setSearch] = useState('');
-
-    useEffect(() => {
-       // createRoom();
-        return () => {
-        }
-    });
 
     useEffect(() => {
         dummy.current.scrollIntoView();
@@ -130,7 +122,8 @@ function Chat({messages, createEvent}) {
         }
         if(msg){
             msg = msg.toLowerCase();
-            if (msg.includes(`/giphy`)) {
+            const processedMsg = msg.split(' ');
+            if (processedMsg[0].includes(`/giphy`)) {
                 setGif(true);
             } else {
                 setGif(false);
@@ -139,14 +132,31 @@ function Chat({messages, createEvent}) {
         }       
     }
 
+    const getChatBubble = (data,index) => {
+        if(data.type === config.EVENT.MESSAGE.KEYWORD){
+            return (<div className={styles.bubble} key={index}>
+                {data.username && <div className={styles.username}>{data.username}:</div>}
+                <div className={`${styles.message} ${styles.message_type}`}>{data.message}</div>
+            </div>);
+        }else if(data.type === config.EVENT.GIF.KEYWORD){
+            return (<div className={styles.bubble} key={index}>
+                {data.username && <div className={styles.username}>{data.username}:</div>}
+                <div className={styles.message}>
+                    <GifSingle gifId={data.message} className={styles.single_giphy}/>
+                </div>
+            </div>);
+        }else{
+            return (<div className={styles.bubble} key={index}>
+                <div className={`${styles.message} ${styles.extra_type}`}><span>{data.message}</span></div>
+            </div>);
+        }
+    }
+
     return (
         <div className={styles.body}>
             <div className={styles.message_area}>
                 {search == '' && messages && messages.map((msg,index) => {
-                    return (msg) ? <div className={styles.bubble} key={index}>
-                        {msg.username && <div className={styles.username}>{msg.username}:</div>}
-                        <div className={styles.message}>{(msg?.type === config.EVENT.GIF.KEYWORD ? <GifSingle gifId={msg.message} className={styles.single_giphy}/> : msg.message)}</div>
-                    </div> : ''
+                    return (msg?.message) ? getChatBubble(msg,index) : ''
                 })}
                 {
                     search != '' && < GiphyGrid 

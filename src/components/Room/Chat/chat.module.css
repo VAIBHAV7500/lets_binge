@@ -1,37 +1,32 @@
 .body {
-    display: inline-block;
-    position: relative;
     color: yellow;
-    background-color: rgb(24, 23, 23);
+    background-color: #212121;
     width: 25%;
-    right: 0;
-    top: 0;
-    padding-top: 20px;
+    margin-top: 20px;
     font-family: 'IBM Plex Mono', monospace;
     font-weight: bolder;
-    margin-top: 20px;
 }
 
 .input_message{
     width: 100%;
     display: block;
-    position: absolute;
-    bottom: 0;
+    margin-top: 10px;
 }
 
 .input_message input {
     width: 70%;
-    top: 90%;
     height: 50px;
     margin-right:10px;
     font-family: inherit;
     border-radius: 5px;
     outline: none;
+    transition: all 0.3s;
 }
 
 .input_message input:focus {
-    border: rgb(7, 177, 177) solid 3px;
-    border-radius: 4px;
+    transform: scale(1.05);
+    box-shadow: 10px 10px 20px #0d0d0d,
+    -10px -10px 20px #353535;
 }
 
 .input_message button {
@@ -46,6 +41,10 @@
     color: white;
 }
 
+.input_message button:active {
+    transform: translateY(2px);
+}
+
 .message_area{
     overflow-y: auto;
     height: 80%;
@@ -53,17 +52,15 @@
     position: relative;
     padding: 10px;
     border: 2px solid white;
-    border-radius: 5px;
+    border-radius: 15px;
+    background: linear-gradient(145deg, #1e1e1e, #232323);
+    box-shadow: 10px 10px 20px #0d0d0d,
+    -10px -10px 20px #353535;
 }
 
 .bubble{
     padding: 5px;
     padding-top: 3px;
-    border-bottom: 1px solid rgba(245, 245, 220, 0.144);
-}
-
-.bubble:hover{
-    background-color: rgb(66, 66, 66);
 }
 
 .username {
@@ -73,6 +70,8 @@
 .message {
     padding: 5px;
     padding-left: 20px;
+    font-size: 12px;
+
 }
 
 .overlay {
@@ -128,4 +127,52 @@
     text-align: center;
     object-position: center;
     width: 100%;
+}
+
+.message_type{
+    background-color: white;
+    color: black;
+    min-height: 30px;
+    border-radius: 4px;
+    padding: 10px;
+    margin-top: 5px;
+    width: 85%;
+    margin-left: 5%;
+    font-size: 14px;
+}
+
+.message_type:hover {
+    cursor: pointer;
+    box-shadow:  20px 20px 60px #363636,
+                -20px -20px 60px #000000;
+}
+
+.extra_type{
+    line-height: 0.5;
+    text-align: center;
+}
+
+.extra_type span {
+  display: inline-block;
+  position: relative;  
+}
+
+.extra_type span:before,
+.extra_type span:after {
+  content: "";
+  position: absolute;
+  height: 5px;
+  border-bottom: 1px solid rgba(245, 245, 220, 0.144);
+  top: 0;
+  width: 600px;
+}
+
+.extra_type span:before {
+  right: 100%;
+  margin-right: 15px;
+}
+
+.extra_type span:after {
+  left: 100%;
+  margin-left: 15px;
 }

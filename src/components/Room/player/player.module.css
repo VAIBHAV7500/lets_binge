@@ -3,10 +3,12 @@
     width: 70%;
     height: 100%;
     margin: 20px;
-    box-shadow: 7px 10px 20px 0px rgba(51, 50, 50, 0.75);
-    -webkit-box-shadow: 7px 10px 20px 0px rgba(51, 50, 50, 0.75);
-    -moz-box-shadow: 7px 10px 20px 0px rgba(51, 50, 50, 0.75);
     z-index: 10;
+    transform: translateY(-30px);
+    border-radius: 34px;
+    background: linear-gradient(145deg, #1e1e1e, #232323);
+    box-shadow: 14px 14px 12px #161616,
+    -14px -14px 12px #2c2c2c;
 }
 .react_player {
     border-radius: 10px;

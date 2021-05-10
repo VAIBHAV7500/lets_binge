@@ -87,10 +87,6 @@ function Player({
         prevTime = currTime;
     }
 
-    const onDuration = (data) => {
-        console.log(data);
-    }
-
     useEffect(()=>{
         if(seek){
             player.current.seekTo(seek, "fraction");
@@ -132,7 +128,6 @@ function Player({
                 onPlay = {onPlay}
                 onEnded = {onEnded}
                 onProgress = {updateProgress}
-                onDuration = {onDuration}
             />
         </div>
     )

@@ -233,9 +233,13 @@ function Room() {
 
     const getMessage = (messageArray, username) => {
         const length = messageArray.length;
-        const index = Math.floor(Math.random() * length);
-        const message = messageArray[index];
-        return message.replace('${user}',username);
+        if(length != 0){
+            const index = Math.floor(Math.random() * length);
+            const message = messageArray[index];
+            return message.replace('${user}', username);
+        }else{
+            return undefined;
+        }
     }
 
     const memberAction = (type, id, name = 'dummy') => {
@@ -257,68 +261,51 @@ function Room() {
     const handleEvent = async (event) => {
         const user = event.user;
         const username = await getUsername(user);
+        const data = {
+            type: event.type,
+            username
+        }
+        for(let key in config.EVENT){
+            if(config.EVENT[key].KEYWORD === event.type){
+                data.message = getMessage(config.EVENT[key].MESSAGE, username);
+            }
+        }
         switch (event.type) {
             case config.EVENT.ADD.KEYWORD:
                 memberAction(1, user, username);
-                return {
-                    message: getMessage(config.EVENT.ADD.MESSAGE, username)
-                };
                 break;
 
             case config.EVENT.REMOVE.KEYWORD:
                 memberAction(2, user, username);
-                return {
-                    message: getMessage(config.EVENT.REMOVE.MESSAGE, username)
-                };
                 break;
             case config.EVENT.LOAD.KEYWORD:
                 loadMedia(event.message,true,false);
-                return {
-                    message: getMessage(config.EVENT.LOAD.MESSAGE, username)
-                };
                 break;
             case config.EVENT.MESSAGE.KEYWORD:
-                return {
-                    message: event.message,
-                    username: username
-                }
+                data.message = event.message;
                 break;
             case config.EVENT.PLAYER.PLAY.KEYWORD:
                 setPlaying(true);
-                return {
-                    message: getMessage(config.EVENT.PLAYER.PLAY.MESSAGE, username)
-                }
                 break;
             case config.EVENT.PLAYER.PAUSE.KEYWORD:
                 setPlaying(false);
-                return {
-                    message: getMessage(config.EVENT.PLAYER.PAUSE.MESSAGE, username)
-                }
+                break;
             case config.EVENT.PLAYER.SEEK_FORWARD.KEYWORD:
                 if(user !== userId){
                     ref.current.seek('forward', event.message + getTimeDiff(event.createdAt));
-                }
-                return {
-                    message: getMessage(config.EVENT.PLAYER.SEEK_FORWARD.MESSAGE, username)
                 }
             case config.EVENT.PLAYER.SEEK_BACKWARD.KEYWORD:
                 if(user !== userId){
                     ref.current.seek('backward', event.message - getTimeDiff(event.createdAt));
                 }
-                return {
-                    message: getMessage(config.EVENT.PLAYER.SEEK_BACKWARD.MESSAGE, username)
-                }
             case config.EVENT.PLAYLIST.KEYWORD:
                 checkRoomDetails(); // [TODO] This is supposed to check just the playlist and not the whole room details.
                 break;
             case config.EVENT.GIF.KEYWORD:
-                return {
-                    message: event.message,
-                    type: event.type,
-                    username: username
-                }
+                data.message = event.message;
                 break;
         }
+        return data;
     }
 
     const updateRoomProgress = (progress) => {

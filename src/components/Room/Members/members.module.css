@@ -1,12 +1,7 @@
 .body {
-    display: inline-block;
-    position: relative;
     color: yellow;
-    background-color: rgb(24, 23, 23);
+    background-color: #212121;
     width: 25%;
-    right: 0;
-    top: 0;
-    padding-top: 20px;
     font-family: 'IBM Plex Mono', monospace;
     font-weight: bolder;
     margin-top: 20px;
@@ -20,7 +15,10 @@
     position: relative;
     padding: 10px;
     border: 2px solid white;
-    border-radius: 5px;
+    border-radius: 15px;
+    background: linear-gradient(145deg, #1e1e1e, #232323);
+    box-shadow: 10px 10px 20px #0d0d0d,
+    -10px -10px 20px #353535;
 }
 
 .bubble {

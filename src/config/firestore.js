@@ -34,6 +34,7 @@ const createRoom = async () => {
     const firestore = getFireStore();
     const res = await firestore.collection(room_collection).add({
         name: 'Demo Room',
+        src: config.DEFAULT_SRC,
         playlist: [config.DEFAULT_SRC]
     });
     return res.id;
