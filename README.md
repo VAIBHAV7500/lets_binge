@@ -1,5 +1,9 @@
 <h1 align='center'>
   Lets Watch
+  
+  [![GitHub version](https://badge.fury.io/gh/vaibhav7500%2Flets_watch.svg)](https://badge.fury.io/gh/vaibhav7500%2Flets_watch)
+  
+  
 </h1>
 
 <p align='center'>
