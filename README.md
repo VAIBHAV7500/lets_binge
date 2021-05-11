@@ -10,8 +10,6 @@
   Let's Watch is a video platform which allows user to watch videos in Sync. We support a variety of URLs, including file paths, YouTube, Facebook, Twitch, SoundCloud, Streamable, Vimeo, Wistia, Mixcloud, DailyMotion and Kaltura.
 </p>
 
-[Demo](http://orbital-scene-200115.web.app/)
-
 ### Prerequisites
 
 * FireBase Account
