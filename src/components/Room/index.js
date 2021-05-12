@@ -5,12 +5,11 @@ import PlayList from './PlayList';
 import Members from './Members';
 import styles from './room.module.css';
 import config from '../../config';
-import {
-    useLocation,
-    useParams
-} from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import LocalStorage from '../utils/local_storage';
 import firestore from '../../config/firestore';
+import Button from '../../common/Button';
+import PageLoader from '../../common/PageLoader';
 
 let members = new Map();
 let prevMsg = 0;
@@ -23,6 +22,7 @@ function Room() {
     const [active, setActive] = useState(0);
     const [ playing, setPlaying ] = useState(false);
     const [seek, setSeek] = useState(0);
+    const [loading, setLoading] = useState(true);
     let [messages, setMessages] = useState([]);
     let [playlist, setPlaylist] = useState([]);
     let [memberlist, setMember] = useState([]);
@@ -30,6 +30,7 @@ function Room() {
     let isHost = false;
     let [id, setId] = useState(null);
     let [userId, setUserId] = useState(null);
+    const height = window.screen.height;
 
     const checkDomain = (url) => {
         let matched_domain = '';
@@ -335,6 +336,7 @@ function Room() {
                 className="chat" 
                 messages = {messages} 
                 createEvent = {createEvent}
+                height={height*0.8}
             />
         }, 
         {
@@ -347,12 +349,14 @@ function Room() {
                             mediaEnd = {mediaEnd} 
                             playListAction = {playListAction}
                             setPlaylist = {setPlaylist}
+                            height={height*0.8}
                         />
         },
         {
             key: 'Members',
             component: <Members
                             members = {memberlist}
+                            height={height*0.8}
                         />
         }
     ]
@@ -364,9 +368,13 @@ function Room() {
          setId(id);
     }
 
-    useEffect(()=>{
+    const onRoomLoad = () => {
         setRoomId();
-        checkRoomDetails();
+        checkRoomDetails().then(() => {
+            setTimeout(() => {
+                setLoading(false);
+            },500);
+        });
         const username = checkUsername();
         setName(username);
         updateMembers().then((res)=> {
@@ -397,6 +405,10 @@ function Room() {
                 })
             });
         });
+    }
+
+    useEffect(()=>{
+        onRoomLoad();
         return () => {
             firestore.createEvent(id, config.EVENT.REMOVE.KEYWORD, userId, '');
         }
@@ -412,6 +424,7 @@ function Room() {
     
     return (
         <div className={styles.room_container}>
+            {loading && <PageLoader title="Loading Room..."/>}
             <nav className={styles.options}>
                 {navigation.map((nav, index) => {
                     return <a key={index} className={`${active === index ? styles.nav_active : ''}`} onClick={() => { onNavClick(index) }}>{nav.key}{(nav?.counter ? `(${nav.counter})` : '' )}</a>
@@ -431,11 +444,8 @@ function Room() {
                 {navigation[active].component}
             </div>
             <div className={styles.details}>
-                {!isHost && <button onClick={checkRoomDetails}>RE-SYNC</button>}
-            </div>
-            <div className={styles.wave}>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="#641ba8cc" fillP="1" d="M0,128L24,133.3C48,139,96,149,144,144C192,139,240,117,288,128C336,139,384,181,432,186.7C480,192,528,160,576,170.7C624,181,672,235,720,256C768,277,816,267,864,272C912,277,960,299,1008,266.7C1056,235,1104,149,1152,112C1200,75,1248,85,1296,101.3C1344,117,1392,139,1416,149.3L1440,160L1440,320L1416,320C1392,320,1344,320,1296,320C1248,320,1200,320,1152,320C1104,320,1056,320,1008,320C960,320,912,320,864,320C816,320,768,320,720,320C672,320,624,320,576,320C528,320,480,320,432,320C384,320,336,320,288,320C240,320,192,320,144,320C96,320,48,320,24,320L0,320Z"></path></svg>
-            </div>  
+                {!isHost && <Button width={true} onClick={checkRoomDetails}>RE-SYNC</Button>}
+            </div> 
         </div>
     )
 }

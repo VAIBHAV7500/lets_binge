@@ -16,6 +16,7 @@ const Styles = createGlobalStyle`
         outline: 0;
         overflow-x: hidden;
         background-color: #111111;
+        color: white;
     }
 
     a:hover {

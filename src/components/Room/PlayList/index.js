@@ -1,9 +1,11 @@
 import React, {useEffect,useState, useRef} from 'react';
 import styles from './playlist.module.css';
+import Button from '../../../common/Button';
 
 function PlayList({
     playlist,
-    playListAction
+    playListAction,
+    height
 }) {
     let room;
     const dummy = useRef();
@@ -17,16 +19,7 @@ function PlayList({
     useEffect(() => {
         dummy.current.scrollIntoView();
     }, [playlist])
-
-    const sendMessage = () => {
-        const element = document.getElementById('msg');
-        const msg = element.value;
-        if(msg){
-            //addMessage(msg);
-            element.value = '';
-        }
-    }
-
+    
     const handleKey = (e) => {
         if (e.which === 13) {
             onAppend();
@@ -56,7 +49,7 @@ function PlayList({
     }
 
     return (
-        <div className={styles.body}>
+        <div className={styles.body} style={{height}}>
             <div className={styles.message_area}>
                 {playlist && playlist.map((msg,index) => {
                     return <div className={styles.bubble} key={index}>
@@ -68,9 +61,9 @@ function PlayList({
                 <span ref={dummy}></span>
             </div>
             <div className={styles.input_message}>
-                <input onKeyPress={handleKey} type="text" id="url" placeholder={"DROP YOUR LINK HERE"}></input>
-                <button onClick={onLoad}>LOAD</button>
-                <button id="playlist" onClick={onAppend}>Add to PlayList</button>
+                <input onKeyPress={handleKey} type="text" id="url" autocomplete="off" placeholder={"DROP YOUR LINK HERE"}></input>
+                <Button width={true} onClick={onLoad}>LOAD</Button>
+                <Button width={true} id="playlist" onClick={onAppend}>Add to PlayList</Button>
             </div>
         </div>
     )
