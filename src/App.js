@@ -1,24 +1,36 @@
-import Home from './components/home';
-import Room from './components/Room'; 
-
+import routes from './routes';
+import { lazy, Suspense} from 'react';
 import {
   HashRouter as Router,
   Redirect,
   Route,
   Switch,
 } from 'react-router-dom';
+import GlobalStyles from "./globalStyles";
+import "antd/dist/antd.css";
 
 
 function App() {
   return (
     <div className="App">
-      <Router>
-        <Switch>
-          <Route exact path="/" component={Home}/>
-          <Route path="/room" component={Room}/>
-          <Redirect to='/'></Redirect>
-        </Switch>
-      </Router>
+      <Suspense fallback={null}>
+        <GlobalStyles/>
+        <Router>
+          <Switch>
+            {routes.map((routeItem) => {
+              return (
+                <Route
+                  key={routeItem.component}
+                  path={routeItem.path}
+                  exact={routeItem.exact || false}
+                  component={lazy(() => import(`./pages/${routeItem.component}`))}
+                />
+              );
+            })}
+            <Redirect to='/'></Redirect>
+          </Switch>
+        </Router>
+      </Suspense>
     </div>
   );
 }

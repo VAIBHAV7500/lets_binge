@@ -3,6 +3,7 @@ import styles from './chat.module.css';
 import { GiphyFetch } from "@giphy/js-fetch-api";
 import { Gif, Grid } from "@giphy/react-components";
 import config from '../../../config';
+import Button from '../../../common/Button';
 
 const giphyFetch = new GiphyFetch(config.GIPHY.KEY);
 
@@ -169,10 +170,12 @@ function Chat({messages, createEvent}) {
                 }
                 <span ref={dummy}></span>
             </div>
-            { gif != '' && <><span className={styles.giphy_text}>Powered By Giphy</span><span className={styles.giphy_close} onClick={() => { setGif(false); setSearch(''); clearSearchBox(); }}>CLOSE</span></> }
+            { gif != '' && <div className={styles.giphy}><span className={styles.giphy_text}>Powered By Giphy</span><span className={styles.giphy_close} onClick={() => { setGif(false); setSearch(''); clearSearchBox(); }}>CLOSE</span></div> }
             <div className={styles.input_message}>
                 <input onKeyDown={handleKey} type="text" id="msg" placeholder={"Type /giphy YOUR SEARCH"}></input>
-                <button onClick={sendMessage}>{gif ? 'SEARCH' : 'SEND'}</button>
+                <Button width={true} onClick={sendMessage}>
+                    {gif ? 'SEARCH' : 'SEND'}
+                </Button>
             </div>
         </div>
     )

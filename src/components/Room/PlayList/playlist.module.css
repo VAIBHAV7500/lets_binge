@@ -1,6 +1,5 @@
 .body {
     color: yellow;
-    background-color: #212121;
     width: 25%;
     font-family: 'IBM Plex Mono', monospace;
     font-weight: bolder;
@@ -54,7 +53,6 @@
     padding: 10px;
     border: 2px solid white;
     border-radius: 15px;
-    background: linear-gradient(145deg, #1e1e1e, #232323);
     box-shadow: 10px 10px 20px #0d0d0d,
     -10px -10px 20px #353535;
 }
