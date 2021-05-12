@@ -1,0 +1,21 @@
+.shadow {
+    opacity: 1;
+    position: fixed;
+    background-color: #111111;
+    width: 100%;
+    height: 100%;
+    top: 0px;
+    left: 0px;
+    z-index: 1000;
+}
+
+.title {
+    color: white;
+    font-family: 'IBM Plex Mono', monospace;
+    position: absolute;
+    top: 10%;
+    left: 50%;
+    transform: translate(-50%,0);
+    font-size: 40px;
+    font-weight: bolder;
+}

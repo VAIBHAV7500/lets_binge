@@ -1,7 +1,5 @@
 .body {
-    color: yellow;
     width: 25%;
-    font-family: 'IBM Plex Mono', monospace;
     font-weight: bolder;
     margin-top: 20px;
 }
@@ -18,17 +16,15 @@
     font-family: inherit;
     border-radius: 5px;
     outline: none;
+    color: black;
     transition: all 0.3s;
+    width: 100%;
 }
 
 .input_message input:focus {
     transform: scale(1.05);
     box-shadow: 10px 10px 20px #0d0d0d,
         -10px -10px 20px #353535;
-}
-
-.input_message button:active {
-    transform: translateY(2px);
 }
 
 .input_message button {
@@ -40,8 +36,9 @@
     height: 40px;
     background-color: rgb(155, 47, 255);
     color: white;
-    margin-right: 5px;
-    margin-top: 5px;
+    width: fit-content;
+    margin-top: 10px;
+    margin-left: 10px;
 }
 
 .message_area{

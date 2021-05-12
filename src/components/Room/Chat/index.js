@@ -7,6 +7,8 @@ import Button from '../../../common/Button';
 
 const giphyFetch = new GiphyFetch(config.GIPHY.KEY);
 
+const gifHeight = 250;
+
 function GiphyGrid({
     search,
     createEvent,
@@ -72,11 +74,10 @@ function GifSingle({gifId}) {
         setGif(data);
     })
   },[]);
-  return gif && <Gif gif={gif} width={250} className={styles.single_giphy}/>;
+  return gif && <Gif gif={gif} width={gifHeight} className={styles.single_giphy}/>;
 }
 
-function Chat({messages, createEvent}) {
-    let room;
+function Chat({messages, createEvent, height}) {
     const dummy = useRef();
 
     const [gif, setGif] = useState(false);
@@ -135,8 +136,12 @@ function Chat({messages, createEvent}) {
 
     const getChatBubble = (data,index) => {
         if(data.type === config.EVENT.MESSAGE.KEYWORD){
+            let showUsername = true;
+            if(index !== 0 && messages[index - 1].type === data.type && messages[index - 1].username === data.username){
+                showUsername = false;
+            }
             return (<div className={styles.bubble} key={index}>
-                {data.username && <div className={styles.username}>{data.username}:</div>}
+                { showUsername && data.username && <div className={styles.username}>{data.username}:</div>}
                 <div className={`${styles.message} ${styles.message_type}`}>{data.message}</div>
             </div>);
         }else if(data.type === config.EVENT.GIF.KEYWORD){
@@ -154,7 +159,7 @@ function Chat({messages, createEvent}) {
     }
 
     return (
-        <div className={styles.body}>
+        <div className={styles.body} style={{height}}>
             <div className={styles.message_area}>
                 {search == '' && messages && messages.map((msg,index) => {
                     return (msg?.message) ? getChatBubble(msg,index) : ''
@@ -172,9 +177,9 @@ function Chat({messages, createEvent}) {
             </div>
             { gif != '' && <div className={styles.giphy}><span className={styles.giphy_text}>Powered By Giphy</span><span className={styles.giphy_close} onClick={() => { setGif(false); setSearch(''); clearSearchBox(); }}>CLOSE</span></div> }
             <div className={styles.input_message}>
-                <input onKeyDown={handleKey} type="text" id="msg" placeholder={"Type /giphy YOUR SEARCH"}></input>
+                <input onKeyDown={handleKey} type="text" id="msg" autoComplete="off" placeholder={"Type /giphy YOUR SEARCH"}></input>
                 <Button width={true} onClick={sendMessage}>
-                    {gif ? 'SEARCH' : 'SEND'}
+                    {gif ? 'search' : 'send'}
                 </Button>
             </div>
         </div>

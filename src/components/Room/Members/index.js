@@ -2,14 +2,15 @@ import React, {useEffect,useState, useRef} from 'react';
 import styles from './members.module.css';
 
 function Members({
-    members
+    members,
+    height
 }) {
     const dummy = useRef();
     useEffect(() => {
         members = [...new Set(members)];
     },[members])
     return (
-        <div className={styles.body}>
+        <div className={styles.body} style={{height}}>
             <div className={styles.message_area}>
                 {members && members.map((msg,index) => {
                     return <div className={styles.bubble} key={index}>

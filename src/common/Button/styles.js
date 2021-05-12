@@ -13,6 +13,11 @@ export const Button = styled.button`
   cursor: pointer;
   margin-top: 0.625rem;
   max-width: 180px;
+  font-family: inherit;
+
+  &:active {
+    transform: translateY(2px);
+  }
 
   @media only screen and (max-width: 1024px) {
     width: ${(props) => (props.width ? '160px' : '100%')};
