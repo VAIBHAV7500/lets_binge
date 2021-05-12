@@ -6,7 +6,6 @@
     z-index: 10;
     transform: translateY(-30px);
     border-radius: 34px;
-    background: linear-gradient(145deg, #1e1e1e, #232323);
     box-shadow: 14px 14px 12px #161616,
     -14px -14px 12px #2c2c2c;
 }
@@ -15,4 +14,3 @@
     overflow: hidden;
     z-index: 1;
 }
-

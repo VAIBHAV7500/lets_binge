@@ -1,0 +1,16 @@
+{
+  "title": "Real Time Chat",
+  "text": "We allow all the participants to add their URLs to the playlist and make their live a lot easier.",
+  "section": [
+    {
+      "title": "Add GIFs",
+      "content": "We understand that GIF makes chat more fun and hell yes we need it in a party",
+      "icon": "gif.svg"
+    },
+    {
+      "title": "Customize Username",
+      "content": "Styled Components gives you total control over your components.",
+      "icon": "username.svg"
+    }
+  ]
+}

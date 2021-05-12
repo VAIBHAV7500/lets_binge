@@ -8,6 +8,7 @@ const FIREBASE = config.FIREBASE;
 const room_collection = "rooms";
 const member_collection = "members";
 const event_collection = "events";
+const feedback_collection = "feedback"
 
 
 const initializeFirebase = () => {
@@ -122,6 +123,12 @@ const getARoom = async (room) => {
     return await memberRef.get();
 }
 
+const sendMessage = async (data) => {
+    const firestore = getFireStore();
+    const res = await firestore.collection(feedback_collection).add(data);
+    return res.id;
+}
+
 export default {
     initializeFirebase,
     createRoom,
@@ -135,5 +142,6 @@ export default {
     findMember,
     updateRoomDetails,
     getARoom,
-    updatePlaylist
+    updatePlaylist,
+    sendMessage
 }

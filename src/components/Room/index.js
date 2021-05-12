@@ -392,7 +392,7 @@ function Room() {
                             setMsgCounter(messages.length - prevMsg);
                             prevMsg = messages.length;
                         }
-                        setMessages(messages);
+                        setMessages([...messages]);
                     }); 
                 })
             });

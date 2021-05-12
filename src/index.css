@@ -4,6 +4,10 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-family: 'Roboto Mono', monospace;
+  /* background-image: radial-gradient(circle farthest-corner at 10% 20%, rgba(222, 168, 248, 1) 0%, rgba(168, 222, 248, 1) 21.8%, rgba(189, 250, 205, 1) 35.6%, rgba(243, 250, 189, 1) 52.9%, rgba(250, 227, 189, 1) 66.8%, rgba(248, 172, 172, 1) 90%, rgba(254, 211, 252, 1) 99.7%); */
+  /* background-image: linear-gradient(110.5deg, rgba(248, 196, 249, 0.66) 22.8%, rgba(253, 122, 4, 0.15) 64.6%); */
+  /* background-image: linear-gradient(90.6deg, rgba(59, 158, 255, 1) -1.2%, rgba(246, 135, 255, 1) 91.6%); */
+  /* background-image: linear-gradient(110.5deg, rgba(252, 159, 253, 0.66) 30.8%, rgba(169, 35, 231, 0.6) 60.6%); */
 }
 
 code {

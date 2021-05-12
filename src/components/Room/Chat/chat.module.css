@@ -1,10 +1,10 @@
 .body {
     color: yellow;
-    background-color: #212121;
     width: 25%;
     margin-top: 20px;
     font-family: 'IBM Plex Mono', monospace;
     font-weight: bolder;
+    background:inherit;
 }
 
 .input_message{
@@ -21,6 +21,12 @@
     border-radius: 5px;
     outline: none;
     transition: all 0.3s;
+    color: black;
+    z-index: 10;
+}
+
+.input_message input:hover{
+    cursor: pointer;
 }
 
 .input_message input:focus {
@@ -53,7 +59,6 @@
     padding: 10px;
     border: 2px solid white;
     border-radius: 15px;
-    background: linear-gradient(145deg, #1e1e1e, #232323);
     box-shadow: 10px 10px 20px #0d0d0d,
     -10px -10px 20px #353535;
 }
@@ -109,18 +114,27 @@
     border:rgb(244, 248, 6) solid 4px;
 }
 
+.giphy{
+    margin-top: 20px;
+    transition: all 0.3s;
+    display: block;
+    z-index: 1;
+    font-weight: 100;
+}
+
 .giphy_text{
     font-size: small;
-    padding: 10px 0;
 }
 
 .giphy_close{
     float: right;
     height: fit-content;
+    font-weight: bolder;
 }
 
 .giphy_close:hover{
     text-decoration: underline;
+    cursor: pointer;
 }
 
 .single_giphy{
