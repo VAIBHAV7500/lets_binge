@@ -1,7 +1,6 @@
 import React, {useState} from 'react'
 import { useHistory } from 'react-router-dom';
 import firestore from '../../config/firestore';
-import PageLoader from '../utils/page_loader';
 import { lazy } from "react";
 
 import IntroContent from "../../content/IntroContent.json";
@@ -94,14 +93,4 @@ const Home = () => {
     );
 }
 
-export default Home
-
-
-// <div>
-//     { loading && <PageLoader title={"Creating Room"}/>}
-//     <div>
-//         {/* <input type="text" id="url" placeholder="Enter URL" /> */}
-//         <button onClick={createRoom}>Create Room</button>
-//     </div>
-// </div>
-
+export default Home;
