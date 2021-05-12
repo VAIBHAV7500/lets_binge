@@ -34,18 +34,15 @@ const Header = ({ t }) => {
         <S.CustomNavLinkSmall onClick={() => scrollTo("about")}>
           <S.Span>{t("About")}</S.Span>
         </S.CustomNavLinkSmall>
-        <S.CustomNavLinkSmall onClick={() => scrollTo("mission")}>
-          <S.Span>{t("Mission")}</S.Span>
-        </S.CustomNavLinkSmall>
-        <S.CustomNavLinkSmall onClick={() => scrollTo("product")}>
-          <S.Span>{t("Product")}</S.Span>
+        <S.CustomNavLinkSmall onClick={() => scrollTo("playlist")}>
+          <S.Span>{t("Features")}</S.Span>
         </S.CustomNavLinkSmall>
         <S.CustomNavLinkSmall
           style={{ width: "180px" }}
-          onClick={() => scrollTo("contact")}
+          onClick={() => scrollTo("feedback")}
         >
           <S.Span>
-            <Button>{t("Contact")}</Button>
+            <Button>{t("Feedback")}</Button>
           </S.Span>
         </S.CustomNavLinkSmall>
       </Fragment>
@@ -57,7 +54,7 @@ const Header = ({ t }) => {
       <S.Container>
         <Row type="flex" justify="space-between" gutter={20}>
           <S.LogoContainer to="/" aria-label="homepage">
-            <SvgIcon src="logo.svg" width="100%" height="100%" />
+            <SvgIcon src="mask.svg" width="100px" height="100px" />
           </S.LogoContainer>
           <S.NotHidden>
             <MenuItem />
@@ -73,7 +70,7 @@ const Header = ({ t }) => {
           unmountOnExit
         >
           <Drawer closable={false} visible={visible} onClose={onClose}>
-            <Col style={{ marginBottom: "2.5rem" }}>
+            <Col style={{ marginBottom: "2.5rem"}}>
               <S.Label onClick={onClose}>
                 <Col span={12}>
                   <S.Menu>Menu</S.Menu>

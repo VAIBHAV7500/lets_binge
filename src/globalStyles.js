@@ -29,7 +29,6 @@ const Styles = createGlobalStyle`
     h5,
     h6 {
         font-family: 'Ubuntu', sans-serif;
-        color: #2E186A;
         background: linear-gradient(145deg,#f81f01,#ee076e);
         font-size: 35px;
         text-transform: uppercase;
@@ -84,6 +83,20 @@ const Styles = createGlobalStyle`
     .anticon,
     .ant-notification-notice-icon-success {
         color: rgb(255,130,92);
+    }
+
+    .ant-drawer-wrapper-body{
+        background-color: #111111;
+    }
+
+    ::-moz-selection { /* Code for Firefox */
+    color: white;
+    background: #ee076e;
+    }
+
+    ::selection {
+    color: white;
+    background: #ee076e;
     }
 `;
 

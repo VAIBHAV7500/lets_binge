@@ -1,10 +1,11 @@
-import { lazy } from "react";
+import { lazy, useState, useEffect} from "react";
 import { Row, Col } from "antd";
 import Zoom from "react-reveal/Zoom";
 import { withTranslation } from "react-i18next";
 
 import useForm from "./useForm";
 import validate from "./validationRules";
+import SvgIcon from "../../common/SvgIcon";
 
 import * as S from "./styles";
 
@@ -13,8 +14,9 @@ const Input = lazy(() => import("../../common/Input"));
 const Button = lazy(() => import("../../common/Button"));
 const TextArea = lazy(() => import("../../common/TextArea"));
 
-const Contact = ({ title, content, id, t }) => {
+const Contact = ({ title, content, id, t, sendMessage}) => {
   const { values, errors, handleChange, handleSubmit } = useForm(validate);
+  const [buttonText, setText] = useState(t("Submit"));
 
   const ValidationType = ({ type }) => {
     const ErrorMessage = errors[type];
@@ -27,15 +29,25 @@ const Contact = ({ title, content, id, t }) => {
     );
   };
 
+  const onClickSubmit = (event) => {
+    if(buttonText === t("Sent")){
+      const result = handleSubmit(event);
+      if (result) {
+        setText(t("Sent"));
+      }
+    }
+  }
+
   return (
     <S.ContactContainer id={id}>
       <S.Contact>
         <Row type="flex" justify="space-between" align="middle">
           <Col lg={12} md={11} sm={24}>
-            <Block padding={true} title={title} content={content} />
+            <img src='/vaibhav.jpeg' style={{ width: '100', clipPath: 'circle(50%)'}}/>
           </Col>
           <Col lg={12} md={12} sm={24}>
-            <S.FormGroup autoComplete="off" onSubmit={handleSubmit}>
+            <S.FormGroup autoComplete="off" onSubmit={onClickSubmit}>
+              <h6>{t(title)}</h6>
               <Col span={24}>
                 <Input
                   type="text"
@@ -69,8 +81,10 @@ const Contact = ({ title, content, id, t }) => {
                 <ValidationType type="message" />
               </Col>
               <S.ButtonContainer>
-                <Button name="submit" type="submit">
-                  {t("Submit")}
+                <Button name="submit" id="submit" type="submit">
+                  {
+                    buttonText
+                  }
                 </Button>
               </S.ButtonContainer>
             </S.FormGroup>

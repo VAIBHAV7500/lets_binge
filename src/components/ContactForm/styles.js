@@ -18,6 +18,7 @@ export const IconContainer = styled.div`
 
 export const FormGroup = styled.form`
   width: 100%;
+  color: rgb(255, 130, 92);
   max-width: 520px;
   @media only screen and (max-width: 1045px) {
     max-width: 100%;
@@ -40,4 +41,8 @@ export const ButtonContainer = styled.div`
   @media only screen and (max-width: 414px) {
     padding-top: 0.75rem;
   }
+`;
+
+export const InputStyle = styled.input`
+  font-weight: bolder;
 `;

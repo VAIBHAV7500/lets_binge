@@ -59,21 +59,22 @@ const Home = () => {
             title={MiddleBlockContent.title}
             content={MiddleBlockContent.text}
             button={MiddleBlockContent.button}
+            id="about"
         />
         <ContentBlock
             type="left"
             title={AboutContent.title}
             content={AboutContent.text}
             section={AboutContent.section}
-            icon="playlist.svg"
-            id="playlist"
+            icon ="chat.svg"
+            id="chat"
         />
         <ContentBlock
             type="right"
             title={MissionContent.title}
             content={MissionContent.text}
-            icon="chat.svg"
-            id="chat"
+            id="playlist"
+            icon="playlist.svg"
         />
 
         <ContentBlock
@@ -86,7 +87,8 @@ const Home = () => {
         <ContactFrom
             title={ContactContent.title}
             content={ContactContent.text}
-            id="contact"
+            sendMessage={firestore.sendMessage}
+            id="feedback"
         />
         </Container>
     );

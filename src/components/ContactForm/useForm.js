@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { notification } from "antd";
 import axios from "axios";
+import firestore from '../../config/firestore';
 
 const useForm = (validate) => {
   const [values, setValues] = useState({});
@@ -17,16 +18,9 @@ const useForm = (validate) => {
   const handleSubmit = (event) => {
     event.preventDefault();
     setErrors(validate(values));
-    // Your url for API
-    const url = "";
     if (Object.keys(values).length === 3) {
-      axios
-        .post(url, {
-          ...values,
-        })
-        .then(() => {
-          setShouldSubmit(true);
-        });
+       firestore.sendMessage(values);
+       return true;
     }
   };
 

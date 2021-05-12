@@ -7,7 +7,7 @@ import * as S from "./styles";
 
 const Button = lazy(() => import("../../common/Button"));
 
-const MiddleBlock = ({ title, content, button, t }) => {
+const MiddleBlock = ({ title, content, button, t, id }) => {
   const scrollTo = (id) => {
     const element = document.getElementById(id);
     element.scrollIntoView({
@@ -16,7 +16,7 @@ const MiddleBlock = ({ title, content, button, t }) => {
   };
   return (
     <S.MiddleBlock>
-      <Row type="flex" justify="center" align="middle">
+      <Row type="flex" justify="center" align="middle" id={id}>
         <Fade bottom>
           <S.ContentWrapper>
             <Col lg={24} md={24} sm={24} xs={24}>

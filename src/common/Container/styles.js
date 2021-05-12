@@ -8,7 +8,6 @@ export const Container = styled.div`
   margin-left: auto;
   padding: ${(props) => (props.padding ? "2.8rem" : "0 25px")};
   overflow: hidden;
-  z-index: -1;
   border-top: ${(props) => (props.border ? "1px solid #CDD1D4" : "")};
 
   @media only screen and (max-width: 1024px) {
