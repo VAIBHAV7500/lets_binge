@@ -32,7 +32,7 @@ function Player({
             const currTime = player.current.getCurrentTime();
             const totalDuration = player.current.getDuration();
             const seekDuration = parseInt(duration);
-            if(type == 'forward'){
+            if(type === 'forward'){
                 seekTime = currTime + seekDuration;
                 if(seekTime > totalDuration){
                     seekTime = totalDuration;
@@ -44,7 +44,7 @@ function Player({
                 }
             }
             prevTime = seekTime;
-            player.current.seekTo(seekTime, "seconds");
+            player?.current?.seekTo(seekTime, "seconds");
         }
     }));
 

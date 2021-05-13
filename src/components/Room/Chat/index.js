@@ -161,7 +161,7 @@ function Chat({messages, createEvent, height}) {
     return (
         <div className={styles.body} style={{height}}>
             <div className={styles.message_area}>
-                {search == '' && messages && messages.map((msg,index) => {
+                {search === '' && messages && messages.map((msg,index) => {
                     return (msg?.message) ? getChatBubble(msg,index) : ''
                 })}
                 {

@@ -10,6 +10,7 @@ import LocalStorage from '../utils/local_storage';
 import firestore from '../../config/firestore';
 import Button from '../../common/Button';
 import PageLoader from '../../common/PageLoader';
+import Footer from '../Footer';
 
 let members = new Map();
 let prevMsg = 0;
@@ -26,11 +27,11 @@ function Room() {
     let [messages, setMessages] = useState([]);
     let [playlist, setPlaylist] = useState([]);
     let [memberlist, setMember] = useState([]);
-    let [msgCounter, setMsgCounter] = useState(0);
+    const [msgCounter, setMsgCounter] = useState(0);
     let isHost = false;
     let [id, setId] = useState(null);
     let [userId, setUserId] = useState(null);
-    const height = window.screen.height;
+    const height = '100%';
 
     const checkDomain = (url) => {
         let matched_domain = '';
@@ -139,6 +140,8 @@ function Room() {
             case 3:
                 deletePlaylistItem(index);
                 break;
+            default:
+                break;
         }
         firestore.updatePlaylist(playlist, id).then(() => {
             if([1,3].includes(type)){
@@ -210,19 +213,20 @@ function Room() {
         const res = await firestore.getARoom(id);
         if(res){
             const data = res.data();
-            if(data.url){
-               setSrc(data.url);
+            console.log(data);
+            if(data.src){
+               setSrc(data.src);
             }
             if(data.progress){
                 setSeek(data.progress);
             }
             if(data.playlist){
-                playlist = data.playlist
+                playlist = data.playlist;
                 setPlaylist([...playlist]);
             }else{
-                if(data.url){
+                if(data.src){
                     playlist = [{
-                        url: data.url
+                        url: data.src
                     }]
                     setPlaylist([...playlist]);
                 }else{
@@ -234,9 +238,10 @@ function Room() {
 
     const getMessage = (messageArray, username) => {
         const length = messageArray.length;
-        if(length != 0){
+        if(length !== 0){
             const index = Math.floor(Math.random() * length);
             const message = messageArray[index];
+            // eslint-disable-next-line no-template-curly-in-string
             return message.replace('${user}', username);
         }else{
             return undefined;
@@ -305,15 +310,19 @@ function Room() {
                 if(user !== userId){
                     ref.current.seek('forward', event.message + getTimeDiff(event.createdAt));
                 }
+                break;
             case config.EVENT.PLAYER.SEEK_BACKWARD.KEYWORD:
                 if(user !== userId){
                     ref.current.seek('backward', event.message - getTimeDiff(event.createdAt));
                 }
+                break;
             case config.EVENT.PLAYLIST.KEYWORD:
                 checkRoomDetails(); // [TODO] This is supposed to check just the playlist and not the whole room details.
                 break;
             case config.EVENT.GIF.KEYWORD:
                 data.message = event.message;
+                break;
+            default:
                 break;
         }
         return data;
@@ -336,7 +345,7 @@ function Room() {
                 className="chat" 
                 messages = {messages} 
                 createEvent = {createEvent}
-                height={height*0.8}
+                height={height}
             />
         }, 
         {
@@ -349,14 +358,14 @@ function Room() {
                             mediaEnd = {mediaEnd} 
                             playListAction = {playListAction}
                             setPlaylist = {setPlaylist}
-                            height={height*0.8}
+                            height={height}
                         />
         },
         {
             key: 'Members',
             component: <Members
                             members = {memberlist}
-                            height={height*0.8}
+                            height={height}
                         />
         }
     ]
@@ -393,11 +402,17 @@ function Room() {
                     });
                     Promise.all(promiseArray).then((newMessages) => {
                         messages = messages.concat(newMessages);
-                        if (active == 0) {
+                        console.log('Adding new Messages');
+                        console.log(active);
+                        console.log(navigation[active].key);
+                        console.log(prevMsg);
+                        console.log(messages.length);
+                        console.log(newMessages.length);
+                        if (active === 0) {
                             prevMsg = 0;
                             setMsgCounter(0);
-                        }else if (prevMsg != messages.length) {
-                            setMsgCounter(messages.length - prevMsg);
+                        } else if (newMessages.length) {
+                            setMsgCounter(msgCounter + newMessages.length);
                             prevMsg = messages.length;
                         }
                         setMessages([...messages]);

@@ -39,7 +39,7 @@ const RightBlock = ({ title, content, button, icon, t, id, createRoom}) => {
                       <Button
                         key={id}
                         color={item.color}
-                        width="true"
+                        width={true}
                         onClick={() => handleClick(item)}
                       >
                         {t(item.title)}

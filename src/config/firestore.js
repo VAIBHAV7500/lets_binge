@@ -35,8 +35,8 @@ const createRoom = async () => {
     const firestore = getFireStore();
     const res = await firestore.collection(room_collection).add({
         name: 'Demo Room',
-        src: config.DEFAULT_SRC,
-        playlist: [config.DEFAULT_SRC]
+        src: '',
+        playlist: []
     });
     return res.id;
 }
@@ -100,10 +100,10 @@ const findMember = async (id,room) => {
     return await memberRef.doc(id).get();
 }
 
-const updateRoomDetails = (room,url,progress,playlist) => {
+const updateRoomDetails = (room,src,progress,playlist) => {
     const firestore = getFireStore();
     const res = firestore.collection(room_collection).doc(room).update({
-        url,
+        src,
         progress,
         playlist
     });

@@ -8,7 +8,7 @@
 .message_area {
     overflow-y: auto;
     overflow-wrap: break-word;
-    height: 80%;
+    height: 90%;
     width: 100%;
     position: relative;
     padding: 10px;
@@ -16,6 +16,7 @@
     border-radius: 15px;
     box-shadow: 10px 10px 20px #0d0d0d,
     -10px -10px 20px #353535;
+    cursor: pointer;
 }
 
 .bubble {

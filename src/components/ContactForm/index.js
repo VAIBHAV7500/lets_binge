@@ -30,7 +30,7 @@ const Contact = ({ title, content, id, t, sendMessage}) => {
   };
 
   const onClickSubmit = (event) => {
-    if(buttonText === t("Sent")){
+    if(buttonText !== t("Sent")){
       const result = handleSubmit(event);
       if (result) {
         setText(t("Sent"));
