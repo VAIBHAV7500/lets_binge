@@ -97,7 +97,7 @@ const getMembers = async (room) => {
 const findMember = async (id,room) => {
     const firestore = getFireStore();
     const memberRef = firestore.collection(room_collection).doc(room).collection(member_collection);
-    return await memberRef.doc(id).get();
+    return (await memberRef.doc(id).get()).data();
 }
 
 const updateRoomDetails = (room,src,progress,playlist) => {

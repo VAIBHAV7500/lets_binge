@@ -6,6 +6,7 @@ import CONFIG from '../../../config';
 import styles from './player.module.css';
 
 let prevTime = 0;
+let adjustmentSeek = false;
 
 function Player({
     src,
@@ -77,21 +78,29 @@ function Player({
         updateRoomProgress(data.played);
         const currTime = player.current.getCurrentTime();
         const bufferTime = CONFIG.BUFFER_TIME;
-        if(prevTime + bufferTime < currTime && prevTime != 0){
-            console.log('Forward Seeking by ' + (currTime - prevTime));
-            createEvent(PLAYER_CONFIG.SEEK_FORWARD.KEYWORD, (currTime - prevTime));
-        }else if(currTime + bufferTime - 2 < prevTime && prevTime != 0){
-            console.log('Backward Seeking by ' + (prevTime - currTime));
-            createEvent(PLAYER_CONFIG.SEEK_BACKWARD.KEYWORD, (prevTime - currTime));
+        if (!adjustmentSeek){
+            if (prevTime + bufferTime < currTime && prevTime !== 0) {
+                console.log('Forward Seeking by ' + (currTime - prevTime));
+                createEvent(PLAYER_CONFIG.SEEK_FORWARD.KEYWORD, (currTime - prevTime));
+            } else if (currTime + bufferTime - 2 < prevTime && prevTime !== 0) {
+                console.log('Backward Seeking by ' + (prevTime - currTime));
+                createEvent(PLAYER_CONFIG.SEEK_BACKWARD.KEYWORD, (prevTime - currTime));
+            }
+        }else{
+            adjustmentSeek = false;
         }
         prevTime = currTime;
     }
 
     useEffect(()=>{
         if(seek){
+            adjustmentSeek = true;
             player.current.seekTo(seek, "fraction");
-            const currTime = player.current.getCurrentTime();
-            prevTime = currTime;
+            const totalDuration = player?.current?.getDuration();
+            if(totalDuration){
+                const timeInSec = seek * totalDuration;
+                prevTime = timeInSec;
+            }
         }
     },[seek])
 

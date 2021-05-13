@@ -11,12 +11,6 @@ function PlayList({
     const dummy = useRef();
 
     useEffect(() => {
-       // createRoom();
-        return () => {
-        }
-    });
-
-    useEffect(() => {
         dummy.current.scrollIntoView();
     }, [playlist])
     

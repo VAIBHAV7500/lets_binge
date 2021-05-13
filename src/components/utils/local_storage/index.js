@@ -13,7 +13,7 @@ const get = (key) => {
         const value = reactLocalStorage.getObject(key);
         if (typeof value === 'object' && Object.keys(value).length !== 0) {
             return value;
-        }else{
+        } else {
             return reactLocalStorage.get(key);
         }
     }

@@ -11,6 +11,7 @@ import firestore from '../../config/firestore';
 import Button from '../../common/Button';
 import PageLoader from '../../common/PageLoader';
 import Footer from '../Footer';
+import helper from './helper';
 
 let members = new Map();
 let prevMsg = 0;
@@ -18,8 +19,8 @@ let prevMsg = 0;
 function Room() {
     const location = useLocation();
     const ref = useRef();
-    const [src, setSrc] = useState(config.DEFAULT_SRC);
-    const [ name , setName ] = useState('USER');
+    const [src, setSrc] = useState('');
+    const [ name , setName ] = useState('YOU');
     const [active, setActive] = useState(0);
     const [ playing, setPlaying ] = useState(false);
     const [seek, setSeek] = useState(0);
@@ -33,43 +34,13 @@ function Room() {
     let [userId, setUserId] = useState(null);
     const height = '100%';
 
-    const checkDomain = (url) => {
-        let matched_domain = '';
-        for (let i = 0; i < config.ALLOWED_DOMAINS.length; i++) {
-            const domain = config.ALLOWED_DOMAINS[i];
-            if (url.includes(domain)) {
-                matched_domain = domain;
-                break;
-            }
-        }
-
-        if (matched_domain === '') {
-            return -1;
-        }
-        let final_domain = matched_domain;
-        if (config.CONVERT_DOMAINS[matched_domain]) {
-            final_domain = config.CONVERT_DOMAINS[matched_domain];
-        }
-        return [matched_domain, final_domain];
-    }
-
     const getTimeDiff = (time) => {
         const currTime = new Date().getTime();
         return (currTime - time)/1000; // returning seconds
-    }
+    } 
 
-    const checkURL = (url) => {
-        url = url.trim();
-        const result = checkDomain(url);
-        if (Array.isArray(result)) {
-            return url.replace(result[0], result[1]);
-        } else {
-            return url;
-        }
-    }  
-
-    const loadMedia = (url, force = false, event = true) => {
-        const finalSrc = checkURL(url); 
+    const loadMedia = async (url, force = false, event = true) => {
+        const finalSrc = helper.checkURL(url); 
         setSrc(finalSrc);
         if(event){
             firestore.createEvent(id, config.EVENT.LOAD.KEYWORD, userId, finalSrc);
@@ -80,19 +51,19 @@ function Room() {
             }
             playlist.unshift({
                 url,
-                username: checkUsername(),
+                username: await getUsername(),
                 userId
             });
             setPlaylist([...playlist]);
         }
     }
 
-    const appendToPlaylist = (url) => {
-        const finalSrc = checkURL(url);
+    const appendToPlaylist = async (url) => {
+        const finalSrc = helper.checkURL(url);
         if(finalSrc){
             playlist.push({
                 url,
-                username: checkUsername(),
+                username: await getUsername(),
                 userId
             });
             if(playlist.length === 1 && !src){
@@ -156,7 +127,9 @@ function Room() {
         if(username){
             return username;
         }else{
-            username = prompt('Enter Username');
+            do{
+                username = prompt('Enter Username');
+            }while(username === null);
             LocalStorage.set(key,username);
             return username;
         }
@@ -173,6 +146,11 @@ function Room() {
             });
         });
         memberlist = [...new Set(memberlist)];
+        members = new Map()
+        memberlist.forEach(x => members.set(x.id,{
+            name: x.name,
+            isHost: x.isHost
+        }));
         setMember([...memberlist]);
     }
 
@@ -181,6 +159,16 @@ function Room() {
         if(room && room.member){
             userId = room.member;
             setUserId(userId);
+            const isHost = memberlist.length === 0 ? true : false
+            members.set(userId, {
+                name: username,
+                isHost 
+            });
+            memberlist.push({
+                id: userId,
+                name: username,
+                isHost
+            });
         }else{
             const isOwner = members.size === 0 ? true : false;
             userId = await firestore.createMember(id, username, isOwner);
@@ -195,73 +183,90 @@ function Room() {
             });
             memberlist.push({
                 id: userId,
-                name,
+                name: username,
                 isHost: isOwner
             });
-            memberlist = [...new Set(memberlist)];
-            setMember([...memberlist]);
         }
+        memberlist = [...new Set(memberlist)];
+        setMember([...memberlist]);
         firestore.createEvent(id, config.EVENT.ADD.KEYWORD, userId, '');
     }
 
     const getUsername = async (user) => {
         let username = members.get(user)?.name;
-        return username === undefined ? await firestore.findMember(user,id) : username;
+        if(username !== null){
+            const res = await firestore.findMember(user, id);
+            username = res?.name;
+            if(res){
+                members.set(res.id, {
+                    name: res.name,
+                    isHost: res.isHost
+                });
+                memberlist.push(res);
+                memberlist = [...new Set(memberlist)];
+                setMember([...memberlist]);
+            }
+        }
+        return username;
+    }
+
+    const memberAction = (type, id, name = 'dummy') => {
+        if (type === 1) {
+            if (memberlist.filter((val) => val.id === id).length === 0) {
+                memberlist.push({
+                    id,
+                    name
+                });
+            }
+        } else if (type === 2) {
+            memberlist = memberlist.filter((val) => val.id !== id);
+        }
+        memberlist = memberlist.filter((x, i, a) => a.indexOf(x) == i);
+        memberlist = [...new Set(memberlist)];
+        setMember([...memberlist]);
     }
 
     const checkRoomDetails = async () => {
         const res = await firestore.getARoom(id);
-        if(res){
+        if (res) {
             const data = res.data();
-            console.log(data);
-            if(data.src){
-               setSrc(data.src);
+            if (data.src) {
+                setSrc(data.src);
             }
-            if(data.progress){
+            if (data.progress) {
                 setSeek(data.progress);
             }
-            if(data.playlist){
+            if (data?.playlist?.length) {
                 playlist = data.playlist;
                 setPlaylist([...playlist]);
-            }else{
-                if(data.src){
+            } else {
+                if (data.src && data.src !== '') {
                     playlist = [{
                         url: data.src
                     }]
                     setPlaylist([...playlist]);
-                }else{
+                } else {
                     setPlaylist([]);
                 }
             }
         }
     }
 
-    const getMessage = (messageArray, username) => {
-        const length = messageArray.length;
-        if(length !== 0){
-            const index = Math.floor(Math.random() * length);
-            const message = messageArray[index];
-            // eslint-disable-next-line no-template-curly-in-string
-            return message.replace('${user}', username);
-        }else{
-            return undefined;
+    const setRoomId = () => {
+        const search = location.search;
+        const roomId = new URLSearchParams(search).get('track');
+        id = roomId;
+        setId(id);
+    }
+
+    const updateRoomProgress = (progress) => {
+        if (members?.get(userId)?.isHost) {
+            firestore.updateRoomDetails(id, src, progress, playlist);
         }
     }
 
-    const memberAction = (type, id, name = 'dummy') => {
-        if (type === 1) {
-            if(memberlist.filter((val) => val.id === id).length === 0){
-                memberlist.push({
-                    id,
-                    name
-                });
-            }
-        }else if(type === 2){
-            memberlist = memberlist.filter((val) => val.id !== id);
-        }
-        memberlist = memberlist.filter((x, i, a) => a.indexOf(x) == i);
-        memberlist = [...new Set(memberlist)];
-        setMember([...memberlist]);
+    const createEvent = (type, message = '') => {
+        firestore.createEvent(id, type, userId, message);
     }
 
     const handleEvent = async (event) => {
@@ -276,13 +281,13 @@ function Room() {
         for(let key in config.EVENT){
             if(config.EVENT[key].KEYWORD === event.type){
                 keySearch = false;
-                data.message = getMessage(config.EVENT[key].MESSAGE, username);
+                data.message = helper.getMessage(config.EVENT[key].MESSAGE, username);
             }
         }
         if(keySearch){
             for (let key in config.EVENT.PLAYER) {
                 if (config.EVENT.PLAYER[key].KEYWORD === event.type) {
-                    data.message = getMessage(config.EVENT.PLAYER[key].MESSAGE, username);
+                    data.message = helper.getMessage(config.EVENT.PLAYER[key].MESSAGE, username);
                 }
             }
         }
@@ -328,16 +333,6 @@ function Room() {
         return data;
     }
 
-    const updateRoomProgress = (progress) => {
-        if(members?.get(userId)?.isHost){
-            firestore.updateRoomDetails(id, src, progress, playlist);
-        }
-    }
-
-    const createEvent = (type, message = '') => {
-        firestore.createEvent(id, type, userId, message);
-    }
-
     const navigation = [{
             key: 'Chat',
             counter: msgCounter,
@@ -368,31 +363,24 @@ function Room() {
                             height={height}
                         />
         }
-    ]
-
-    const setRoomId = () => {
-         const search = location.search;
-         const roomId = new URLSearchParams(search).get('track');
-         id = roomId;
-         setId(id);
-    }
+    ];
 
     const onRoomLoad = () => {
         setRoomId();
         checkRoomDetails().then(() => {
             setTimeout(() => {
                 setLoading(false);
-            },500);
+            }, 500);
         });
         const username = checkUsername();
         setName(username);
-        updateMembers().then((res)=> {
+        updateMembers().then((res) => {
             createMember(username).then((res) => {
                 firestore.events(id).onSnapshot(querySnapshot => {
                     const promiseArray = [];
                     const changes = querySnapshot.docChanges()
                     changes.forEach(change => {
-                        promiseArray.push(new Promise((res,rej)=>{
+                        promiseArray.push(new Promise((res, rej) => {
                             handleEvent(change.doc.data())?.then((result) => {
                                 res(result);
                             }).catch((ex) => {
@@ -402,12 +390,6 @@ function Room() {
                     });
                     Promise.all(promiseArray).then((newMessages) => {
                         messages = messages.concat(newMessages);
-                        console.log('Adding new Messages');
-                        console.log(active);
-                        console.log(navigation[active].key);
-                        console.log(prevMsg);
-                        console.log(messages.length);
-                        console.log(newMessages.length);
                         if (active === 0) {
                             prevMsg = 0;
                             setMsgCounter(0);
@@ -416,7 +398,7 @@ function Room() {
                             prevMsg = messages.length;
                         }
                         setMessages([...messages]);
-                    }); 
+                    });
                 })
             });
         });
