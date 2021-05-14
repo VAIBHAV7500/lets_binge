@@ -42,9 +42,53 @@ const getMessage = (messageArray, username) => {
     }
 }
 
+const getTimeDiff = (time) => {
+    const currTime = new Date().getTime();
+    return (currTime - time) / 1000; // returning seconds
+}
+
+const usernameExists = (members, username) => {
+    return members.some(x => x.username === username)?.length === 0 ? false : true;
+}
+
+const userExists = (members, member) => {
+    return ( usernameExists(members,member.username) === true && members.some(x => x.id === member.id).length !== 0 );
+}
+
+const getUserById = (members, id) => {
+    return members.find(member => member.id === id);
+}
+
+const getUserByName = (members, name) => {
+    return members.find(member => member.username === name);
+}
+
+const addMemberToList = (members, newMember) => {
+    const list = [...members];
+    if (!userExists(members, newMember)){
+        list.push({
+            id: newMember.id,
+            username: newMember.username,
+            isHost: newMember.isHost
+        });
+    }
+    return list;
+}
+
+const removeMemberFromList = (members, id) => {
+    const list = [...members];
+    return list.filter(member => member.id !== id);
+}
 
 export default {
     checkDomain,
     checkURL,
-    getMessage
+    getMessage,
+    getTimeDiff,
+    addMemberToList,
+    userExists,
+    usernameExists,
+    getUserById,
+    removeMemberFromList,
+    getUserByName
 }
