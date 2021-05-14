@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useImperativeHandle, forwardRef} from 'react';
-import { useLocation, useHistory, Link } from 'react-router-dom';
+import SvgIcon from '../../../common/SvgIcon';
 import ReactPlayer from 'react-player';
 import CONFIG from '../../../config';
 
@@ -119,9 +119,8 @@ function Player({
         }
     }
 
-    return (
-        <div className={styles.player}>
-            <ReactPlayer
+    const getPlayer = () => {
+        return (<ReactPlayer
                 url={src}
                 ref={player}
                 playing = {playing}
@@ -137,7 +136,16 @@ function Player({
                 onPlay = {onPlay}
                 onEnded = {onEnded}
                 onProgress = {updateProgress}
-            />
+            />);
+    }
+
+    return (
+        <div className={styles.player}>
+            {src ? (getPlayer()) : <SvgIcon 
+                    src= "loading_1.svg"
+                    width="50%"
+                    height="50%"
+                    center={true}></SvgIcon>}
         </div>
     )
 }

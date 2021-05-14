@@ -36,21 +36,25 @@ const createRoom = async () => {
     const res = await firestore.collection(room_collection).add({
         name: 'Demo Room',
         src: '',
+        progress: 0,
         playlist: []
     });
     return res.id;
 }
 
-const createMember = async (room, name, isHost) => {
+const createMember = async (room, username, isHost) => {
     const firestore = getFireStore();
     const res = await firestore.collection(room_collection).doc(room).collection(member_collection).add({
-        name,
+        username,
         isHost
     });
     return res.id;
 }
 
 const createEvent = async (room, type, user, message) => {
+    if(!user){
+        return;
+    }
     const firestore = getFireStore();
     var d = new Date();
     var n = d.getTime();
@@ -97,23 +101,31 @@ const getMembers = async (room) => {
 const findMember = async (id,room) => {
     const firestore = getFireStore();
     const memberRef = firestore.collection(room_collection).doc(room).collection(member_collection);
-    return (await memberRef.doc(id).get()).data();
+    return (await memberRef.doc(id).get());
 }
 
 const updateRoomDetails = (room,src,progress,playlist) => {
     const firestore = getFireStore();
-    const res = firestore.collection(room_collection).doc(room).update({
+    console.log('Calling Update Room Details');
+    console.log(playlist);
+    firestore.collection(room_collection).doc(room).update({
         src,
         progress,
         playlist
     });
-    return res.id;
 }
 
 const updatePlaylist = async (playlist,room) => {
     const firestore = getFireStore();
-    await firestore.collection(room_collection).doc(room).update({
-        playlist
+    console.log('Room',room);
+    console.log('Playlist',playlist);
+    console.log('Calling Update Playlist Details');
+    firestore.collection(room_collection).doc(room).update({
+        playlist: [...playlist]
+    }).then((res) => {
+        console.log(res);
+    }).catch((err) => {
+        console.log(err);
     });
 }
 
