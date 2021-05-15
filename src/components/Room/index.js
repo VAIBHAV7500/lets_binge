@@ -13,8 +13,8 @@ import PageLoader from '../../common/PageLoader';
 import helper from './helper';
 
 let prevMsg = 0;
-
 let currUser = {};
+const copyText = 'COPY LINK';
 
 function Room() {
     const location = useLocation();
@@ -26,6 +26,8 @@ function Room() {
     const [seek, setSeek] = useState(0);
     const [loading, setLoading] = useState(true);
     const [msgCounter, setMsgCounter] = useState(0);
+    const [isHost, setHost] = useState(false);
+    const [copyButtonText, setCopyButton] = useState(copyText);
     let [id, setId] = useState(null);
     let [userId, setUserId] = useState(null);
     let [messages, setMessages] = useState([]);
@@ -321,7 +323,7 @@ function Room() {
             key: 'Chat',
             counter: msgCounter,
             component: <Chat 
-                            className="chat" 
+                            className={styles.chat}
                             messages = {messages} 
                             createEvent = {createEvent}
                             height={height}
@@ -349,6 +351,20 @@ function Room() {
         }
     ];
 
+    const copyLink = () => {
+        const dummy = document.createElement('input');
+        const url = window.location.href;
+        document.body.appendChild(dummy);
+        dummy.value = url;
+        dummy.select();
+        document.execCommand('copy');
+        document.body.removeChild(dummy);
+        setCopyButton('COPIED 🙌');
+        setTimeout(() => {
+            setCopyButton(copyText)
+        }, 3000); // After 3 Seconds
+    }
+
     const onRoomLoad = () => {
         setRoomId();
         checkRoomDetails().then(() => {
@@ -361,6 +377,7 @@ function Room() {
         updateMembers().then((res) => {
             createMember(username).then((res) => {
                 currUser = res;
+                setHost(res.isHost);
                 firestore.events(id).onSnapshot(querySnapshot => {
                     const promiseArray = [];
                     const changes = querySnapshot.docChanges()
@@ -426,7 +443,8 @@ function Room() {
                 {navigation[active].component}
             </div>
             <div className={styles.details}>
-                {<Button width={true} onClick={checkRoomDetails}>RE-SYNC</Button>}
+                {isHost && <Button width={true} onClick={checkRoomDetails}>RE-SYNC</Button>}
+                <Button width={true} onClick={copyLink}>{copyButtonText}</Button>
             </div> 
         </div>
     )

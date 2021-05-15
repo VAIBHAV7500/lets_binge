@@ -27,26 +27,6 @@
     display: block;
     z-index: 10;
     position: inherit;
-    margin-top: 20px;
-}
-
-.details input {
-    outline: none;
-    border-width: 2px;
-    border-style: solid;
-    border-color: rgb(134, 134, 134);
-    border-radius: 5px;
-    width: 200px;
-    height: 50px;
-    background-color: transparent;
-    color: white;
-    font-family: inherit;
-    z-index: 10;
-    transition: all 0.5s;
-}
-
-.details input:focus {
-    width: 500px;
 }
 
 .details button {
@@ -58,7 +38,6 @@
     font-weight: bold;
     border-radius: 4px;
     z-index: 10;
-    background-color: rgb(155, 47, 255);
     color: white;
 }
 
