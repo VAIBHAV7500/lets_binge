@@ -159,7 +159,6 @@ function Room() {
         });
         members = list;
         setMembers([...members]);
-        console.log(members);
     }
 
     const createMember = async (username) => {
@@ -332,7 +331,6 @@ function Room() {
                 data.message = event.message;
                 break;
             case config.EVENT.USERNAME_UPDATE.KEYWORD:
-                console.log(event);
                 updateRoomMembers();
                 break;
             default:
