@@ -59,6 +59,7 @@ const Home = () => {
             title={MiddleBlockContent.title}
             content={MiddleBlockContent.text}
             button={MiddleBlockContent.button}
+            createRoom = {createRoom}
             id="about"
         />
         <ContentBlock

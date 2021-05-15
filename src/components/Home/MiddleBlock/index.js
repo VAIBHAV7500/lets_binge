@@ -7,7 +7,7 @@ import * as S from "./styles";
 
 const Button = lazy(() => import("../../../common/Button"));
 
-const MiddleBlock = ({ title, content, button, t, id }) => {
+const MiddleBlock = ({ title, content, button, t, id, createRoom }) => {
   const scrollTo = (id) => {
     const element = document.getElementById(id);
     element.scrollIntoView({
@@ -26,7 +26,7 @@ const MiddleBlock = ({ title, content, button, t, id }) => {
                 <Button
                   name="submit"
                   type="submit"
-                  onClick={() => scrollTo("mission")}
+                  onClick={createRoom}
                 >
                   {t(button)}
                 </Button>
