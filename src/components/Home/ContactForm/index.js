@@ -5,14 +5,14 @@ import { withTranslation } from "react-i18next";
 
 import useForm from "./useForm";
 import validate from "./validationRules";
-import SvgIcon from "../../common/SvgIcon";
+import SvgIcon from "../../../common/SvgIcon";
 
 import * as S from "./styles";
 
 const Block = lazy(() => import("../Block"));
-const Input = lazy(() => import("../../common/Input"));
-const Button = lazy(() => import("../../common/Button"));
-const TextArea = lazy(() => import("../../common/TextArea"));
+const Input = lazy(() => import("../../../common/Input"));
+const Button = lazy(() => import("../../../common/Button"));
+const TextArea = lazy(() => import("../../../common/TextArea"));
 
 const Contact = ({ title, content, id, t, sendMessage}) => {
   const { values, errors, handleChange, handleSubmit } = useForm(validate);

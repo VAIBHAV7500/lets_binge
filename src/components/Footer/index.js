@@ -96,16 +96,16 @@ const Footer = ({ t }) => {
                   src="github.svg"
                 />
                 <SocialLink
-                  href="https://twitter.com/Vaibhav7500"
-                  src="twitter.svg"
+                  href="https://www.instagram.com/vbhvsolanki/"
+                  src="instagram.svg"
                 />
                 <SocialLink
                   href="https://www.linkedin.com/in/vaibhav-solanki/"
                   src="linkedin.svg"
                 />
                 <SocialLink
-                  href="https://www.instagram.com/vbhvsolanki/"
-                  src="instagram.svg"
+                  href="https://twitter.com/Vaibhav7500"
+                  src="twitter.svg"
                 />
               </S.FooterContainer>
             </Row>

@@ -24,10 +24,6 @@
     z-index: 10;
 }
 
-.input_message input:hover{
-    cursor: pointer;
-}
-
 .input_message input:focus {
     transform: scale(1.05);
     box-shadow: 10px 10px 20px #0d0d0d,

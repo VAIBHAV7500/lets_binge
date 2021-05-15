@@ -6,7 +6,7 @@ import Members from './Members';
 import styles from './room.module.css';
 import config from '../../config';
 import { useLocation } from "react-router-dom";
-import LocalStorage from '../utils/local_storage';
+import LocalStorage from '../../utils/local_storage';
 import firestore from '../../config/firestore';
 import Button from '../../common/Button';
 import PageLoader from '../../common/PageLoader';

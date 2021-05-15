@@ -95,11 +95,13 @@ function Player({
     useEffect(()=>{
         if(seek){
             adjustmentSeek = true;
-            player.current.seekTo(seek, "fraction");
-            const totalDuration = player?.current?.getDuration();
-            if(totalDuration){
-                const timeInSec = seek * totalDuration;
-                prevTime = timeInSec;
+            if(player?.current){
+                player.current.seekTo(seek, "fraction");
+                const totalDuration = player?.current?.getDuration();
+                if (totalDuration) {
+                    const timeInSec = seek * totalDuration;
+                    prevTime = timeInSec;
+                }
             }
         }
     },[seek])

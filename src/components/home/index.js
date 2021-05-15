@@ -5,14 +5,14 @@ import { lazy } from "react";
 
 import IntroContent from "../../content/IntroContent.json";
 import MiddleBlockContent from "../../content/MiddleBlockContent.json";
-import AboutContent from "../../content/AboutContent.json";
-import MissionContent from "../../content/MissionContent.json";
+import RealTimeChat from "../../content/RealTimeChat.json";
+import PlaylistContent from "../../content/PlaylistContent.json";
 import ProductContent from "../../content/ProductContent.json";
 import ContactContent from "../../content/ContactContent.json";
 
-const ContactFrom = lazy(() => import("../ContactForm"));
-const ContentBlock = lazy(() => import("../ContentBlock"));
-const MiddleBlock = lazy(() => import("../MiddleBlock"));
+const ContactFrom = lazy(() => import("./ContactForm"));
+const ContentBlock = lazy(() => import("./ContentBlock"));
+const MiddleBlock = lazy(() => import("./MiddleBlock"));
 const Container = lazy(() => import("../../common/Container"));
 const ScrollToTop = lazy(() => import("../../common/ScrollToTop"));
 
@@ -48,6 +48,7 @@ const Home = () => {
             type="right"
             first="true"
             title={IntroContent.title}
+            sub = {IntroContent.sub_title}
             content={IntroContent.text}
             button={IntroContent.button}
             createRoom = {createRoom}
@@ -62,20 +63,30 @@ const Home = () => {
         />
         <ContentBlock
             type="left"
-            title={AboutContent.title}
-            content={AboutContent.text}
-            section={AboutContent.section}
-            icon ="chat.svg"
-            id="chat"
-        />
-        <ContentBlock
-            type="right"
-            title={MissionContent.title}
-            content={MissionContent.text}
+            title = {
+                PlaylistContent.title
+            }
+            content = {
+                PlaylistContent.text
+            }
             id="playlist"
             icon="playlist.svg"
         />
 
+        <ContentBlock
+            type="right"
+            title = {
+                RealTimeChat.title
+            }
+            content = {
+                RealTimeChat.text
+            }
+            section = {
+                RealTimeChat.section
+            }
+            icon ="chat.svg"
+            id="chat"
+        />
         <ContentBlock
             type="left"
             title={ProductContent.title}

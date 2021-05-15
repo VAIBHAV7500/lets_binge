@@ -2,12 +2,12 @@ import { Row, Col } from "antd";
 import { withTranslation } from "react-i18next";
 import Slide from "react-reveal/Slide";
 
-import SvgIcon from "../../../common/SvgIcon";
-import Button from "../../../common/Button";
+import SvgIcon from "../../../../common/SvgIcon";
+import Button from "../../../../common/Button";
 
 import * as S from "./styles";
 
-const RightBlock = ({ title, content, button, icon, t, id, createRoom}) => {
+const RightBlock = ({ title, sub, content, button, icon, t, id, createRoom}) => {
   const scrollTo = (id) => {
     const element = document.getElementById(id);
     element.scrollIntoView({
@@ -36,18 +36,26 @@ const RightBlock = ({ title, content, button, icon, t, id, createRoom}) => {
                   typeof button === "object" &&
                   button.map((item, id) => {
                     return (
-                      <Button
-                        key={id}
-                        color={item.color}
-                        width={true}
-                        onClick={() => handleClick(item)}
-                      >
+                      <>
+                        <Button
+                          key={id}
+                          color={item.color}
+                          width={true}
+                          onClick={() => handleClick(item)}
+                        >
                         {t(item.title)}
-                      </Button>
+                        </Button><br/>
+                      </>
                     );
                   })}
               </S.ButtonWrapper>
             </S.ContentWrapper>
+            <div style={{
+            display: 'block',
+            paddingTop: '10px'
+            }}>
+              {sub}
+            </div>
           </Slide>
         </Col>
         <Col lg={11} md={11} sm={12} xs={24}>

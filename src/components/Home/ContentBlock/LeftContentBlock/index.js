@@ -2,7 +2,7 @@ import { Row, Col } from "antd";
 import { withTranslation } from "react-i18next";
 import Slide from "react-reveal/Slide";
 
-import SvgIcon from "../../../common/SvgIcon";
+import SvgIcon from "../../../../common/SvgIcon";
 
 import * as S from "./styles";
 
