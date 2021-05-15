@@ -1,6 +1,5 @@
 .body {
     width: 25%;
-    font-family: 'IBM Plex Mono', monospace;
     font-weight: bolder;
     margin-top: 20px;
 }
@@ -36,4 +35,62 @@
 .message {
     padding: 5px;
     padding-left: 20px;
+}
+
+.username_btn{
+    right: 0;
+    padding: none;
+    font-size: inherit;
+    background-color: white;
+    height: 40px;
+    border-radius: 8px;
+    outline: none;
+    cursor: pointer;
+    margin-top: 0.625rem;
+    max-width: 180px;
+    font-family: inherit;
+    color: black;
+}
+
+.message_input {
+    margin-right:10px;
+    font-family: inherit;
+    border-radius: 5px;
+    outline: none;
+    transition: all 0.3s;
+    z-index: 10;
+    background: inherit;
+
+}
+
+.username_error{
+    font-size: smaller;
+    color: rgb(235, 111, 29);
+    animation: shake 0.3s;
+}
+
+@keyframes shake {
+    0% {
+        transform: translateX(-5px);
+    }
+
+    20% {
+        transform: translateX(0);
+    }
+
+    40% {
+        transform: translateX(5px);
+    }
+
+    60% {
+        transform: translateX(0);
+    }
+
+    80% {
+        transform: translateX(-3px);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
 }

@@ -51,6 +51,11 @@ const createMember = async (room, username, isHost) => {
     return res.id;
 }
 
+const updateMembers = (room,member) => {
+    const firestore = getFireStore();
+    firestore.collection(room_collection).doc(room).collection(member_collection).doc(member.id).set(member);
+}
+
 const createEvent = async (room, type, user, message) => {
     if(!user){
         return;
@@ -148,5 +153,6 @@ export default {
     updateRoomDetails,
     getARoom,
     updatePlaylist,
-    sendMessage
+    sendMessage,
+    updateMembers
 }

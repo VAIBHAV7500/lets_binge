@@ -92,7 +92,7 @@ const Footer = ({ t }) => {
               </S.NavLink>
               <S.FooterContainer>
                 <SocialLink
-                  href="https://github.com/VAIBHAV7500"
+                  href="https://github.com/VAIBHAV7500/lets_watch"
                   src="github.svg"
                 />
                 <SocialLink

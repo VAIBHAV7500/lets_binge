@@ -30,11 +30,15 @@ const checkURL = (url) => {
     }
 }
 
-const getMessage = (messageArray, username) => {
+const getMessage = (messageArray, username, event_message) => {
     const length = messageArray.length;
     if (length !== 0) {
         const index = Math.floor(Math.random() * length);
-        const message = messageArray[index];
+        let message = messageArray[index];
+        if(event_message){
+            // eslint-disable-next-line no-template-curly-in-string
+            return message.replace('${prev_user}', event_message).replace('${user}', username);
+        }
         // eslint-disable-next-line no-template-curly-in-string
         return message.replace('${user}', username);
     } else {
@@ -48,11 +52,11 @@ const getTimeDiff = (time) => {
 }
 
 const usernameExists = (members, username) => {
-    return members.some(x => x.username === username)?.length === 0 ? false : true;
+    return members.some(x => x.username === username);
 }
 
 const userExists = (members, member) => {
-    return ( usernameExists(members,member.username) === true && members.some(x => x.id === member.id).length !== 0 );
+    return ( usernameExists(members,member.username) === true && members.some(x => x.id === member.id));
 }
 
 const getUserById = (members, id) => {
@@ -80,7 +84,22 @@ const removeMemberFromList = (members, id) => {
     return list.filter(member => member.id !== id);
 }
 
-export default {
+const copyURL = () => {
+    try{
+        const dummy = document.createElement('input');
+        const url = window.location.href;
+        document.body.appendChild(dummy);
+        dummy.value = url;
+        dummy.select();
+        document.execCommand('copy');
+        document.body.removeChild(dummy);
+        return true;
+    }catch(e){
+        return false;
+    }
+}
+
+const helper = {
     checkDomain,
     checkURL,
     getMessage,
@@ -90,5 +109,8 @@ export default {
     usernameExists,
     getUserById,
     removeMemberFromList,
-    getUserByName
+    getUserByName,
+    copyURL,
 }
+
+export default helper

@@ -1,17 +1,66 @@
 import React, {useEffect,useState} from 'react';
 import styles from './members.module.css';
+import config from '../../../config';
+
+const hostSymbol = '👑';
 
 function Members({
     members,
-    height
+    height,
+    currUser,
+    updateMembers,
 }) {
+
+    const [showUpdate, setUpdate] = useState(false);
+    const [error, setError] = useState();
+
+    const updateButton = () => {
+        setUpdate(true);
+    }
+
+    const usernameExists = (username) => {
+        return members.some(x => x.username.toLowerCase() === username.toLowerCase());       
+    }
+
+    const onClickUpdate = () => {
+        const element = document.getElementById('username');
+        if(element?.value){
+            let value = element.value;
+            value = value.replaceAll(hostSymbol, '').trim();
+            if (usernameExists(value)){
+                setError(config.USERNAME_ERROR);
+                setTimeout(() => {
+                    setError();
+                }, 2000);
+            }else{
+                updateMembers(value);
+                setUpdate(false);
+            }
+        }
+    }
+
+    const getRow = (index, user) => {
+        const username = `${user.username} ${(user.isHost ? hostSymbol : '')}`;
+        if(user.id === currUser.id){
+            return (<div className={styles.bubble} key={index}>
+                        <input id="username" className={styles.message_input} type="text" defaultValue={username} onChange={updateButton}></input>
+                        {showUpdate && <button className={styles.username_btn} onClick={onClickUpdate}>Update Username</button>}
+                        {error && <div className={styles.username_error}>{error}</div>}
+                    </div>);
+        }else{
+            return (<div className={styles.bubble} key={index}>
+                        <div className={styles.message}>
+                            {username}
+                        </div>
+                    </div>);
+        }
+    }
+
     return (
         <div className={styles.body} style={{height}}>
             <div className={styles.message_area}>
                 {members && members.map((msg,index) => {
-                    return <div className={styles.bubble} key={index}>
-                        <div className={styles.message}>{`${msg.username} ${(msg.isHost ? ' [Host]' : '')}`}</div>
-                    </div>
+                    return getRow(index,msg)
                 })}
             </div>
         </div>

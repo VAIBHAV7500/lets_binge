@@ -1,5 +1,5 @@
 import React,{useEffect, useState, useRef} from 'react';
-import Player from './player';
+import Player from './Player';
 import Chat from './Chat';
 import PlayList from './PlayList';
 import Members from './Members';
@@ -13,7 +13,6 @@ import PageLoader from '../../common/PageLoader';
 import helper from './helper';
 
 let prevMsg = 0;
-let currUser = {};
 const copyText = 'COPY LINK';
 
 function Room() {
@@ -28,6 +27,7 @@ function Room() {
     const [msgCounter, setMsgCounter] = useState(0);
     const [isHost, setHost] = useState(false);
     const [copyButtonText, setCopyButton] = useState(copyText);
+    const [currUser, setCurrUser]= useState({});
     let [id, setId] = useState(null);
     let [userId, setUserId] = useState(null);
     let [messages, setMessages] = useState([]);
@@ -146,7 +146,7 @@ function Room() {
         }
     }
 
-    const updateMembers = async () => {
+    const updateRoomMembers = async () => {
         const result = await firestore.getMembers(id);
         const list = [];
         result.forEach((member) => {
@@ -182,6 +182,25 @@ function Room() {
         return user;
     }
 
+    const updateMembers = (username) => {
+        const list = [...members];
+        let finalIndex = 0;
+        let prevName = '';
+        members.forEach((member,index) => {
+            if(member.id === currUser.id){
+                prevName = list[index].username;
+                list[index].username = username;
+                finalIndex = index;
+            }
+        });
+        members = list;
+        setMembers([...members]);
+        firestore.updateMembers(id,members[finalIndex]);
+        const key = config.USERNAME_KEY;
+        LocalStorage.set(key, username);
+        createEvent(config.EVENT.USERNAME_UPDATE.KEYWORD,prevName);
+    }
+
     const getUsername = async (user_id) => {
         const user = helper.getUserById(members,user_id);
         let username = user?.username;
@@ -206,9 +225,8 @@ function Room() {
             members = helper.addMemberToList(members, data)
             setMembers([...members]);
         } else if (type === 2) {
-            // Holding Remove Members for now.
-            // members = helper.removeMemberFromList(members, data);
-            // setMembers([...members]);
+            members = helper.removeMemberFromList(members, data);
+            setMembers([...members]);
         }
     }
 
@@ -273,7 +291,7 @@ function Room() {
         if(keySearch){
             for (let key in config.EVENT.PLAYER) {
                 if (config.EVENT.PLAYER[key].KEYWORD === event.type) {
-                    data.message = helper.getMessage(config.EVENT.PLAYER[key].MESSAGE, username);
+                    data.message = helper.getMessage(config.EVENT.PLAYER[key].MESSAGE, username, event.message);
                 }
             }
         }
@@ -313,6 +331,10 @@ function Room() {
             case config.EVENT.GIF.KEYWORD:
                 data.message = event.message;
                 break;
+            case config.EVENT.USERNAME_UPDATE.KEYWORD:
+                console.log(event);
+                updateRoomMembers();
+                break;
             default:
                 break;
         }
@@ -347,18 +369,14 @@ function Room() {
             component: <Members
                             members = {members}
                             height={height}
+                            currUser = {currUser}
+                            updateMembers = {updateMembers}
                         />
         }
     ];
 
     const copyLink = () => {
-        const dummy = document.createElement('input');
-        const url = window.location.href;
-        document.body.appendChild(dummy);
-        dummy.value = url;
-        dummy.select();
-        document.execCommand('copy');
-        document.body.removeChild(dummy);
+        helper.copyURL();
         setCopyButton('COPIED 🙌');
         setTimeout(() => {
             setCopyButton(copyText)
@@ -374,22 +392,27 @@ function Room() {
         });
         const username = checkUsername();
         setName(username);
-        updateMembers().then((res) => {
+        updateRoomMembers().then((res) => {
             createMember(username).then((res) => {
-                currUser = res;
+                setCurrUser(res);
                 setHost(res.isHost);
+                let initData = true;
                 firestore.events(id).onSnapshot(querySnapshot => {
                     const promiseArray = [];
-                    const changes = querySnapshot.docChanges()
-                    changes.forEach(change => {
-                        promiseArray.push(new Promise((res, rej) => {
-                            handleEvent(change.doc.data())?.then((result) => {
-                                res(result);
-                            }).catch((ex) => {
-                                rej(ex);
-                            })
-                        }))
-                    });
+                    const changes = querySnapshot.docChanges();
+                    
+                    if(!initData){
+                        changes.forEach(change => {
+                            promiseArray.push(new Promise((res, rej) => {
+                                handleEvent(change.doc.data())?.then((result) => {
+                                    res(result);
+                                }).catch((ex) => {
+                                    rej(ex);
+                                })
+                            }))
+                        });
+                    }
+                    initData = false;
                     Promise.all(promiseArray).then((newMessages) => {
                         messages = messages.concat(newMessages);
                         if (active === 0) {
