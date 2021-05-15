@@ -36,71 +36,85 @@ function Room() {
 
     const loadMedia = async (url, force = false, event = true,user = undefined) => {
         const finalSrc = helper.checkURL(url); 
+        const tempList = [...playlist];
         setSrc(finalSrc);
         if(event){
             firestore.createEvent(id, config.EVENT.LOAD.KEYWORD, userId, finalSrc);
         }
         if(force){
-            if(playlist.length !== 0){
-                playlist.shift();
+            if (tempList.length !== 0) {
+                tempList.shift();
             }
-            playlist.unshift({
+            tempList.unshift({
                 url,
                 username: await getUsername(user || currUser.id),
                 userId
             });
+            playlist = tempList;
             setPlaylist([...playlist]);
         }
+        return playlist;
     }
 
     const appendToPlaylist = async (url) => {
         const finalSrc = helper.checkURL(url);
+        const tempList = [...playlist];
         if(finalSrc){
-            playlist.push({
+            tempList.push({
                 url,
                 username: await getUsername(currUser.id),
                 userId
             });
-            if(playlist.length === 1 && !src){
+            if (tempList.length === 1 && !src) {
                 loadMedia(url);
             }
+            playlist = tempList;
             setPlaylist([...playlist]);
         }
+        return playlist;
     }
 
     const mediaEnd = (event = true) => {
-        if(playlist.length > 0){
-            if(playlist[0].url === src){
-                playlist.shift();
+        const tempList = [...playlist];
+        if (tempList.length > 0) {
+            if (tempList[0].url === src) {
+                tempList.shift();
             }
-            if(playlist.length > 0){
-                const playnode = playlist[0];
+            if (tempList.length > 0) {
+                const playnode = tempList[0];
                 loadMedia(playnode.url,false,event);
             }else{
                 setSrc(undefined);
                 updateRoomProgress(1);
             }
         }
+        playlist = tempList;
         setPlaylist([...playlist]);
+        return playlist;
     }
 
     const deletePlaylistItem = (index) => {
-        if(playlist[index].url === src){
+        let tempList = [...playlist];
+        if (tempList[index].url === src) {
             mediaEnd();
         }
-        playlist = playlist.filter((_, i) => i !== index);
+        tempList = tempList.filter((_, i) => i !== index);
+
+        playlist = tempList;
         setPlaylist([...playlist]);
+        return playlist;
     }
 
-    const playListAction = (type,url='',force = false, index = 0) => {
+    const playListAction = async (type,url='',force = false, index = 0) => {
         switch(type) {
             case 0:
-                loadMedia(url,force);
+                await loadMedia(url,force);
                 break;
             case 1:
-                appendToPlaylist(url);
+                await appendToPlaylist(url);
                 break;
             case 2:
+                url = src;
                 mediaEnd();
                 break;
             case 3:
@@ -143,6 +157,7 @@ function Room() {
         });
         members = list;
         setMembers([...members]);
+        console.log(members);
     }
 
     const createMember = async (username) => {
@@ -189,8 +204,9 @@ function Room() {
             members = helper.addMemberToList(members, data)
             setMembers([...members]);
         } else if (type === 2) {
-            members = helper.removeMemberFromList(members, data);
-            setMembers([...members]);
+            // Holding Remove Members for now.
+            // members = helper.removeMemberFromList(members, data);
+            // setMembers([...members]);
         }
     }
 
@@ -268,7 +284,6 @@ function Room() {
                 memberAction(2, user);
                 break;
             case config.EVENT.LOAD.KEYWORD:
-                console.log('IN LOAD HANDLE');
                 loadMedia(event.message,true,false,user);
                 break;
             case config.EVENT.MESSAGE.KEYWORD:
@@ -291,8 +306,7 @@ function Room() {
                 }
                 break;
             case config.EVENT.PLAYLIST.KEYWORD:
-                checkRoomDetails();
-                //checkRoomDetails(); // [TODO] This is supposed to check just the playlist and not the whole room details.
+                checkRoomDetails(); // [TODO] This is supposed to check just the playlist and not the whole room details.
                 break;
             case config.EVENT.GIF.KEYWORD:
                 data.message = event.message;

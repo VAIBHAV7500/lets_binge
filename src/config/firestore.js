@@ -106,8 +106,6 @@ const findMember = async (id,room) => {
 
 const updateRoomDetails = (room,src,progress,playlist) => {
     const firestore = getFireStore();
-    console.log('Calling Update Room Details');
-    console.log(playlist);
     firestore.collection(room_collection).doc(room).update({
         src,
         progress,
@@ -116,17 +114,12 @@ const updateRoomDetails = (room,src,progress,playlist) => {
 }
 
 const updatePlaylist = async (playlist,room) => {
-    const firestore = getFireStore();
-    console.log('Room',room);
-    console.log('Playlist',playlist);
-    console.log('Calling Update Playlist Details');
-    firestore.collection(room_collection).doc(room).update({
-        playlist: [...playlist]
-    }).then((res) => {
-        console.log(res);
-    }).catch((err) => {
-        console.log(err);
-    });
+    if(room){
+        const firestore = getFireStore();
+        firestore.collection(room_collection).doc(room).update({
+            playlist
+        });
+    }
 }
 
 const getARoom = async (room) => {
