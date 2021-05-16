@@ -45,7 +45,7 @@ function Members({
         if(user.id === currUser.id && showUpdate){
             return (<div className={styles.bubble} key={index}>
                         <input id="username" className={styles.message_input} type="text" defaultValue={username} onChange={updateButton}></input>
-                        {showUpdate && <button className={styles.username_btn} onClick={onClickUpdate}>Update Username</button>}
+                        <button className={styles.username_btn} onClick={onClickUpdate}>Update Username</button>
                         {error && <div className={styles.username_error}>{error}</div>}
                     </div>);
         }else{
