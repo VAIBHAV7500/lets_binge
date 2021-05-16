@@ -284,7 +284,7 @@ function Room() {
         for(let key in config.EVENT){
             if(config.EVENT[key].KEYWORD === event.type){
                 keySearch = false;
-                data.message = helper.getMessage(config.EVENT[key].MESSAGE, username);
+                data.message = helper.getMessage(config.EVENT[key].MESSAGE, username, event.message);
             }
         }
         if(keySearch){
@@ -426,8 +426,6 @@ function Room() {
             });
         });
     }
-
-
 
     useEffect(()=>{
         onRoomLoad();
