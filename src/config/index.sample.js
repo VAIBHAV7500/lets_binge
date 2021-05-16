@@ -1,4 +1,4 @@
-export default {
+const config = {
     ALLOWED_DOMAINS: ['music.youtube.com', 'youtube.com'],
     CONVERT_DOMAINS: {
         'music.youtube.com': 'youtube.com'
@@ -15,6 +15,7 @@ export default {
     },
     USERNAME_KEY: 'username',
     BUFFER_TIME: 5,
+    TOTAL_LOADING_SVG: 8,
     GIPHY: {
         KEY: 'some_key'
     },
@@ -35,7 +36,8 @@ export default {
             ]
         },
         MESSAGE: {
-            KEYWORD: 'message'
+            KEYWORD: 'message',
+            MESSAGE: []
         },
         LOAD: {
             KEYWORD: 'load',
@@ -50,6 +52,12 @@ export default {
         PLAYLIST: {
             KEYWORD: 'playlist_update',
             MESSAGE: []
+        },
+        USERNAME_UPDATE: {
+            KEYWORD: 'username_update',
+            MESSAGE: [
+                'Updated username from ${prev_user} to ${user}'
+            ]
         },
         PLAYER: {
             PLAY: {
@@ -77,5 +85,8 @@ export default {
                 ]
             },
         }
-    }
+    },
+    USERNAME_ERROR: 'Username already exists',
 }
+
+export default config;
