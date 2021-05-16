@@ -3,6 +3,9 @@ import 'firebase/firestore';
 import 'firebase/auth';
 import config from './index';
 
+require('firebase/auth');
+require('firebase/database');
+
 const FIREBASE = config.FIREBASE;
 
 const room_collection = "rooms";
@@ -23,12 +26,19 @@ const initializeFirebase = () => {
     });
 }
 
-const getFireStore = () => {
+const getFireStore = (database = false) => {
     if (firebase.apps.length === 0) {
         initializeFirebase();
     }
+    if(database){
+        return firebase.database();
+    }
     const firestore = firebase.firestore();
     return firestore;
+}
+
+const getDatabase = () => {
+    return getFireStore(true);
 }
 
 const createRoom = async () => {
@@ -44,11 +54,26 @@ const createRoom = async () => {
 
 const createMember = async (room, username, isHost) => {
     const firestore = getFireStore();
-    const res = await firestore.collection(room_collection).doc(room).collection(member_collection).add({
+    
+    const data = {
         username,
-        isHost
-    });
+        isHost,
+        isOnline: true
+    };
+    const res = await firestore.collection(room_collection).doc(room).collection(member_collection).add(data);
     return res.id;
+}
+
+const createFirebaseMember = async (room,member) => {
+    const database = getDatabase();
+    await database.ref(`/room/${room}/members/${member.id}/`).set(member);
+}
+
+const onOffline = (room,member) => {
+    const database = getDatabase();
+    const data = member;
+    data.isOnline = false;
+    database.ref(`/room/${room}/members/${member.id}/`).onDisconnect().set(data);
 }
 
 const updateMembers = (room,member) => {
@@ -86,9 +111,8 @@ const events = (room) => {
 }
 
 const members = (room) => {
-    const firestore = getFireStore();
-    const query = firestore.collection('rooms').doc(room).collection('members');
-    return query;
+    const database = getDatabase();
+    return database.ref(`/room/${room}/members`);
 }
 
 const getLastEvents = async (room) => {
@@ -98,9 +122,20 @@ const getLastEvents = async (room) => {
 }
 
 const getMembers = async (room) => {
-    const firestore = getFireStore();
-    const memberRef = firestore.collection(room_collection).doc(room).collection(member_collection);
-    return await memberRef.get();
+    const database = getDatabase();
+    const result = (await database.ref(`/room/${room}/members`).get()).val();
+    // Changing it to list
+    const list = [];
+    for(let key in result){
+        if(result.hasOwnProperty(key)){
+            const member = result[key];
+            if(member.hasOwnProperty('isOnline') && member.isOnline === false){
+                continue;
+            }
+            list.push(member);
+        }
+    }
+    return list;
 }
 
 const findMember = async (id,room) => {
@@ -154,5 +189,7 @@ export default {
     getARoom,
     updatePlaylist,
     sendMessage,
-    updateMembers
+    updateMembers,
+    onOffline,
+    createFirebaseMember
 }

@@ -150,9 +150,9 @@ function Room() {
         const result = await firestore.getMembers(id);
         const list = [];
         result.forEach((member) => {
-            const data = member.data();
+            const data = member;
             list.push({
-                id: member.id,
+                id: data.id,
                 username: data.username,
                 isHost: data.isHost
             });
@@ -381,6 +381,60 @@ function Room() {
         }, 3000); // After 3 Seconds
     }
 
+    const roomWatcher = () => {
+        let initData = true;
+        firestore.events(id).onSnapshot(querySnapshot => {
+            const promiseArray = [];
+            const changes = querySnapshot.docChanges();
+            
+            if(!initData){
+                changes.forEach(change => {
+                    promiseArray.push(new Promise((res, rej) => {
+                        handleEvent(change.doc.data())?.then((result) => {
+                            res(result);
+                        }).catch((ex) => {
+                            rej(ex);
+                        })
+                    }))
+                });
+            }
+            initData = false;
+            Promise.all(promiseArray).then((newMessages) => {
+                messages = messages.concat(newMessages);
+                if (active === 0) {
+                    prevMsg = 0;
+                    setMsgCounter(0);
+                } else if (newMessages.length) {
+                    setMsgCounter(msgCounter + newMessages.length);
+                    prevMsg = messages.length;
+                }
+                setMessages([...messages]);
+            });
+        });
+    }
+
+    const memberWatcher = () => {
+        firestore.members(id).on('value', (change) => {
+            const membersJson = change.val();
+            for(let key in membersJson){
+                if (membersJson.hasOwnProperty(key)) {
+                    const member = membersJson[key];
+                    if (member.hasOwnProperty('isOnline') && helper.userExists(members, member) && member.isOnline === false) {
+                        var d = new Date();
+                        var n = d.getTime();
+                        const event = {
+                            user: member.id,
+                            message: '',
+                            type: config.EVENT.REMOVE.KEYWORD,
+                            createdAt: n
+                        }
+                        handleEvent(event);
+                    }
+                }
+            }
+        });
+    }
+
     const onRoomLoad = () => {
         setRoomId();
         checkRoomDetails().then(() => {
@@ -393,36 +447,12 @@ function Room() {
         updateRoomMembers().then((res) => {
             createMember(username).then((res) => {
                 setCurrUser(res);
-                setHost(res.isHost);
-                let initData = true;
-                firestore.events(id).onSnapshot(querySnapshot => {
-                    const promiseArray = [];
-                    const changes = querySnapshot.docChanges();
-                    
-                    if(!initData){
-                        changes.forEach(change => {
-                            promiseArray.push(new Promise((res, rej) => {
-                                handleEvent(change.doc.data())?.then((result) => {
-                                    res(result);
-                                }).catch((ex) => {
-                                    rej(ex);
-                                })
-                            }))
-                        });
-                    }
-                    initData = false;
-                    Promise.all(promiseArray).then((newMessages) => {
-                        messages = messages.concat(newMessages);
-                        if (active === 0) {
-                            prevMsg = 0;
-                            setMsgCounter(0);
-                        } else if (newMessages.length) {
-                            setMsgCounter(msgCounter + newMessages.length);
-                            prevMsg = messages.length;
-                        }
-                        setMessages([...messages]);
-                    });
-                })
+                firestore.createFirebaseMember(id, res).then(() => {
+                    firestore.onOffline(id, res);
+                    setHost(res.isHost);
+                    roomWatcher();
+                    memberWatcher();
+                });
             });
         });
     }
@@ -430,7 +460,7 @@ function Room() {
     useEffect(()=>{
         onRoomLoad();
         return () => {
-            firestore.createEvent(id, config.EVENT.REMOVE.KEYWORD, userId, '');
+            //firestore.createEvent(id, config.EVENT.REMOVE.KEYWORD, userId, '');
         }
     },[]);
 
