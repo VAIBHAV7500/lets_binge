@@ -57,8 +57,7 @@ const createMember = async (room, username, isHost) => {
     
     const data = {
         username,
-        isHost,
-        isOnline: true
+        isHost
     };
     const res = await firestore.collection(room_collection).doc(room).collection(member_collection).add(data);
     return res.id;
@@ -66,6 +65,7 @@ const createMember = async (room, username, isHost) => {
 
 const createFirebaseMember = async (room,member) => {
     const database = getDatabase();
+    member.isOnline = true;
     await database.ref(`/room/${room}/members/${member.id}/`).set(member);
 }
 

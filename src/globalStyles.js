@@ -39,6 +39,11 @@ const Styles = createGlobalStyle`
         
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
+
+        ::selection {
+            color: white;
+            -webkit-text-fill-color: white;
+        }
       
         @media only screen and (max-width: 414px) {
           font-size: 1.625rem;
