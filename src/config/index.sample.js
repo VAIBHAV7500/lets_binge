@@ -87,6 +87,11 @@ const config = {
         }
     },
     USERNAME_ERROR: 'Username already exists',
+    CHAT_SUGGESTIONS: [
+        'Say Hi!',
+        'Try "/GIPHY Hello"',
+        'Press Enter to send message'
+    ],
 }
 
 export default config;

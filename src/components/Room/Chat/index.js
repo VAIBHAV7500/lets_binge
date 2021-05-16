@@ -82,6 +82,7 @@ function Chat({messages, createEvent, height}) {
 
     const [gif, setGif] = useState(false);
     const [search, setSearch] = useState('');
+    const [suggestion, setSuggestion] = useState();
 
     useEffect(() => {
         dummy.current.scrollIntoView();
@@ -134,6 +135,23 @@ function Chat({messages, createEvent, height}) {
         }       
     }
 
+    const updateChatSuggestions = () => {
+        let index = 1;
+        let suggestions = config.CHAT_SUGGESTIONS;
+        setSuggestion(suggestions[0]);
+        setInterval(() => {
+            if (index >= suggestions.length) {
+                index = 0;
+            }
+            setSuggestion(suggestions[index]);
+            index++;
+        },10000);
+    }
+
+    useEffect(() => {
+        updateChatSuggestions();
+    },[])
+
     const getChatBubble = (data,index) => {
         if(data.type === config.EVENT.MESSAGE.KEYWORD){
             let showUsername = true;
@@ -177,7 +195,7 @@ function Chat({messages, createEvent, height}) {
             </div>
             { gif != '' && <div className={styles.giphy}><span className={styles.giphy_text}>Powered By Giphy</span><span className={styles.giphy_close} onClick={() => { setGif(false); setSearch(''); clearSearchBox(); }}>CLOSE</span></div> }
             <div className={styles.input_message}>
-                <input onKeyDown={handleKey} type="text" id="msg" autoComplete="off" placeholder={"Type /giphy YOUR SEARCH"}></input>
+                <input onKeyDown={handleKey} type="text" id="msg" autoComplete="off" placeholder={suggestion}></input>
                 <Button width={true} onClick={sendMessage}>
                     {gif ? 'search' : 'send'}
                 </Button>
