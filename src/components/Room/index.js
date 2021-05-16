@@ -427,6 +427,8 @@ function Room() {
         });
     }
 
+
+
     useEffect(()=>{
         onRoomLoad();
         return () => {
@@ -443,7 +445,7 @@ function Room() {
     }
     
     return (
-        <div className={styles.room_container}>
+        <div className={styles.room_container} id ="room">
             {loading && <PageLoader title="Loading Room..."/>}
             <nav className={styles.options}>
                 {navigation.map((nav, index) => {

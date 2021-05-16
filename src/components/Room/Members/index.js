@@ -1,5 +1,6 @@
 import React, {useEffect,useState} from 'react';
 import styles from './members.module.css';
+import { FiEdit2 } from "react-icons/fi";
 import config from '../../../config';
 
 const hostSymbol = '👑';
@@ -40,8 +41,8 @@ function Members({
     }
 
     const getRow = (index, user) => {
-        const username = `${user.username} ${(user.isHost ? hostSymbol : '')}`;
-        if(user.id === currUser.id){
+        const username = `${user.username}   ${(user.isHost ? hostSymbol : '')}`;
+        if(user.id === currUser.id && showUpdate){
             return (<div className={styles.bubble} key={index}>
                         <input id="username" className={styles.message_input} type="text" defaultValue={username} onChange={updateButton}></input>
                         {showUpdate && <button className={styles.username_btn} onClick={onClickUpdate}>Update Username</button>}
@@ -51,6 +52,7 @@ function Members({
             return (<div className={styles.bubble} key={index}>
                         <div className={styles.message}>
                             {username}
+                            {currUser.id === user.id && <FiEdit2 style={{paddingLeft: '6px', width: '20%'}} onClick={() => {setUpdate(true)}}/>}
                         </div>
                     </div>);
         }
