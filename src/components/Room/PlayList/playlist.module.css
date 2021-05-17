@@ -1,6 +1,9 @@
 .body {
-    font-weight: bolder;
     margin-top: 20px;
+    height: 100%;
+    font-weight: bolder;
+    background:inherit;
+    font-family: inherit;
 }
 
 .input_message{
@@ -44,7 +47,7 @@
 .message_area{
     overflow-y: auto;
     overflow-wrap: break-word;
-    height: 80%;
+    height: 90%;
     width: 90%;
     margin-left: 5%;
     position: relative;
