@@ -534,6 +534,14 @@ function Room() {
                     background: (isMinized ? 'transparent': undefined)
                 }}>
                 <div className={styles.details}>
+                    <a href='/'>
+                        <SvgIcon
+                            src="mask.svg"
+                            aria-label="homepage"
+                            width="60px"
+                            height="42px"
+                        />
+                    </a>
                     {<button onClick={checkRoomDetails}>RE-SYNC</button>}
                     <button width={true} onClick={copyLink}>{copyButtonText}</button>
                 </div> 
