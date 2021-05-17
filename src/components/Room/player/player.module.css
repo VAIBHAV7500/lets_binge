@@ -1,14 +1,13 @@
 
 .player {
-    width: 70%;
     height: 100%;
-    margin: 20px;
+    width: 100%;
     z-index: 10;
-    transform: translateY(-30px);
     border-radius: 34px;
     box-shadow: 14px 14px 12px #161616,
     -14px -14px 12px #2c2c2c;
-}
+    transition: all 0.9s;
+}   
 .react_player {
     border-radius: 10px;
     overflow: hidden;

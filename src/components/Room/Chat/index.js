@@ -77,7 +77,8 @@ function GifSingle({gifId}) {
   return gif && <Gif gif={gif} width={gifHeight} className={styles.single_giphy}/>;
 }
 
-function Chat({messages, createEvent, height}) {
+function Chat({messages, createEvent, height, isMinized,
+    theatreMode}) {
     const dummy = useRef();
 
     const [gif, setGif] = useState(false);
@@ -86,7 +87,7 @@ function Chat({messages, createEvent, height}) {
 
     useEffect(() => {
         dummy.current.scrollIntoView();
-    });
+    },[messages]);
 
     const addMessage = (msg) => {
         createEvent(config.EVENT.MESSAGE.KEYWORD, msg);
@@ -193,13 +194,13 @@ function Chat({messages, createEvent, height}) {
                 }
                 <span ref={dummy}></span>
             </div>
-            { gif != '' && <div className={styles.giphy}><span className={styles.giphy_text}>Powered By Giphy</span><span className={styles.giphy_close} onClick={() => { setGif(false); setSearch(''); clearSearchBox(); }}>CLOSE</span></div> }
-            <div className={styles.input_message}>
+            { (gif != '' && !isMinized) && <div className={styles.giphy}><span className={styles.giphy_text}>Powered By Giphy</span><span className={styles.giphy_close} onClick={() => { setGif(false); setSearch(''); clearSearchBox(); }}>CLOSE</span></div> }
+            {!isMinized && <div className={styles.input_message}>
                 <input onKeyDown={handleKey} type="text" id="msg" autoComplete="off" placeholder={suggestion}></input>
                 <Button width={true} onClick={sendMessage}>
                     {gif ? 'search' : 'send'}
                 </Button>
-            </div>
+            </div>}
         </div>
     )
 }

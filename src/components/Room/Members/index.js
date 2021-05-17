@@ -10,6 +10,8 @@ function Members({
     height,
     currUser,
     updateMembers,
+    isMinized,
+    theatreMode
 }) {
 
     const [showUpdate, setUpdate] = useState(false);

@@ -2,6 +2,7 @@
     width: 100%;
     height: 100%;
     position: absolute;
+    overflow: hidden;
 }
 
 .wrapper{
@@ -23,41 +24,56 @@
 
 .details{
     left: 0;
-    padding: 20px;
     display: block;
     z-index: 10;
     position: inherit;
+    flex: 3;
+    transition: all 0.4s ease-in;
 }
 
 .details button {
-    margin-left: 10px;
     outline: none;
-    border: none;
+    border: 1px solid white;
     width: 100px;
-    height: 50px;
+    margin-left: 10px;
+    margin-top: 5px;
+    height: 30px;
     font-weight: bold;
-    border-radius: 4px;
+    border: none;
+    border-radius: 5px;
     z-index: 10;
+    transition: all 0.2s ease-in;
+    color: rgb(172, 172, 172);
+    background: transparent;
+}
+
+.details button:hover{
+    cursor: pointer;
     color: white;
 }
 
 .options{
-    right: 0;
-    top: 0;
     margin-top: 20px;
-    transform: translateX(83%);
+    display: block;
+    float: right;
+    width: 100%;
     z-index: 1;
+    margin-right: 30px;
 }
 
 .options a {
+    float: right;
     padding: 5px;
     color: white;
-    margin-right: 5px;;
-    border: 2px solid white;
+    border: 1px solid rgb(122, 121, 121);
+    margin-right: 5px;
+    border-radius: 5px;
+    min-width: 60px;
+    text-align: center;
 }
 
 .options a:hover{
-    background-color: white;
+    background-color: whitesmoke;
     color: black;
     cursor: pointer;
 }
@@ -66,4 +82,101 @@
     background-color: white;
     color: black !important;
     cursor: pointer;
+}
+
+.nav_wrapper{
+    display: flex;
+    width: 100%;
+    height: 50px;
+    margin-top: 10px;
+    background: transparent;
+    overflow: hidden;
+    border-bottom: 4px solid rgb(189, 188, 188);
+    background: linear-gradient(315deg, #111111, #272727);
+    box-shadow: -27px -27px 54px #101010,
+    27px 27px 54px #323232;
+    transition: all 0.3s;
+    animation: insertAnimation 0.3s ease-in;
+}
+/* 
+linear-gradient(145deg, #f81f01, #ee076e); 
+*/
+
+.side_nav{
+    width: 28%;
+    float: right;
+    display: block;
+    padding: 3px;
+    margin-right: 10px;
+    overflow: hidden;
+    font-weight: 700;
+    transition: all 0.4s ease-in;
+    border-radius: 3px;
+}
+
+.side_nav a{
+    margin-right: 5px;
+    height: 100%;
+    text-decoration: none;
+    color: rgb(172, 172, 172);
+    float: right;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.side_nav a:hover{
+    color: white;
+}
+
+.theatre_mode{
+    color: #ee076e !important;
+}
+
+
+.side_bar{
+    width: 28%;
+    height: 100%;
+    transition: all;
+}
+
+.closing_animation{
+    /* animation: sideClosingAnimation 0.8s ease-in;
+    transition: all 0.8s; */
+    visibility: hidden;
+}
+
+.appearing_animation{
+    animation: sideAppearAnimation 0.8s ease-in-out;
+    visibility: visible;
+}
+
+@keyframes sideClosingAnimation {
+    0% {
+        height: 100%;
+    }
+
+    100%{
+        height: 0%;
+        opacity: 0;
+    }
+}
+
+@keyframes sideAppearAnimation {
+    0% {
+        height: 0%;
+    }
+
+    100% {
+        height: 100%;
+    }
+}
+
+@keyframes insertAnimation {
+    0%{
+        transform: translateY(-100%);
+    }
+
+    100%{
+        transform: translateY(0);
+    }
 }

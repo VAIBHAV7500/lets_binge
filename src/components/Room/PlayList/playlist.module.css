@@ -1,18 +1,18 @@
 .body {
-    width: 25%;
     font-weight: bolder;
     margin-top: 20px;
 }
 
 .input_message{
-    width: 100%;
+    width: 95%;
     display: block;
     margin-top: 10px;
 }
 
 .input_message input {
     height: 50px;
-    margin-right:10px;
+    margin-right:20px;
+    margin-left: 10px;
     font-family: inherit;
     border-radius: 5px;
     outline: none;
@@ -45,7 +45,8 @@
     overflow-y: auto;
     overflow-wrap: break-word;
     height: 80%;
-    width: 100%;
+    width: 90%;
+    margin-left: 5%;
     position: relative;
     padding: 10px;
     border: 2px solid white;

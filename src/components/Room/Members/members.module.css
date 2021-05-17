@@ -1,5 +1,4 @@
 .body {
-    width: 25%;
     font-weight: bolder;
     margin-top: 20px;
 }
@@ -8,7 +7,8 @@
     overflow-y: auto;
     overflow-wrap: break-word;
     height: 90%;
-    width: 100%;
+    width: 90%;
+    margin-left: 5%;
     position: relative;
     padding: 10px;
     border: 2px solid white;

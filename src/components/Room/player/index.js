@@ -14,7 +14,9 @@ function Player({
     playing,
     updateRoomProgress,
     seek,
-    playListAction
+    playListAction,
+    isMinized,
+    theatreMode
 }, ref) {
     const player = useRef();
     const PLAYER_CONFIG = CONFIG.EVENT.PLAYER;
@@ -22,10 +24,15 @@ function Player({
     
     useEffect(() => {
 
+        // window.addEventListener("mousemove", () => {
+        //     console.log('Detecting from Player');
+        // });
+
         return () => {
         //player.destroy();
+           // window.removeEventListener("mousemove");
         }
-    });
+    },[]);
 
     useImperativeHandle(ref, () => ({
         seek: (type, duration) => {
@@ -142,7 +149,10 @@ function Player({
     }
 
     return (
-        <div className={styles.player}>
+        <div className={styles.player} style={{
+            width: (isMinized ? '100%' : '70%'),
+            boxShadow: (isMinized ? 'none' : undefined)
+        }}>
             {src ? (getPlayer()) : <SvgIcon 
                     src= "loading_1.svg"
                     width="50%"

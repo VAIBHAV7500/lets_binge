@@ -8,11 +8,12 @@ import config from '../../config';
 import { useLocation } from "react-router-dom";
 import LocalStorage from '../../utils/local_storage';
 import firestore from '../../config/firestore';
-import Button from '../../common/Button';
+import SvgIcon from '../../common/SvgIcon';
 import PageLoader from '../../common/PageLoader';
 import helper from './helper';
 
 let prevMsg = 0;
+let mouseTimer;
 const copyText = 'COPY LINK';
 
 function Room() {
@@ -20,14 +21,18 @@ function Room() {
     const ref = useRef();
     const [src, setSrc] = useState();
     const [ name , setName ] = useState('YOU');
-    const [active, setActive] = useState(0);
+    const [active, setActive] = useState(2);
     const [ playing, setPlaying ] = useState(false);
     const [seek, setSeek] = useState(0);
     const [loading, setLoading] = useState(true);
     const [msgCounter, setMsgCounter] = useState(0);
     const [isHost, setHost] = useState(false);
     const [copyButtonText, setCopyButton] = useState(copyText);
+    const [isMinized, setMinimize] = useState(false);
+    const [theatreMode, setTheatreMode] = useState(false);
     const [currUser, setCurrUser]= useState({});
+    const [isNavHidden, hideNav] = useState(false);
+    const [mousePosition, setMousePosition] = useState({ x: null, y: null });
     let [id, setId] = useState(null);
     let [userId, setUserId] = useState(null);
     let [messages, setMessages] = useState([]);
@@ -340,19 +345,20 @@ function Room() {
     }
 
     const navigation = [{
-            key: 'Chat',
-            counter: msgCounter,
-            component: <Chat 
-                            className={styles.chat}
-                            messages = {messages} 
-                            createEvent = {createEvent}
+            key: 'Members',
+            component: <Members
+                            members = {members}
                             height={height}
+                            currUser = {currUser}
+                            updateMembers = {updateMembers}
+                            isMinized = {isMinized}
+                            theatreMode={theatreMode}
                         />
         }, 
         {
             key: 'PlayList',
             component: <PlayList 
-                            className="chat" 
+                            className={styles.chat}
                             playlist = {playlist} 
                             loadMedia = {loadMedia} 
                             appendToPlaylist = {appendToPlaylist} 
@@ -360,17 +366,22 @@ function Room() {
                             playListAction = {playListAction}
                             setPlaylist = {setPlaylist}
                             height={height}
+                            isMinized = {isMinized}
+                            theatreMode={theatreMode}
                         />
         },
         {
-            key: 'Members',
-            component: <Members
-                            members = {members}
+            key: 'Chat',
+            counter: msgCounter,
+            component: <Chat 
+                            className={styles.chat}
+                            messages = {messages} 
+                            createEvent = {createEvent}
                             height={height}
-                            currUser = {currUser}
-                            updateMembers = {updateMembers}
+                            isMinized = {isMinized}
+                            theatreMode={theatreMode}
                         />
-        }
+        } 
     ];
 
     const copyLink = () => {
@@ -435,8 +446,14 @@ function Room() {
         });
     }
 
+    const updateMousePosition = ev => {
+        setMousePosition({ x: ev.clientX, y: ev.clientY });
+        console.log(ev);
+    };
+
     const onRoomLoad = () => {
         setRoomId();
+        window.addEventListener("mousemove", updateMousePosition);
         checkRoomDetails().then(() => {
             setTimeout(() => {
                 setLoading(false);
@@ -457,10 +474,25 @@ function Room() {
         });
     }
 
+    useEffect(() => {
+        if (!isMinized && theatreMode) {
+            console.log('Theater mode on');
+            hideNav(false);
+            if (mouseTimer) {
+                clearTimeout(mouseTimer);
+            }
+            mouseTimer = setTimeout(() => {
+                console.log('Hiding Nav');
+                hideNav(true);
+            }, 5000);
+        }
+    }, [mousePosition]);
+
     useEffect(()=>{
         onRoomLoad();
         return () => {
             //firestore.createEvent(id, config.EVENT.REMOVE.KEYWORD, userId, '');
+            window.removeEventListener("mousemove", updateMousePosition);
         }
     },[]);
 
@@ -471,16 +503,61 @@ function Room() {
             setMsgCounter(0);
         }
     }
+
+    const handleMinize = () => {
+        if(isMinized){
+            if (mouseTimer) {
+                clearTimeout(mouseTimer);
+            }
+        }
+        hideNav(false);
+        setMinimize(!isMinized);
+    }
+
+    const handleTheatreMode = () => {
+        if(theatreMode){
+            if (mouseTimer) {
+                clearTimeout(mouseTimer);
+            }
+            helper.closeFullscreen();
+        }else{
+            helper.openFullscreen();
+        }
+        hideNav(false);
+        setTheatreMode(!theatreMode);
+    }
     
     return (
         <div className={styles.room_container} id ="room">
             {loading && <PageLoader title="Loading Room..."/>}
-            <nav className={styles.options}>
+            {!isNavHidden && <div className={styles.nav_wrapper} style={{
+                    background: (isMinized ? 'transparent': undefined)
+                }}>
+                <div className={styles.details}>
+                    {<button onClick={checkRoomDetails}>RE-SYNC</button>}
+                    <button width={true} onClick={copyLink}>{copyButtonText}</button>
+                </div> 
+                <nav className={styles.side_nav} style={{
+                    background: (isMinized ? 'transparent': undefined)
+                }}>
+                <a className={styles.minimize} onClick={handleMinize}>
+                    {!isMinized ? 'Hide' : 'Show'} Side Bar
+                </a>
+                <a className={styles.theatre_mode} onClick={handleTheatreMode}>
+                    {theatreMode ? 'Disable' : 'Enable'} Theatre Mode
+                </a>
+            </nav>
+            </div>
+             }
+            { !isMinized && <nav className={styles.options}>
                 {navigation.map((nav, index) => {
                     return <a key={index} className={`${active === index ? styles.nav_active : ''}`} onClick={() => { onNavClick(index) }}>{nav.key}{(nav?.counter ? `(${nav.counter})` : '' )}</a>
                 })}
-            </nav>
-            <div className={styles.wrapper}>
+            </nav>}
+            <div className={styles.wrapper} style={{
+                flexDirection: (isMinized ? 'column' : ''),
+                height: (isMinized ? (window.innerHeight - 50) : '70%')
+            }}>
                 <Player 
                     className="player" 
                     src={src} 
@@ -488,15 +565,15 @@ function Room() {
                     playing={playing} 
                     updateRoomProgress= {updateRoomProgress} 
                     playListAction= {playListAction} 
+                    isMinized = {isMinized}
+                    theatreMode={theatreMode}
                     seek={seek} 
                     ref = {ref}
                 />
-                {navigation[active].component}
+                {!isMinized && <div className={`${styles.side_bar} ${!isMinized ? styles.appearing_animation : styles.closing_animation}`}>
+                    {navigation[active].component}
+                </div>}
             </div>
-            <div className={styles.details}>
-                {isHost && <Button width={true} onClick={checkRoomDetails}>RE-SYNC</Button>}
-                <Button width={true} onClick={copyLink}>{copyButtonText}</Button>
-            </div> 
         </div>
     )
 }

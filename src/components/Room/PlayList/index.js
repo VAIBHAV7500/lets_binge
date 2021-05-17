@@ -5,7 +5,9 @@ import Button from '../../../common/Button';
 function PlayList({
     playlist,
     playListAction,
-    height
+    height,
+    isMinized,
+    theatreMode
 }) {
     let room;
     const dummy = useRef();
