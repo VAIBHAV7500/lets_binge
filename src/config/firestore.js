@@ -145,12 +145,13 @@ const findMember = async (id,room) => {
     return (await memberRef.doc(id).get());
 }
 
-const updateRoomDetails = (room,src,progress,playlist) => {
+const updateRoomDetails = (room,src,progress,playlist,activeIndex) => {
     const firestore = getFireStore();
     firestore.collection(room_collection).doc(room).update({
         src,
         progress,
-        playlist
+        playlist,
+        activeIndex
     });
 }
 

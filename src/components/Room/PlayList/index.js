@@ -7,7 +7,8 @@ function PlayList({
     playListAction,
     height,
     isMinized,
-    theatreMode
+    theatreMode,
+    activeIndex
 }) {
     let room;
     const dummy = useRef();
@@ -49,6 +50,7 @@ function PlayList({
             <div className={styles.message_area}>
                 {playlist && playlist.map((msg,index) => {
                     return <div className={styles.bubble} key={index}>
+                        {activeIndex === index && 'This is Active'}
                         {msg.username && <div className={styles.username}>{msg.username}:</div>}
                         <div className={styles.message}>{msg.url}</div>
                         <p className={styles.delete} onClick={() => { deletePlaylistItem(index) }}>Delete</p>

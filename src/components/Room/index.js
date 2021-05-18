@@ -21,23 +21,24 @@ function Room() {
     const ref = useRef();
     const [src, setSrc] = useState();
     const [ name , setName ] = useState('YOU');
-    const [active, setActive] = useState(2);
+    const [ active, setActive ] = useState(2);
     const [ playing, setPlaying ] = useState(false);
-    const [seek, setSeek] = useState(0);
-    const [loading, setLoading] = useState(true);
-    const [msgCounter, setMsgCounter] = useState(0);
-    const [isHost, setHost] = useState(false);
-    const [copyButtonText, setCopyButton] = useState(copyText);
-    const [isMinized, setMinimize] = useState(false);
-    const [theatreMode, setTheatreMode] = useState(false);
-    const [currUser, setCurrUser]= useState({});
-    const [isNavHidden, hideNav] = useState(false);
-    const [mousePosition, setMousePosition] = useState({ x: null, y: null });
-    let [id, setId] = useState(null);
-    let [userId, setUserId] = useState(null);
-    let [messages, setMessages] = useState([]);
-    let [playlist, setPlaylist] = useState([]);
-    let [members, setMembers] = useState([]);
+    const [ seek, setSeek ] = useState(0);
+    const [ loading, setLoading ] = useState(true);
+    const [ msgCounter, setMsgCounter ] = useState(0);
+    const [ isHost, setHost ] = useState(false);
+    const [ copyButtonText, setCopyButton ] = useState(copyText);
+    const [ isMinized, setMinimize ] = useState(false);
+    const [ theatreMode, setTheatreMode ] = useState(false);
+    const [ currUser, setCurrUser ]= useState({});
+    const [ isNavHidden, hideNav ] = useState(false);
+    const [ mousePosition, setMousePosition ] = useState({ x: null, y: null });
+    let [activeIndex, setActiveIndex] = useState();
+    let [ id, setId ] = useState(null);
+    let [ userId, setUserId ] = useState(null);
+    let [ messages, setMessages ] = useState([]);
+    let [ playlist, setPlaylist ] = useState([]);
+    let [ members, setMembers ] = useState([]);
 
     const height = '100%';
 
@@ -65,38 +66,37 @@ function Room() {
 
     const appendToPlaylist = async (url) => {
         const finalSrc = helper.checkURL(url);
-        const tempList = [...playlist];
+        const list = [...playlist];
         if(finalSrc){
-            tempList.push({
-                url,
+            list.push({
+                url : finalSrc,
                 username: await getUsername(currUser.id),
                 userId
             });
-            if (tempList.length === 1 && !src) {
-                loadMedia(url);
+            if(activeIndex == null){
+                activeIndex = list.length;
+                setActiveIndex(activeIndex);
+                setSrc(finalSrc);
             }
-            playlist = tempList;
+            playlist = list;
             setPlaylist([...playlist]);
         }
+
+
         return playlist;
     }
 
     const mediaEnd = (event = true) => {
-        const tempList = [...playlist];
-        if (tempList.length > 0) {
-            if (tempList[0].url === src) {
-                tempList.shift();
-            }
-            if (tempList.length > 0) {
-                const playnode = tempList[0];
-                loadMedia(playnode.url,false,event);
-            }else{
-                setSrc(undefined);
-                updateRoomProgress(1);
-            }
+        const list = [...playlist];
+        if (list[(activeIndex) + 1]) {
+            activeIndex++;
+            setActiveIndex(activeIndex);
+            const url = list[activeIndex].url;
+            setSrc(url);
+        }else{
+            setSrc();
+            setActiveIndex();
         }
-        playlist = tempList;
-        setPlaylist([...playlist]);
         return playlist;
     }
 
@@ -238,24 +238,19 @@ function Room() {
         const res = await firestore.getARoom(id);
         if (res) {
             const data = res.data();
-            if (data.src) {
-                setSrc(data.src);
-            }
-            if (data.progress) {
-                setSeek(data.progress);
-            }
             if (data?.playlist?.length) {
                 playlist = data.playlist;
                 setPlaylist([...playlist]);
-            } else {
-                if (data.src && data.src !== '') {
-                    playlist = [{
-                        url: data.src
-                    }]
-                    setPlaylist([...playlist]);
-                } else {
-                    setPlaylist([]);
+                const index = data?.activeIndex || 0;
+                const url = playlist[index].url;
+                activeIndex = index;
+                setActiveIndex(activeIndex);
+                setSrc(url);
+                if (data.progress) {
+                    setSeek(data.progress);
                 }
+            } else {
+                setPlaylist([]);
             }
         }
     }
@@ -269,7 +264,7 @@ function Room() {
 
     const updateRoomProgress = (progress) => {
         if(currUser?.isHost){
-            firestore.updateRoomDetails(id, src, progress, playlist);
+            firestore.updateRoomDetails(id, src, progress, playlist, activeIndex);
         }
     }
 
@@ -361,6 +356,7 @@ function Room() {
                             className={styles.chat}
                             playlist = {playlist} 
                             loadMedia = {loadMedia} 
+                            activeIndex = {activeIndex}
                             appendToPlaylist = {appendToPlaylist} 
                             mediaEnd = {mediaEnd} 
                             playListAction = {playListAction}
