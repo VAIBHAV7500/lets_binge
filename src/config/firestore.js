@@ -65,7 +65,7 @@ const createMember = async (room, username, isHost) => {
 
 const createFirebaseMember = async (room,member) => {
     const database = getDatabase();
-    member.isOnline = true;
+    member.isOnline = member.isOnline || true;
     await database.ref(`/room/${room}/members/${member.id}/`).set(member);
 }
 
@@ -79,6 +79,7 @@ const onOffline = (room,member) => {
 const updateMembers = (room,member) => {
     const firestore = getFireStore();
     firestore.collection(room_collection).doc(room).collection(member_collection).doc(member.id).set(member);
+    createFirebaseMember(room,member);
 }
 
 const createEvent = async (room, type, user, message) => {

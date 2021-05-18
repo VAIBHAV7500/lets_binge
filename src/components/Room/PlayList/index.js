@@ -58,7 +58,6 @@ function PlayList({
             </div>
             <div className={styles.input_message}>
                 <input onKeyPress={handleKey} type="text" id="url" autoComplete="off" placeholder={"DROP YOUR LINK HERE"}></input>
-                <Button width={true} onClick={onLoad}>LOAD</Button>
                 <Button width={true} id="playlist" onClick={onAppend}>Add to PlayList</Button>
             </div>
         </div>

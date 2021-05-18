@@ -285,7 +285,6 @@ function Room() {
             username
         }
         let keySearch = true;
-
         for(let key in config.EVENT){
             if(config.EVENT[key].KEYWORD === event.type){
                 keySearch = false;
@@ -305,6 +304,7 @@ function Room() {
                 break;
 
             case config.EVENT.REMOVE.KEYWORD:
+                console.log('In handle event');
                 memberAction(2, user);
                 break;
             case config.EVENT.LOAD.KEYWORD:
@@ -399,7 +399,12 @@ function Room() {
             const changes = querySnapshot.docChanges();
             
             if(!initData){
-                changes.forEach(change => {
+                
+            }
+            changes.forEach(change => {
+                const event = change.doc.data();
+                const allowed_types = [config.EVENT.MESSAGE.KEYWORD, config.EVENT.GIF.KEYWORD];
+                if(!initData || (initData && allowed_types.includes(event.type))){
                     promiseArray.push(new Promise((res, rej) => {
                         handleEvent(change.doc.data())?.then((result) => {
                             res(result);
@@ -407,8 +412,8 @@ function Room() {
                             rej(ex);
                         })
                     }))
-                });
-            }
+                }
+            });
             initData = false;
             Promise.all(promiseArray).then((newMessages) => {
                 messages = messages.concat(newMessages);
@@ -431,6 +436,7 @@ function Room() {
                 if (membersJson.hasOwnProperty(key)) {
                     const member = membersJson[key];
                     if (member.hasOwnProperty('isOnline') && helper.userExists(members, member) && member.isOnline === false) {
+                        // A User went Offline
                         var d = new Date();
                         var n = d.getTime();
                         const event = {
@@ -439,7 +445,14 @@ function Room() {
                             type: config.EVENT.REMOVE.KEYWORD,
                             createdAt: n
                         }
-                        handleEvent(event);
+                        // eslint-disable-next-line no-loop-func
+                        handleEvent(event).then((data) => {
+                            if(data){
+                                messages.push(data);
+                                setMessages([...messages]);
+                            }
+                        });
+
                     }
                 }
             }
@@ -448,7 +461,7 @@ function Room() {
 
     const updateMousePosition = ev => {
         setMousePosition({ x: ev.clientX, y: ev.clientY });
-        console.log(ev);
+        //console.log(ev);
     };
 
     const onRoomLoad = () => {
