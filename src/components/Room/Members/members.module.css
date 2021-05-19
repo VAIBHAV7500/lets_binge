@@ -4,6 +4,8 @@
     font-weight: bolder;
     background:inherit;
     font-family: inherit;
+    float: right;
+    width: 100%;
 }
 
 .message_area {
@@ -13,6 +15,7 @@
     width: 90%;
     margin-left: 5%;
     position: relative;
+    float: right;
     padding: 10px;
     border: 2px solid white;
     border-radius: 15px;

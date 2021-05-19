@@ -195,11 +195,11 @@ function Chat({messages, createEvent, height, isMinized,
                 <span ref={dummy}></span>
             </div>
             { (gif != '' && !isMinized) && <div className={styles.giphy}><span className={styles.giphy_text}>Powered By Giphy</span><span className={styles.giphy_close} onClick={() => { setGif(false); setSearch(''); clearSearchBox(); }}>CLOSE</span></div> }
-            {!isMinized && <div className={styles.input_message}>
+            {!(isMinized) && <div className={styles.input_message}>
                 <input onKeyDown={handleKey} type="text" id="msg" autoComplete="off" placeholder={suggestion}></input>
-                <Button width={true} onClick={sendMessage}>
+                {!theatreMode && <Button width={true} onClick={sendMessage}>
                     {gif ? 'search' : 'send'}
-                </Button>
+                </Button>}
             </div>}
         </div>
     )

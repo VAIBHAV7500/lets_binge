@@ -1,6 +1,7 @@
 import React, {useEffect,useState, useRef} from 'react';
 import styles from './playlist.module.css';
 import Button from '../../../common/Button';
+import { FcPanorama } from "react-icons/fc";
 
 function PlayList({
     playlist,
@@ -45,16 +46,21 @@ function PlayList({
         playListAction(3, '',false,index);
     }
 
+    const getPlaylistItem = (playitem, index) => {
+        const isActive = activeIndex === index;
+        const className =  `${styles.bubble} ${(isActive) ? styles.active_item : ''}`;
+        return (<div className= {className} key={index}>
+                    {playitem.username && <div className={styles.username}>{`${(isActive ? '▶': '')} ${playitem.username}`}:</div>}
+                    <div className={styles.message}>{playitem.url}</div>
+                    <p className={styles.delete} onClick={() => { deletePlaylistItem(index) }}>Delete</p>
+                </div>);  
+    }
+
     return (
         <div className={styles.body} style={{height}}>
             <div className={styles.message_area}>
                 {playlist && playlist.map((msg,index) => {
-                    return <div className={styles.bubble} key={index}>
-                        {activeIndex === index && 'This is Active'}
-                        {msg.username && <div className={styles.username}>{msg.username}:</div>}
-                        <div className={styles.message}>{msg.url}</div>
-                        <p className={styles.delete} onClick={() => { deletePlaylistItem(index) }}>Delete</p>
-                    </div>
+                    return getPlaylistItem(msg,index)
                 })}
                 <span ref={dummy}></span>
             </div>

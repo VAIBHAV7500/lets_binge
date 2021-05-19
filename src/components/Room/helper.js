@@ -101,28 +101,36 @@ const copyURL = () => {
 
 /* View in fullscreen */
 const openFullscreen = () => {
-    var elem = document.getElementById('room');
-    if (elem.requestFullscreen) {
-        elem.requestFullscreen();
-    } else if (elem.webkitRequestFullscreen) {
-        /* Safari */
-        elem.webkitRequestFullscreen();
-    } else if (elem.msRequestFullscreen) {
-        /* IE11 */
-        elem.msRequestFullscreen();
+    const elem = document.getElementById('room');
+    try{
+        if (elem.requestFullscreen) {
+            elem.requestFullscreen();
+        } else if (elem.webkitRequestFullscreen) {
+            /* Safari */
+            elem.webkitRequestFullscreen();
+        } else if (elem.msRequestFullscreen) {
+            /* IE11 */
+            elem.msRequestFullscreen();
+        }
+    }catch(e){
+        console.log(e);
     }
 }
 
 /* Close fullscreen */
 const closeFullscreen = () => {
-    if (document.exitFullscreen) {
-        document.exitFullscreen();
-    } else if (document.webkitExitFullscreen) {
-        /* Safari */
-        document.webkitExitFullscreen();
-    } else if (document.msExitFullscreen) {
-        /* IE11 */
-        document.msExitFullscreen();
+    try{
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+            /* Safari */
+            document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) {
+            /* IE11 */
+            document.msExitFullscreen();
+        }
+    }catch(e){
+        console.log(e);
     }
 }
 

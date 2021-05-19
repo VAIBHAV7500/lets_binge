@@ -11,6 +11,7 @@ import firestore from '../../config/firestore';
 import SvgIcon from '../../common/SvgIcon';
 import PageLoader from '../../common/PageLoader';
 import helper from './helper';
+import { FcCollapse, FcExpand } from "react-icons/fc";
 
 let prevMsg = 0;
 let mouseTimer;
@@ -455,14 +456,8 @@ function Room() {
         });
     }
 
-    const updateMousePosition = ev => {
-        setMousePosition({ x: ev.clientX, y: ev.clientY });
-        //console.log(ev);
-    };
-
     const onRoomLoad = () => {
         setRoomId();
-        window.addEventListener("mousemove", updateMousePosition);
         checkRoomDetails().then(() => {
             setTimeout(() => {
                 setLoading(false);
@@ -483,26 +478,8 @@ function Room() {
         });
     }
 
-    useEffect(() => {
-        if (!isMinized && theatreMode) {
-            console.log('Theater mode on');
-            hideNav(false);
-            if (mouseTimer) {
-                clearTimeout(mouseTimer);
-            }
-            mouseTimer = setTimeout(() => {
-                console.log('Hiding Nav');
-                hideNav(true);
-            }, 5000);
-        }
-    }, [mousePosition]);
-
     useEffect(()=>{
         onRoomLoad();
-        return () => {
-            //firestore.createEvent(id, config.EVENT.REMOVE.KEYWORD, userId, '');
-            window.removeEventListener("mousemove", updateMousePosition);
-        }
     },[]);
 
     const onNavClick = (index) => {
@@ -514,10 +491,8 @@ function Room() {
     }
 
     const handleMinize = () => {
-        if(isMinized){
-            if (mouseTimer) {
-                clearTimeout(mouseTimer);
-            }
+        if(!isMinized){
+            
         }
         hideNav(false);
         setMinimize(!isMinized);
@@ -525,21 +500,19 @@ function Room() {
 
     const handleTheatreMode = () => {
         if(theatreMode){
-            if (mouseTimer) {
-                clearTimeout(mouseTimer);
-            }
+            hideNav(false);
             helper.closeFullscreen();
         }else{
             helper.openFullscreen();
+            hideNav(true);
         }
-        hideNav(false);
         setTheatreMode(!theatreMode);
     }
     
     return (
         <div className={styles.room_container} id ="room">
             {loading && <PageLoader title="Loading Room..."/>}
-            {!isNavHidden && <div className={styles.nav_wrapper} style={{
+            {!isNavHidden ? <div className={styles.nav_wrapper} style={{
                     background: (isMinized ? 'transparent': undefined)
                 }}>
                 <div className={styles.details}>
@@ -557,14 +530,17 @@ function Room() {
                 <nav className={styles.side_nav} style={{
                     background: (isMinized ? 'transparent': undefined)
                 }}>
-                <a className={styles.minimize} onClick={handleMinize}>
-                    {!isMinized ? 'Hide' : 'Show'} Side Bar
-                </a>
-                <a className={styles.theatre_mode} onClick={handleTheatreMode}>
-                    {theatreMode ? 'Disable' : 'Enable'} Theatre Mode
-                </a>
-            </nav>
-            </div>
+                    <a>
+                        <FcCollapse className={styles.collapse_nav} onClick={() => {hideNav(true)}}/>
+                    </a>
+                    <a className={styles.minimize} onClick={handleMinize}>
+                        {!isMinized ? 'Hide' : 'Show'} Side Bar
+                    </a>
+                    <a className={styles.theatre_mode} onClick={handleTheatreMode}>
+                        {theatreMode ? 'Disable' : 'Enable'} Theatre Mode
+                    </a>
+                </nav>
+            </div> : <FcExpand className={styles.expand_nav} onClick={() => {hideNav(false)}}/>
              }
             { !isMinized && <nav className={styles.options}>
                 {navigation.map((nav, index) => {
@@ -573,7 +549,7 @@ function Room() {
             </nav>}
             <div className={styles.wrapper} style={{
                 flexDirection: (isMinized ? 'column' : ''),
-                height: (isMinized ? (window.innerHeight - 50) : '70%')
+                height: ((isMinized || theatreMode) ? (window.innerHeight - (isNavHidden ? 0 : 50)) : '70%')
             }}>
                 <Player 
                     className="player" 

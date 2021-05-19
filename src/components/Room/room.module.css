@@ -2,7 +2,6 @@
     width: 100%;
     height: 100%;
     position: absolute;
-    overflow: hidden;
 }
 
 .wrapper{
@@ -148,6 +147,23 @@ linear-gradient(145deg, #f81f01, #ee076e);
 .appearing_animation{
     animation: sideAppearAnimation 0.8s ease-in-out;
     visibility: visible;
+}
+
+.collapse_nav{
+    background-color:white;
+    clip-path: circle(50%);
+    padding: 3px;
+}
+
+.expand_nav{
+    position: absolute;
+    right: 0;
+    margin-right: 10px;
+    margin-top: 5px;
+    background-color:white;
+    padding: 3px;
+    clip-path: circle(50%);
+    z-index: 1000;
 }
 
 @keyframes sideClosingAnimation {

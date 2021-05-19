@@ -4,6 +4,8 @@
     font-weight: bolder;
     background:inherit;
     font-family: inherit;
+    width: 100%;
+    float: right;
 }
 
 .input_message{
@@ -48,6 +50,7 @@
 }
 
 .message_area{
+    float: right;
     overflow-y: auto;
     height: 100%;
     width: 90%;
