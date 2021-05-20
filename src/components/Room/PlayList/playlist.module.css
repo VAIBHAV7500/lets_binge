@@ -1,5 +1,4 @@
 .body {
-    float: right;
     margin-top: 20px;
     height: 100%;
     width: 100%;
@@ -9,21 +8,20 @@
 }
 
 .input_message{
-    float:left;
     width: 95%;
     display: block;
-    margin-top: 40px;
+    margin-top: 20px;
 }
 
 .input_message input {
     height: 50px;
-    margin-left: 10px;
+    margin-left: 5%;
     font-family: inherit;
     border-radius: 5px;
     outline: none;
     color: black;
     transition: all 0.3s;
-    width: 100%;
+    width: 90%;
 }
 
 .input_message input:focus {
@@ -43,12 +41,11 @@
     color: white;
     width: fit-content;
     margin-top: 10px;
-    margin-left: 10px;
+    margin-left: 5%;
 }
 
 .message_area{
     overflow-y: auto;
-    float: right;
     overflow-wrap: break-word;
     height: 90%;
     width: 90%;
@@ -101,4 +98,39 @@
 .active_item{
     color: black;
     background: linear-gradient(145deg,#f81f01,#ee076e);
+    border-radius: 5px;
+}
+
+.error{
+    color: red;
+    margin-left: 5%;
+    margin-top: 5px;
+    font-size: smaller;
+    animation: shake 0.3s;
+}
+
+@keyframes shake {
+    0% {
+        transform: translateX(-5px);
+    }
+
+    20% {
+        transform: translateX(0);
+    }
+
+    40% {
+        transform: translateX(5px);
+    }
+
+    60% {
+        transform: translateX(0);
+    }
+
+    80% {
+        transform: translateX(-3px);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
 }

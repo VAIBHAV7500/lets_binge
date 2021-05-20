@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react";
 import { notification } from "antd";
-import axios from "axios";
 import firestore from '../../../config/firestore';
 
 const useForm = (validate) => {
   const [values, setValues] = useState({});
   const [errors, setErrors] = useState({});
-  const [shouldSubmit, setShouldSubmit] = useState(false);
+  const [shouldSubmit] = useState(false);
 
   const openNotificationWithIcon = (type) => {
     notification[type]({

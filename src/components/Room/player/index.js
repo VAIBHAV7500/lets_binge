@@ -21,19 +21,6 @@ function Player({
     const player = useRef();
     const PLAYER_CONFIG = CONFIG.EVENT.PLAYER;
 
-    
-    useEffect(() => {
-
-        // window.addEventListener("mousemove", () => {
-        //     console.log('Detecting from Player');
-        // });
-
-        return () => {
-        //player.destroy();
-           // window.removeEventListener("mousemove");
-        }
-    },[]);
-
     useImperativeHandle(ref, () => ({
         seek: (type, duration) => {
             let seekTime = 0;
@@ -53,6 +40,10 @@ function Player({
             }
             prevTime = seekTime;
             player?.current?.seekTo(seekTime, "seconds");
+        },
+
+        canPlay: (url) => {
+            return ReactPlayer.canPlay(url);
         }
     }));
 
@@ -117,7 +108,7 @@ function Player({
         youtube: {
             playerVars: {
                 showinfo: 0,
-                autoplay: 0
+                autoplay: 1
             },
             events: {
                 'onStateChange': onEnded

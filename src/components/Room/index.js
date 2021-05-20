@@ -43,30 +43,22 @@ function Room() {
 
     const height = '100%';
 
-    const loadMedia = async (url, force = false, event = true,user = undefined) => {
-        const finalSrc = helper.checkURL(url); 
-        const tempList = [...playlist];
-        setSrc(finalSrc);
-        if(event){
-            firestore.createEvent(id, config.EVENT.LOAD.KEYWORD, userId, finalSrc);
-        }
-        if(force){
-            if (tempList.length !== 0) {
-                tempList.shift();
-            }
-            tempList.unshift({
-                url,
-                username: await getUsername(user || currUser.id),
-                userId
-            });
-            playlist = tempList;
-            setPlaylist([...playlist]);
+    const loadMedia = async (index) => {
+        if(playlist[index] != null){
+            console.log('Setting');
+            console.log(index);
+            setActiveIndex(index);
+            setSrc(playlist[index].url);
         }
         return playlist;
     }
 
     const appendToPlaylist = async (url) => {
         const finalSrc = helper.checkURL(url);
+        const exists = playlist.some(x => x.url === finalSrc);
+        if(exists){
+            return false;
+        }
         const list = [...playlist];
         if(finalSrc){
             list.push({
@@ -83,8 +75,7 @@ function Room() {
             setPlaylist([...playlist]);
         }
 
-
-        return playlist;
+        return true;
     }
 
     const mediaEnd = (event = true) => {
@@ -114,19 +105,20 @@ function Room() {
     }
 
     const playListAction = async (type,url='',force = false, index = 0) => {
+        let response;
         switch(type) {
             case 0:
-                await loadMedia(url,force);
+                response = await loadMedia(url);
                 break;
             case 1:
-                await appendToPlaylist(url);
+                response = await appendToPlaylist(url);
                 break;
             case 2:
                 url = src;
-                mediaEnd();
+                response = mediaEnd();
                 break;
             case 3:
-                deletePlaylistItem(index);
+                response = deletePlaylistItem(index);
                 break;
             default:
                 break;
@@ -136,6 +128,13 @@ function Room() {
                 createEvent(config.EVENT.PLAYLIST.KEYWORD);
             }
         });
+        return response;
+    }
+
+    const canPlay = (url) => {
+        if (ref.current) {
+            return ref.current.canPlay(url);
+        }
     }
 
     const checkUsername = () => {
@@ -243,7 +242,7 @@ function Room() {
                 playlist = data.playlist;
                 setPlaylist([...playlist]);
                 const index = data?.activeIndex || 0;
-                const url = playlist[index].url;
+                const url = playlist[index]?.url || '';
                 activeIndex = index;
                 setActiveIndex(activeIndex);
                 setSrc(url);
@@ -303,8 +302,8 @@ function Room() {
                 console.log('In handle event');
                 memberAction(2, user);
                 break;
-            case config.EVENT.LOAD.KEYWORD:
-                loadMedia(event.message,true,false,user);
+            case config.EVENT.LOAD.KEYWORD:// This case is not required
+                loadMedia(event.message);
                 break;
             case config.EVENT.MESSAGE.KEYWORD:
                 data.message = event.message;
@@ -365,6 +364,7 @@ function Room() {
                             height={height}
                             isMinized = {isMinized}
                             theatreMode={theatreMode}
+                            canPlay = {canPlay}
                         />
         },
         {
@@ -377,6 +377,8 @@ function Room() {
                             height={height}
                             isMinized = {isMinized}
                             theatreMode={theatreMode}
+                            playListAction = {playListAction}
+                            canPlay = {canPlay}
                         />
         } 
     ];
@@ -395,9 +397,6 @@ function Room() {
             const promiseArray = [];
             const changes = querySnapshot.docChanges();
             
-            if(!initData){
-                
-            }
             changes.forEach(change => {
                 const event = change.doc.data();
                 const allowed_types = [config.EVENT.MESSAGE.KEYWORD, config.EVENT.GIF.KEYWORD];

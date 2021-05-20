@@ -1,15 +1,8 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import styles from './style.module.css';
-import PuffLoader from "react-spinners/PuffLoader";
 import config from '../../config';
 import SvgIcon from '../SvgIcon';
 import Typewriter from "typewriter-effect";
-
-const override = `
-    position:fixed;
-    left: 45%;
-    top: 50%;
-`;
 
 const totalSVGs = config.TOTAL_LOADING_SVG;
 const random = Math.floor((Math.random() * totalSVGs) + 1);

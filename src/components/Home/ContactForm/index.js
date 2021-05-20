@@ -1,15 +1,13 @@
-import { lazy, useState, useEffect} from "react";
+import { lazy, useState} from "react";
 import { Row, Col } from "antd";
 import Zoom from "react-reveal/Zoom";
 import { withTranslation } from "react-i18next";
 
 import useForm from "./useForm";
 import validate from "./validationRules";
-import SvgIcon from "../../../common/SvgIcon";
 
 import * as S from "./styles";
 
-const Block = lazy(() => import("../Block"));
 const Input = lazy(() => import("../../../common/Input"));
 const Button = lazy(() => import("../../../common/Button"));
 const TextArea = lazy(() => import("../../../common/TextArea"));
@@ -43,7 +41,7 @@ const Contact = ({ title, content, id, t, sendMessage}) => {
       <S.Contact>
         <Row type="flex" justify="space-between" align="middle">
           <Col lg={12} md={11} sm={24}>
-            <img src='/vaibhav.jpeg' style={{ width: '100', clipPath: 'circle(50%)'}}/>
+            <img src='/vaibhav.jpeg' alt="Vaibhav Solanki" style={{ width: '100', clipPath: 'circle(50%)'}}/>
           </Col>
           <Col lg={12} md={12} sm={24}>
             <S.FormGroup autoComplete="off" onSubmit={onClickSubmit}>

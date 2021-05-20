@@ -4,6 +4,7 @@ import { GiphyFetch } from "@giphy/js-fetch-api";
 import { Gif, Grid } from "@giphy/react-components";
 import config from '../../../config';
 import Button from '../../../common/Button';
+import helper from '../helper';
 
 const giphyFetch = new GiphyFetch(config.GIPHY.KEY);
 
@@ -47,7 +48,7 @@ function GiphyGrid({
     };
 
 
-    const [width, setWidth] = useState(0.3 * window.innerWidth);
+    const [width] = useState(0.3 * window.innerWidth);
     return (
         <>
         <Grid
@@ -73,12 +74,12 @@ function GifSingle({gifId}) {
     giphyFetch.gif(gifId).then(({data}) => {
         setGif(data);
     })
-  },[]);
+  },[gifId]);
   return gif && <Gif gif={gif} width={gifHeight} className={styles.single_giphy}/>;
 }
 
 function Chat({messages, createEvent, height, isMinized,
-    theatreMode}) {
+    theatreMode, canPlay, playListAction}) {
     const dummy = useRef();
 
     const [gif, setGif] = useState(false);
@@ -90,7 +91,26 @@ function Chat({messages, createEvent, height, isMinized,
     },[messages]);
 
     const addMessage = (msg) => {
-        createEvent(config.EVENT.MESSAGE.KEYWORD, msg);
+        const result = helper.containsLink(msg);
+        let isLink = false;
+        let link = '';
+        let playable = false;
+
+        if(result){
+            isLink = true;
+            link = result;
+            if(canPlay(link)){
+                playable = true;
+            }
+        }
+        const data = {
+            isLink,
+            link,
+            msg,
+            canPlay: playable
+        }
+        console.log(data);
+        createEvent(config.EVENT.MESSAGE.KEYWORD, data);
     }
 
     const clearSearchBox = () => {
@@ -136,6 +156,18 @@ function Chat({messages, createEvent, height, isMinized,
         }       
     }
 
+    const openLink = (url) => {
+        if(url && url !== ''){
+            window.open(url, '_blank').focus();
+        }
+    }
+
+    const addToPlaylist = (url) => {
+        if(url){
+            playListAction(1,url);
+        }
+    }
+
     const updateChatSuggestions = () => {
         let index = 1;
         let suggestions = config.CHAT_SUGGESTIONS;
@@ -154,6 +186,12 @@ function Chat({messages, createEvent, height, isMinized,
     },[])
 
     const getChatBubble = (data,index) => {
+        const packet = data.message;
+        const message = packet?.msg;
+        const isLink = packet?.isLink;
+        const link = packet?.link;
+        const canPlay = packet?.canPlay;
+
         if(data.type === config.EVENT.MESSAGE.KEYWORD){
             let showUsername = true;
             if(index !== 0 && messages[index - 1].type === data.type && messages[index - 1].username === data.username){
@@ -161,7 +199,10 @@ function Chat({messages, createEvent, height, isMinized,
             }
             return (<div className={styles.bubble} key={index}>
                 { showUsername && data.username && <div className={styles.username}>{data.username}:</div>}
-                <div className={`${styles.message} ${styles.message_type}`}>{data.message}</div>
+                <div className={`${styles.message} ${styles.message_type}`} onClick={() => {openLink(link)}}>
+                    {message} {(isLink) ? '↗' : ''}
+                </div>
+                {canPlay && <div className={styles.playlist_btn} onClick={() => {addToPlaylist(link)}}>Add to Playlist</div>}
             </div>);
         }else if(data.type === config.EVENT.GIF.KEYWORD){
             return (<div className={styles.bubble} key={index}>

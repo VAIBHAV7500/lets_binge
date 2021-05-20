@@ -7,8 +7,8 @@ import {
   Switch,
 } from 'react-router-dom';
 import GlobalStyles from "./globalStyles";
+
 import "antd/dist/antd.css";
-import Footer from './components/Footer';
 
 
 function App() {

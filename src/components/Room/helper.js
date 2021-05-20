@@ -56,7 +56,7 @@ const usernameExists = (members, username) => {
 }
 
 const userExists = (members, member) => {
-    return ( usernameExists(members,member.username) === true && members.some(x => x.id === member.id));
+    return ( usernameExists(members,member.username) === true || members.some(x => x.id === member.id));
 }
 
 const getUserById = (members, id) => {
@@ -134,6 +134,13 @@ const closeFullscreen = () => {
     }
 }
 
+const containsLink = (url) => {
+    const reg = new RegExp("([a-zA-Z0-9]+://)?([a-zA-Z0-9_]+:[a-zA-Z0-9_]+@)?([a-zA-Z0-9.-]+\\.[A-Za-z]{2,4})(:[0-9]+)?(/.*)?");
+    if(reg.test(url)) {
+        return reg.exec(url)[0];
+    }
+}
+
 
 const helper = {
     checkDomain,
@@ -148,7 +155,8 @@ const helper = {
     getUserByName,
     copyURL,
     openFullscreen,
-    closeFullscreen
+    closeFullscreen,
+    containsLink
 }
 
 export default helper

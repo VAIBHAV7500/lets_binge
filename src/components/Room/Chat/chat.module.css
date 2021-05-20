@@ -5,7 +5,6 @@
     background:inherit;
     font-family: inherit;
     width: 100%;
-    float: right;
 }
 
 .input_message{
@@ -50,7 +49,6 @@
 }
 
 .message_area{
-    float: right;
     overflow-y: auto;
     height: 100%;
     width: 90%;
@@ -185,4 +183,14 @@
 .extra_type span:after {
   left: 100%;
   margin-left: 15px;
+}
+
+.playlist_btn{
+    margin-left: 20px;
+    margin-top: 10px;
+    padding: 5px;
+    background: linear-gradient(145deg,#f81f01,#ee076e);
+    display: inline-block;
+    border-radius: 3px;
+    cursor: pointer;
 }
