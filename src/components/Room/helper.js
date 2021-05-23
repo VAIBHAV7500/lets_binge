@@ -1,6 +1,7 @@
 import config from '../../config';
 import settings from '../../config/settings';
 const usernameList = require('../../content/username');
+const MobileDetect = require('mobile-detect');
 
 const checkDomain = (url) => {
     let matched_domain = '';
@@ -178,6 +179,20 @@ const getRandomUsername = (members) => {
     return username;
 }
 
+const changeOrientation = () => {
+    const md = new MobileDetect(window.navigator.userAgent);
+
+    if(md.is('iPhone')){
+        window.orientation.lock('landscape');
+    }else if(md.mobile() || md.tablet() || md.phone()){
+        window.screen.orientation.lock('landscape').then((data) => {
+            console.log('Locked')
+        }).catch((err) => {
+            console.log(err);
+        }) 
+    }
+}
+
 const helper = {
     checkDomain,
     checkURL,
@@ -195,7 +210,8 @@ const helper = {
     containsLink,
     updateListUsername,
     getSettingsData,
-    getRandomUsername
+    getRandomUsername,
+    changeOrientation
 }
 
 export default helper

@@ -546,6 +546,7 @@ function Room() {
     }
 
     useEffect(()=>{
+        helper.changeOrientation();
         onRoomLoad();
     },[]);
 
