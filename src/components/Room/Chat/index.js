@@ -8,7 +8,7 @@ import helper from '../helper';
 
 const giphyFetch = new GiphyFetch(config.GIPHY.KEY);
 
-const gifHeight = 250;
+const gifHeight = 200;
 
 function GiphyGrid({
     search,
