@@ -14,12 +14,20 @@ import helper from './helper';
 import { FcCollapse, FcExpand } from "react-icons/fc";
 import Modal from '../../common/Modal';
 import settingsData from '../../config/settings';
+import { useHistory } from 'react-router-dom';
 
 let prevMsg = 0;
 let mouseTimer;
 const copyText = 'COPY LINK';
 
+const defaultPermissions = {
+    lock: false,
+    playlist: true,
+    username: true,
+}
+
 function Room() {
+     const history = useHistory();
     const location = useLocation();
     const ref = useRef();
     const [src, setSrc] = useState();
@@ -38,6 +46,7 @@ function Room() {
     const [ mousePosition, setMousePosition ] = useState({ x: null, y: null });
     const [showSettings, setShowSettings] = useState(false);
     const [settings, setSettings] = useState(settingsData);
+    const [permissions, setPermissions] = useState(defaultPermissions);
     let [activeIndex, setActiveIndex] = useState();
     let [ id, setId ] = useState(null);
     let [ userId, setUserId ] = useState(null);
@@ -185,10 +194,10 @@ function Room() {
             setMembers([...members]);
             firestore.createEvent(id, config.EVENT.ADD.KEYWORD, userId, data);
             setUserId(userId);
-            return data;
+            return [data, true];
         }
         setUserId(user.id);
-        return user;
+        return [user, false];
     }
 
     const updateMembers = (username) => {
@@ -239,10 +248,34 @@ function Room() {
         }
     }
 
-    const checkRoomDetails = async () => {
+    const checkRoomDetails = async (first = false) => {
         const res = await firestore.getARoom(id);
         if (res) {
             const data = res.data();
+            let perm = {};
+            if(data.settings){
+                setSettings(data.settings);
+
+                const isLocked = helper.getSettingsData(data.settings, "lock");
+                const allowPlaylist = helper.getSettingsData(data.settings, "playlist_allow");
+                const allowUsername = helper.getSettingsData(data.settings, "username_update");
+
+                perm = {
+                    lock: isLocked,
+                    playlist: allowPlaylist,
+                    username: allowUsername
+                }
+
+                setPermissions(perm);
+
+                const title = helper.getSettingsData(data.settings, "room_name");
+                if(title){
+                    window.top.document.title = `${title} - Let's Watch`;
+                }else{
+                    window.top.document.title = `Let's Watch`;
+                }
+            }
+
             if (data?.playlist?.length) {
                 playlist = data.playlist;
                 setPlaylist([...playlist]);
@@ -258,15 +291,8 @@ function Room() {
                 setPlaylist([]);
             }
 
-            if(data.settings){
-                setSettings(data.settings);
-                const title = helper.getSettingsData(data.settings, "room_name");
-                if(title){
-                    window.top.document.title = `${title} - Let's Watch`;
-                }else{
-                    window.top.document.title = `Let's Watch`;
-                }
-            }
+            data.permissions = perm;
+            return data;
         }
     }
 
@@ -453,8 +479,13 @@ function Room() {
     }
 
     const memberWatcher = () => {
+        let initData = true;
         firestore.members(id).on('value', (change) => {
             const membersJson = change.val();
+            if(initData){
+                initData = false;
+                return;
+            }
             for(let key in membersJson){
                 if (membersJson.hasOwnProperty(key)) {
                     const member = membersJson[key];
@@ -484,21 +515,29 @@ function Room() {
 
     const onRoomLoad = () => {
         setRoomId();
-        checkRoomDetails().then(() => {
-            setTimeout(() => {
-                setLoading(false);
-            }, 500);
-        });
-        const username = checkUsername();
-        setName(username);
-        updateRoomMembers().then((res) => {
-            createMember(username).then((res) => {
-                setCurrUser(res);
-                firestore.createFirebaseMember(id, res).then(() => {
-                    firestore.onOffline(id, res);
-                    setHost(res.isHost);
-                    roomWatcher();
-                    memberWatcher();
+        checkRoomDetails(true).then((data) => {
+            
+            const username = checkUsername();
+            setName(username);
+            updateRoomMembers().then((res) => {
+                createMember(username).then(([res, isCreated]) => {
+                    console.log(isCreated);
+                    if(isCreated && data?.permissions?.lock){
+                        history.push({
+                            pathname: `/`,
+                            search: `?error=RoomNotFound`
+                        });
+                    }
+                    setCurrUser(res);
+                    firestore.createFirebaseMember(id, res).then(() => {
+                        firestore.onOffline(id, res);
+                        setHost(res.isHost);
+                        roomWatcher();
+                        memberWatcher();
+                    });
+                    setTimeout(() => {
+                        setLoading(false);
+                    }, 500);
                 });
             });
         });

@@ -10,7 +10,7 @@ const settings = {
                     title: "Room Name (Visible on Tab)",
                     type: "input",
                     sub_type: "text",
-                    value: "Default",
+                    value: "",
                     placeholder: 'Enter Room Name'
                 },{
                     key: "lock",
