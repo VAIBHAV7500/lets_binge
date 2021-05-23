@@ -2,6 +2,7 @@ import firebase from 'firebase/app';
 import 'firebase/firestore';
 import 'firebase/auth';
 import config from './index';
+import settings from '../config/settings';
 
 require('firebase/auth');
 require('firebase/database');
@@ -47,7 +48,8 @@ const createRoom = async () => {
         name: 'Demo Room',
         src: '',
         progress: 0,
-        playlist: []
+        playlist: [],
+        settings
     });
     return res.id;
 }
@@ -145,14 +147,10 @@ const findMember = async (id,room) => {
     return (await memberRef.doc(id).get());
 }
 
-const updateRoomDetails = (room,src,progress,playlist,activeIndex) => {
+const updateRoomDetails = (room, data) => {
     const firestore = getFireStore();
-    firestore.collection(room_collection).doc(room).update({
-        src,
-        progress,
-        playlist,
-        activeIndex
-    });
+    Object.keys(data).forEach(key => data[key] === undefined && delete data[key])
+    firestore.collection(room_collection).doc(room).update(data);
 }
 
 const updatePlaylist = async (playlist,room) => {

@@ -166,6 +166,14 @@ linear-gradient(145deg, #f81f01, #ee076e);
     z-index: 1000;
 }
 
+.disable_select {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
 @keyframes sideClosingAnimation {
     0% {
         height: 100%;

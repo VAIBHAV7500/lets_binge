@@ -1,4 +1,5 @@
 import config from '../../config';
+import settings from '../../config/settings';
 
 const checkDomain = (url) => {
     let matched_domain = '';
@@ -141,6 +142,30 @@ const containsLink = (url) => {
     }
 }
 
+const updateListUsername = (username, prevName, dataList) => {
+    const list = [];
+    dataList.forEach((message) => {
+        const data = message;
+        if(message.username === prevName){
+            data.username = username;
+        }
+        list.push(data);
+    });
+    return list;
+}
+
+const getSettingsData = (settings, key) => {
+    let value;
+    settings.sections.forEach((section, section_key) => {
+        section.inputs.forEach((input, input_key) => {
+            if(input.key === key){
+                console.log('Foind');
+                value = settings.sections[section_key].inputs[input_key].value;
+            }
+        })
+    });
+    return value;
+}
 
 const helper = {
     checkDomain,
@@ -156,7 +181,9 @@ const helper = {
     copyURL,
     openFullscreen,
     closeFullscreen,
-    containsLink
+    containsLink,
+    updateListUsername,
+    getSettingsData
 }
 
 export default helper

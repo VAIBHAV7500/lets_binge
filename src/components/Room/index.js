@@ -12,6 +12,8 @@ import SvgIcon from '../../common/SvgIcon';
 import PageLoader from '../../common/PageLoader';
 import helper from './helper';
 import { FcCollapse, FcExpand } from "react-icons/fc";
+import Modal from '../../common/Modal';
+import settingsData from '../../config/settings';
 
 let prevMsg = 0;
 let mouseTimer;
@@ -34,6 +36,8 @@ function Room() {
     const [ currUser, setCurrUser ]= useState({});
     const [ isNavHidden, hideNav ] = useState(false);
     const [ mousePosition, setMousePosition ] = useState({ x: null, y: null });
+    const [showSettings, setShowSettings] = useState(false);
+    const [settings, setSettings] = useState(settingsData);
     let [activeIndex, setActiveIndex] = useState();
     let [ id, setId ] = useState(null);
     let [ userId, setUserId ] = useState(null);
@@ -43,12 +47,13 @@ function Room() {
 
     const height = '100%';
 
-    const loadMedia = async (index) => {
+    const loadMedia = async (index, event = true) => {
         if(playlist[index] != null){
-            console.log('Setting');
-            console.log(index);
             setActiveIndex(index);
             setSrc(playlist[index].url);
+            if(event){
+                createEvent(config.EVENT.LOAD.KEYWORD, index);
+            }
         }
         return playlist;
     }
@@ -252,6 +257,16 @@ function Room() {
             } else {
                 setPlaylist([]);
             }
+
+            if(data.settings){
+                setSettings(data.settings);
+                const title = helper.getSettingsData(data.settings, "room_name");
+                if(title){
+                    window.top.document.title = `${title} - Let's Watch`;
+                }else{
+                    window.top.document.title = `Let's Watch`;
+                }
+            }
         }
     }
 
@@ -262,9 +277,19 @@ function Room() {
         setId(id);
     }
 
-    const updateRoomProgress = (progress) => {
+    const updateRoomProgress = async (progress) => {
+        if(progress == null){
+            progress = ref?.current?.getProgress();
+        }
         if(currUser?.isHost){
-            firestore.updateRoomDetails(id, src, progress, playlist, activeIndex);
+            const data = {
+                src, 
+                progress, 
+                playlist, 
+                activeIndex, 
+                settings
+            }
+            await firestore.updateRoomDetails(id,data);
         }
     }
 
@@ -299,11 +324,10 @@ function Room() {
                 break;
 
             case config.EVENT.REMOVE.KEYWORD:
-                console.log('In handle event');
                 memberAction(2, user);
                 break;
             case config.EVENT.LOAD.KEYWORD:// This case is not required
-                loadMedia(event.message);
+                loadMedia(event.message, false);
                 break;
             case config.EVENT.MESSAGE.KEYWORD:
                 data.message = event.message;
@@ -333,6 +357,9 @@ function Room() {
             case config.EVENT.USERNAME_UPDATE.KEYWORD:
                 updateRoomMembers();
                 break;
+            case config.EVENT.SETTINGS.KEYWORD:
+                checkRoomDetails();
+                break;
             default:
                 break;
         }
@@ -351,7 +378,7 @@ function Room() {
                         />
         }, 
         {
-            key: 'PlayList',
+            key: 'Playlist',
             component: <PlayList 
                             className={styles.chat}
                             playlist = {playlist} 
@@ -396,7 +423,7 @@ function Room() {
         firestore.events(id).onSnapshot(querySnapshot => {
             const promiseArray = [];
             const changes = querySnapshot.docChanges();
-            
+
             changes.forEach(change => {
                 const event = change.doc.data();
                 const allowed_types = [config.EVENT.MESSAGE.KEYWORD, config.EVENT.GIF.KEYWORD];
@@ -413,7 +440,7 @@ function Room() {
             initData = false;
             Promise.all(promiseArray).then((newMessages) => {
                 messages = messages.concat(newMessages);
-                if (active === 0) {
+                if (active === 2) {
                     prevMsg = 0;
                     setMsgCounter(0);
                 } else if (newMessages.length) {
@@ -483,7 +510,7 @@ function Room() {
 
     const onNavClick = (index) => {
         setActive(index);
-        if(index == 0){
+        if(index === 2){
             prevMsg = 0;
             setMsgCounter(0);
         }
@@ -507,10 +534,34 @@ function Room() {
         }
         setTheatreMode(!theatreMode);
     }
+
+    const enableSettings = () => {
+        if(currUser.isHost){
+            setShowSettings(true);
+        }
+    }
+
+    const onSubmitSettings = (data) => {
+        console.log(data);
+        setSettings(data);
+        setTimeout(() => {
+            updateRoomProgress().then(() => {
+                createEvent(config.EVENT.SETTINGS.KEYWORD);
+            });
+        }, 500);
+
+    }
     
     return (
         <div className={styles.room_container} id ="room">
             {loading && <PageLoader title="Loading Room..."/>}
+            { showSettings && <Modal 
+                showModal={true} 
+                title={"Settings"} 
+                body={settings} 
+                showHook = {setShowSettings}
+                onSubmit = {onSubmitSettings}
+            /> }
             {!isNavHidden ? <div className={styles.nav_wrapper} style={{
                     background: (isMinized ? 'transparent': undefined)
                 }}>
@@ -525,6 +576,7 @@ function Room() {
                     </a>
                     {<button onClick={checkRoomDetails}>RE-SYNC</button>}
                     <button width={true} onClick={copyLink}>{copyButtonText}</button>
+                    {isHost && <button width={true} onClick={enableSettings}>Settings</button>}
                 </div> 
                 <nav className={styles.side_nav} style={{
                     background: (isMinized ? 'transparent': undefined)

@@ -44,6 +44,16 @@ function Player({
 
         canPlay: (url) => {
             return ReactPlayer.canPlay(url);
+        },
+
+        getProgress: () => {
+            const currTime = player?.current?.getCurrentTime();
+            const totalDuration = player?.current?.getDuration();
+            if(currTime && totalDuration){
+                return currTime/totalDuration;
+            }else{
+                return 0;
+            }
         }
     }));
 
