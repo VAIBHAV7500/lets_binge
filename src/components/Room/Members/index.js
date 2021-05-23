@@ -54,7 +54,8 @@ function Members({
             return (<div className={styles.bubble} key={index}>
                         <div className={styles.message}>
                             {username}
-                            {currUser.id === user.id && <FiEdit2 style={{paddingLeft: '6px', width: '20%'}} onClick={() => {setUpdate(true)}}/>}
+                            {currUser.id === user.id ? '(You)' : ''}
+                            {currUser.id === user.id&& <FiEdit2 style={{paddingLeft: '6px', width: '20%'}} onClick={() => {setUpdate(true)}}/>}
                         </div>
                     </div>);
         }

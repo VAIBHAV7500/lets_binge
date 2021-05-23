@@ -158,7 +158,7 @@ function Room() {
             return username;
         }else{
             do{
-                username = prompt('Enter Username');
+                username = helper.getRandomUsername(members || []);
             }while(username === null);
             LocalStorage.set(key,username);
             return username;
@@ -523,7 +523,6 @@ function Room() {
                 if(data?.permissions?.lock){
                     const prevUser = await firestore.findMemberByUsername(id,username);
                     if(prevUser.empty) {
-                        console.log(prevUser);
                         history.push({
                             pathname: `/`,
                             search: `?error=RoomNotFound`
@@ -584,7 +583,6 @@ function Room() {
     }
 
     const onSubmitSettings = (data) => {
-        console.log(data);
         setSettings(data);
         setTimeout(() => {
             updateRoomProgress().then(() => {

@@ -1,5 +1,6 @@
 import config from '../../config';
 import settings from '../../config/settings';
+const usernameList = require('../../content/username');
 
 const checkDomain = (url) => {
     let matched_domain = '';
@@ -167,6 +168,18 @@ const getSettingsData = (settings, key) => {
     return value;
 }
 
+const getRandomUsername = (members) => {
+    const usernames = usernameList;
+    const length = usernames.length;
+    let username;
+    do {
+        const index = Math.floor((Math.random() * length));
+        username = usernames[index];
+    }while(members.some(x => x?.username === username));
+    console.log(username);
+    return username;
+}
+
 const helper = {
     checkDomain,
     checkURL,
@@ -183,7 +196,8 @@ const helper = {
     closeFullscreen,
     containsLink,
     updateListUsername,
-    getSettingsData
+    getSettingsData,
+    getRandomUsername
 }
 
 export default helper
