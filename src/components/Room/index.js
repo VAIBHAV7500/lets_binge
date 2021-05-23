@@ -615,6 +615,9 @@ function Room() {
 
             return `${100 - sub}vh`;
          }else{
+            if(isMinized){
+                return '90%';
+            }
              return '70%';
          }
     }
