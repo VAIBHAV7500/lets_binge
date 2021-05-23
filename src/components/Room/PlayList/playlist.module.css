@@ -5,6 +5,8 @@
     font-weight: bolder;
     background:inherit;
     font-family: inherit;
+    display: flex;
+    flex-direction: column;
 }
 
 .input_message{

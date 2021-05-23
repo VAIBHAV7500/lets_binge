@@ -40,7 +40,7 @@ function PlayList({
         if(!url){
             errorText = 'Add URL first';
         }else if(!canPlay(url) && prevForceURL !== url){
-            errorText = 'Looks like we cannot play this URL, Press Add to Playlist again to Force add it!';
+            errorText = 'Looks like we cannot play this URL, Press "Add to Playlist" again to Force add it!';
             prevForceURL = url;
         }else if (url) {
             playListAction(1, url).then((response) => {

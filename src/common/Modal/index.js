@@ -24,7 +24,6 @@ function Modal({showModal, title, onSubmit, onCancel, buttons, body, showHook}) 
     };
 
     const handleOnChangeInput = (key, value) => {
-        console.log(key);
         const sections = data.sections;
         sections.forEach((section, section_index) => {
             section.inputs.forEach((input, input_index) => {

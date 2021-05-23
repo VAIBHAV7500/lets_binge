@@ -109,7 +109,6 @@ function Chat({messages, createEvent, height, isMinized,
             msg,
             canPlay: playable
         }
-        console.log(data);
         createEvent(config.EVENT.MESSAGE.KEYWORD, data);
     }
 
@@ -237,7 +236,9 @@ function Chat({messages, createEvent, height, isMinized,
             </div>
             { (gif != '' && !isMinized) && <div className={styles.giphy}><span className={styles.giphy_text}>Powered By Giphy</span><span className={styles.giphy_close} onClick={() => { setGif(false); setSearch(''); clearSearchBox(); }}>CLOSE</span></div> }
             {!(isMinized) && <div className={styles.input_message}>
-                <input onKeyDown={handleKey} type="text" id="msg" autoComplete="off" placeholder={suggestion}></input>
+                <input onKeyDown={handleKey} type="text" id="msg" autoComplete="off" placeholder={suggestion} style={{
+                    width: (theatreMode ? '95%': '70%')
+                }}></input>
                 {!theatreMode && <Button width={true} onClick={sendMessage}>
                     {gif ? 'search' : 'send'}
                 </Button>}

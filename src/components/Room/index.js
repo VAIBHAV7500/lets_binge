@@ -591,6 +591,33 @@ function Room() {
         }, 500);
 
     }
+
+    const getScreenHeight = () => {
+         if(theatreMode){
+            let sub = 0;
+            if(isNavHidden && isMinized){
+                return '100vh';
+            }
+
+            if(isNavHidden){
+                if(isMinized){
+                    sub = 0;
+                }else{
+                    sub = 10;
+                }
+            }else{
+                if(isMinized){
+                    sub = 6;
+                }else{
+                    sub = 16;
+                }
+            }
+
+            return `${100 - sub}vh`;
+         }else{
+             return '70%';
+         }
+    }
     
     return (
         <div className={styles.room_container} id ="room">
@@ -638,9 +665,8 @@ function Room() {
                     return <a key={index} className={`${active === index ? styles.nav_active : ''}`} onClick={() => { onNavClick(index) }}>{nav.key}{(nav?.counter ? `(${nav.counter})` : '' )}</a>
                 })}
             </nav>}
-            <div className={styles.wrapper} style={{
-                flexDirection: (isMinized ? 'column' : ''),
-                height: ((isMinized || theatreMode) ? (window.innerHeight - (isNavHidden ? 0 : 50)) : '70%')
+            <div className={styles.wrapper} style = {{
+                height : getScreenHeight()
             }}>
                 <Player 
                     className="player" 

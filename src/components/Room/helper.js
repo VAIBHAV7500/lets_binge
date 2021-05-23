@@ -160,7 +160,6 @@ const getSettingsData = (settings, key) => {
     settings.sections.forEach((section, section_key) => {
         section.inputs.forEach((input, input_key) => {
             if(input.key === key){
-                console.log('Foind');
                 value = settings.sections[section_key].inputs[input_key].value;
             }
         })
@@ -176,7 +175,6 @@ const getRandomUsername = (members) => {
         const index = Math.floor((Math.random() * length));
         username = usernames[index];
     }while(members.some(x => x?.username === username));
-    console.log(username);
     return username;
 }
 

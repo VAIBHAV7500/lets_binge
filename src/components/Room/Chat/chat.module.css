@@ -5,6 +5,8 @@
     background:inherit;
     font-family: inherit;
     width: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 .input_message{
@@ -27,7 +29,7 @@
 }
 
 .input_message input:focus {
-    transform: scale(1.05);
+    transform: scale(1.01);
     box-shadow: 10px 10px 20px #0d0d0d,
     -10px -10px 20px #353535;
 }

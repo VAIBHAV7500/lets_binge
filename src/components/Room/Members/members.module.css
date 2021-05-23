@@ -5,6 +5,8 @@
     background:inherit;
     font-family: inherit;
     width: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 .message_area {
