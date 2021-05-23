@@ -5,6 +5,7 @@
   "button": [
     {
       "title": "Create Room",
+      "on_loading": "Creating...",
       "id": "create_room"
     },
     {

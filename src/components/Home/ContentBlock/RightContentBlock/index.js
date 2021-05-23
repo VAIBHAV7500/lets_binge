@@ -6,8 +6,11 @@ import SvgIcon from "../../../../common/SvgIcon";
 import Button from "../../../../common/Button";
 
 import * as S from "./styles";
+import { useState } from "react";
 
 const RightBlock = ({ title, sub, content, button, icon, t, id, createRoom}) => {
+
+  const [buttonText, setButtonText] = useState("Create Room"); 
   const scrollTo = (id) => {
     const element = document.getElementById(id);
     element.scrollIntoView({
@@ -17,7 +20,10 @@ const RightBlock = ({ title, sub, content, button, icon, t, id, createRoom}) => 
 
   const handleClick = (item) => {
     if(item.id === 'create_room'){
-      createRoom();
+      setButtonText("Creating...");
+      if(buttonText === "Create Room"){
+        createRoom();
+      }
     }else{
       scrollTo("about");
     }
@@ -43,7 +49,7 @@ const RightBlock = ({ title, sub, content, button, icon, t, id, createRoom}) => 
                           width={true}
                           onClick={() => handleClick(item)}
                         >
-                        {t(item.title)}
+                        { item.id === "create_room" ? buttonText  : t(item.title) }
                         </Button><br/>
                       </>
                     );
