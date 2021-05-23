@@ -59,11 +59,6 @@ function GiphyGrid({
             gutter={6}
             overlay={Overlay}
         />
-        {/* <ResizeObserver
-            onResize={({ width }) => {
-            setWidth(width);
-            }}
-        /> */}
         </>
     );
 }

@@ -62,6 +62,7 @@
     border-radius: 15px;
     box-shadow: 10px 10px 20px #0d0d0d,
     -10px -10px 20px #353535;
+    overflow-x: hidden; 
 }
 
 .bubble{
