@@ -147,6 +147,12 @@ const findMember = async (id,room) => {
     return (await memberRef.doc(id).get());
 }
 
+const findMemberByUsername = async (room,username) => {
+    const firestore = getFireStore();
+    const memberRef = firestore.collection(room_collection).doc(room).collection(member_collection);
+    return (await memberRef.where('username', '==', username).get());
+}
+
 const updateRoomDetails = (room, data) => {
     const firestore = getFireStore();
     Object.keys(data).forEach(key => data[key] === undefined && delete data[key])
@@ -191,5 +197,6 @@ export default {
     sendMessage,
     updateMembers,
     onOffline,
-    createFirebaseMember
+    createFirebaseMember,
+    findMemberByUsername
 }

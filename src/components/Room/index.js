@@ -519,15 +519,18 @@ function Room() {
             
             const username = checkUsername();
             setName(username);
-            updateRoomMembers().then((res) => {
-                createMember(username).then(([res, isCreated]) => {
-                    console.log(isCreated);
-                    if(isCreated && data?.permissions?.lock){
+            updateRoomMembers().then(async (res) => {
+                if(data?.permissions?.lock){
+                    const prevUser = await firestore.findMemberByUsername(id,username);
+                    if(prevUser.empty) {
+                        console.log(prevUser);
                         history.push({
                             pathname: `/`,
                             search: `?error=RoomNotFound`
                         });
                     }
+                }
+                createMember(username).then(([res, isCreated]) => {
                     setCurrUser(res);
                     firestore.createFirebaseMember(id, res).then(() => {
                         firestore.onOffline(id, res);
