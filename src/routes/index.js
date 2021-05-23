@@ -7,6 +7,10 @@ const routes = [
         path: ["/room"],
         exact: false,
         component: "Room",
+    },{
+        path: ["/terms-and-conditions"],
+        exact: false,
+        component: "TnC",
     }
 ]
 

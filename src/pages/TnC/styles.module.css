@@ -1,0 +1,14 @@
+.body {
+    margin: 10px 50px;
+}
+
+.heading {
+    color: white !important;
+    text-align: center;
+}
+
+.section_title{
+    font-size: 38px;
+    font-weight: bolder;
+
+}

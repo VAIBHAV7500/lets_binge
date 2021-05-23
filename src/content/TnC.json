@@ -1,0 +1,43 @@
+{
+    "title": "Terms & Conditions",
+    "sections": [
+        {
+            "title": "Terms of Service",
+            "body": [
+                {
+                    "type": "text",
+                    "data": "By using this service you agree to the following terms:"
+                },{
+                    "type": "bullet",
+                    "data": [
+                        "You are over 13 years of age",
+                        "Your use of the service may be terminated if you are found to be sharing illegal or infringing content",
+                        "The service provides no guarantee of uptime or availability",
+                        "You use the service at your own risk of encountering objectionable content, as we do not actively moderate rooms unless content is found to be illegal or infringing"
+                    ]
+                }
+            ]
+        },{
+            "title": "Subscriptions",
+            "body": [
+                {
+                    "type": "bullet",
+                    "data": [
+                        "If you are dissatisfied with the service for any reason or believe you have been charged in error, please contact abc@xyz.com.",
+                        "We will provide a full refund of the most recent payment, no questions asked."
+                    ]
+                }
+            ]
+        },{
+            "title": "Youtube",
+            "body": [
+                {
+                    "type": "text",
+                    "data": [
+                        "The service provides the ability to search and play YouTube videos. By using the YouTube search you agree to the <a href=\" https://www.youtube.com/t/terms \">YouTube Terms of Service"
+                    ]
+                }
+            ]
+        }
+    ]
+}
