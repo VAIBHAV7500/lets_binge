@@ -175,6 +175,11 @@ linear-gradient(145deg, #f81f01, #ee076e);
     user-select: none;
 }
 
+.room_name{
+    font-weight: bolder;
+    padding-left: 10px;
+}
+
 @keyframes sideClosingAnimation {
     0% {
         height: 100%;

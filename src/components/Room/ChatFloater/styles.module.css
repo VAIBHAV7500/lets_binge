@@ -1,0 +1,44 @@
+.body{
+    
+}
+.block{
+    background-color: rgb(70, 70, 70);
+    position: absolute;
+    right: 0;
+    margin-right: 40px;
+    margin-top: 80px;
+    width: 300px;
+    min-height: 50px;
+    border-radius: 5px;
+    padding: 10px;
+    z-index: 1000;
+    box-shadow: 10px 10px 5px 0px rgba(0, 0, 0, 0.75);
+    -webkit-box-shadow: 10px 10px 5px 0px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: 10px 10px 5px 0px rgba(0, 0, 0, 0.75);
+    transition: all 0.5s;
+    animation: entryAnimation 0.5s ease-in;
+}
+
+.close{
+    font-size: 12px;
+    font-weight: 1000;
+    padding-top: 10px;
+    cursor: pointer;
+}
+
+
+.stack{
+    z-index: 1;
+    transform: translate(10px, 5px);
+}
+
+
+@keyframes entryAnimation {
+    0%{
+        transform: translateX(100%);
+    }
+
+    100%{
+        transform: translateX(0);
+    }
+}

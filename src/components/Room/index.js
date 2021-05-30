@@ -15,6 +15,7 @@ import { FcCollapse, FcExpand } from "react-icons/fc";
 import Modal from '../../common/Modal';
 import settingsData from '../../config/settings';
 import { useHistory } from 'react-router-dom';
+import ChatFloater from './ChatFloater';
 
 let prevMsg = 0;
 let mouseTimer;
@@ -47,6 +48,8 @@ function Room() {
     const [showSettings, setShowSettings] = useState(false);
     const [settings, setSettings] = useState(settingsData);
     const [permissions, setPermissions] = useState(defaultPermissions);
+    const [floatChat, setFloatChat] = useState();
+    const [roomName, setRoomName] = useState("Untitled Room");
     let [activeIndex, setActiveIndex] = useState();
     let [ id, setId ] = useState(null);
     let [ userId, setUserId ] = useState(null);
@@ -271,8 +274,10 @@ function Room() {
                 const title = helper.getSettingsData(data.settings, "room_name");
                 if(title){
                     window.top.document.title = `${title} - Let's Watch`;
+                    setRoomName(`${title}`)
                 }else{
                     window.top.document.title = `Let's Watch`;
+                    setRoomName(`Untitled Room`);
                 }
             }
 
@@ -473,6 +478,15 @@ function Room() {
                     setMsgCounter(msgCounter + newMessages.length);
                     prevMsg = messages.length;
                 }
+                const onlyMsgs = newMessages.filter(x => x.type === config.EVENT.MESSAGE.KEYWORD && x.username !== currUser.username);
+                if(onlyMsgs.length){
+                    const latestMsg = onlyMsgs[onlyMsgs.length - 1];
+                    const floatData = `${latestMsg.username}: ${latestMsg.message.msg}`;
+                    setFloatChat(floatData);
+                    setTimeout(() => {
+                        setFloatChat();
+                    }, 3000);
+                }
                 setMessages([...messages]);
             });
         });
@@ -625,6 +639,7 @@ function Room() {
     
     return (
         <div className={styles.room_container} id ="room">
+            {floatChat && theatreMode && isMinized && <ChatFloater data={floatChat} onBodyClick={() => {setMinimize(false)}} onFloatClose={() => {setFloatChat()}}/>}
             {loading && <PageLoader title="Loading Room..."/>}
             { showSettings && <Modal 
                 showModal={true} 
@@ -645,6 +660,7 @@ function Room() {
                             height="42px"
                         />
                     </a>
+                    <span className={styles.room_name}>{roomName}</span>
                     {<button onClick={checkRoomDetails}>RE-SYNC</button>}
                     <button width={true} onClick={copyLink}>{copyButtonText}</button>
                     {isHost && <button width={true} onClick={enableSettings}>Settings</button>}
