@@ -4,7 +4,7 @@ import {Switch} from 'antd';
 
 let data;
 
-function Modal({showModal, title, onSubmit, onCancel, buttons, body, showHook}) {
+function Modal({showModal, title, onSubmit, onCancel, body, showHook}) {
     const [isModalVisible, setIsModalVisible] = useState(false);
 
     const handleCancel = () => {
@@ -108,7 +108,7 @@ function Modal({showModal, title, onSubmit, onCancel, buttons, body, showHook}) 
                     {generateBody(body)}
                 </div>
                 <div className={styles.footer}>
-                    {generateFooter()}
+                    {generateFooter(body.buttons || [])}
                 </div>
             </div>
         </div>);
