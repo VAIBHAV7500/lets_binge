@@ -1,5 +1,5 @@
 {
-    "title": "Terms & Conditions",
+    "title": "Privacy Policy",
     "sections": [
         {
             "title": "Terms of Service",
@@ -34,7 +34,7 @@
                 {
                     "type": "text",
                     "data": [
-                        "The service provides the ability to search and play YouTube videos. By using the YouTube search you agree to the <a href=\" https://www.youtube.com/t/terms target='_blank' \">YouTube Terms of Service"
+                        "The service provides the ability to search and play YouTube videos. By using the YouTube search you agree to the <a href=\" https://www.youtube.com/t/terms \">YouTube Terms of Service"
                     ]
                 }
             ]

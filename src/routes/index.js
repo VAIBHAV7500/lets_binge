@@ -9,8 +9,12 @@ const routes = [
         component: "Room",
     },{
         path: ["/terms-and-conditions"],
-        exact: false,
+        exact: true,
         component: "TnC",
+    },{
+        path: ["/privacy-policy"],
+        exact: true,
+        component: "PrivacyPolicy",
     }
 ]
 

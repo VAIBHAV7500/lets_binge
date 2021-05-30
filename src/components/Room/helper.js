@@ -181,15 +181,12 @@ const getRandomUsername = (members) => {
 
 const changeOrientation = () => {
     const md = new MobileDetect(window.navigator.userAgent);
-
-    if(md.is('iPhone')){
-        window.orientation.lock('landscape');
-    }else if(md.mobile() || md.tablet() || md.phone()){
+    if(md.mobile() || md.tablet() || md.phone()){
         window.screen.orientation.lock('landscape').then((data) => {
             console.log('Locked')
         }).catch((err) => {
             console.log(err);
-        }) 
+        }); 
     }
 }
 

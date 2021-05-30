@@ -1,0 +1,34 @@
+.body {
+    margin: 10px 50px;
+}
+
+.heading {
+    color: white !important;
+    text-align: center;
+}
+
+.section_title{
+    font-size: 38px;
+    font-weight: bolder;
+
+}
+
+a:link, a:active, a:visited {
+    color: #ee076e;
+}
+
+.print{
+    float: right;
+    background: linear-gradient(145deg, #f81f01, #ee076e);
+    font-family: inherit;
+    border: none;
+    padding: 10px 30px;
+    border-radius: 5px;
+    font-weight: 700;
+    transition: all 0.4s;
+    cursor: pointer;
+}
+
+.print:active{
+    transform: translateY(5px);
+}
