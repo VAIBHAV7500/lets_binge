@@ -273,10 +273,10 @@ function Room() {
 
                 const title = helper.getSettingsData(data.settings, "room_name");
                 if(title){
-                    window.top.document.title = `${title} - Let's Watch`;
+                    window.top.document.title = `${title} - Let's Binge`;
                     setRoomName(`${title}`)
                 }else{
-                    window.top.document.title = `Let's Watch`;
+                    window.top.document.title = `Let's Binge`;
                     setRoomName(`Untitled Room`);
                 }
             }

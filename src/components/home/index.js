@@ -9,6 +9,7 @@ import RealTimeChat from "../../content/RealTimeChat.json";
 import PlaylistContent from "../../content/PlaylistContent.json";
 import ProductContent from "../../content/ProductContent.json";
 import ContactContent from "../../content/ContactContent.json";
+import TheatreMode from '../../content/TheatreMode.json';
 
 const ContactFrom = lazy(() => import("./ContactForm"));
 const ContentBlock = lazy(() => import("./ContentBlock"));
@@ -90,6 +91,20 @@ const Home = () => {
         />
         <ContentBlock
             type="left"
+            title = {
+                TheatreMode.title
+            }
+            content = {
+                TheatreMode.text
+            }
+            section = {
+                TheatreMode.section
+            }
+            icon ="media_player.svg"
+            id="theatre_mode"
+        />
+        <ContentBlock
+            type="right"
             title={ProductContent.title}
             content={ProductContent.text}
             icon="cat.svg"
