@@ -19,7 +19,9 @@ const config = {
     GIPHY: {
         KEY: 'some_key'
     },
-    USERNAME_KEY: 'username',
+    TENOR: {
+        KEY: 'some_key'
+    },
     EVENT: {
         ADD: {
             KEYWORD: 'add',
@@ -58,6 +60,16 @@ const config = {
             MESSAGE: [
                 'Updated username from ${prev_user} to ${user}'
             ]
+        },
+        SETTINGS: {
+            KEYWORD: 'settings',
+            MESSAGE: [
+                '${user} updated settings'
+            ]
+        },
+        DESTROY: {
+            KEYWORD: 'destroy_room',
+            MESSAGE: []
         },
         PLAYER: {
             PLAY: {

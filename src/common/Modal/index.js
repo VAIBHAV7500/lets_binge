@@ -86,7 +86,15 @@ function Modal({showModal, title, onSubmit, onCancel, body, showHook}) {
                     {button.text || "Cancel"}
                 </button>);
             }else{
-                elements.push(<button key={button.key} onClick={button.onClick} className={styles.btn}>
+                elements.push( < button key = {
+                            button.key
+                        }
+                        onClick = {
+                            button.onClick
+                        }
+                        className = {
+                            `${styles.btn} ${(button?.float === 'right' ? styles.right_btn : '')}`
+                        } >
                     {button.text}
                 </button>);
             }

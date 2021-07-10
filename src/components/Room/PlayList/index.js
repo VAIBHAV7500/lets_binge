@@ -12,7 +12,8 @@ function PlayList({
     isMinized,
     theatreMode,
     activeIndex,
-    canPlay
+    canPlay,
+    isAllowedUpdate
 }) {
     const dummy = useRef();
     const [error, setError] = useState();
@@ -37,7 +38,9 @@ function PlayList({
         const element = document.getElementById('url');
         const url = element.value;
         let errorText;
-        if(!url){
+        if (!isAllowedUpdate('playlist_allow')){
+            errorText = 'You are not allowed to update the playlist. Please ask your Host to enable it from Settings.';
+        }else if(!url){
             errorText = 'Add URL first';
         }else if(!canPlay(url) && prevForceURL !== url){
             errorText = 'Looks like we cannot play this URL, Press "Add to Playlist" again to Force add it!';

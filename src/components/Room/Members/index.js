@@ -11,7 +11,8 @@ function Members({
     currUser,
     updateMembers,
     isMinized,
-    theatreMode
+    theatreMode,
+    isAllowedUpdate
 }) {
 
     const [showUpdate, setUpdate] = useState(false);
@@ -27,6 +28,13 @@ function Members({
 
     const onClickUpdate = () => {
         const element = document.getElementById('username');
+        if(!isAllowedUpdate('username_update')){
+            setError('You are not allowed to update the Username. Please ask your Host to enable it from Settings.');
+            setTimeout(() => {
+                setError();
+            }, 5000);
+            return;
+        }
         if(element?.value){
             let value = element.value;
             value = value.replaceAll(hostSymbol, '').trim();

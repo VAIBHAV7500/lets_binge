@@ -104,6 +104,10 @@ const Styles = createGlobalStyle`
     color: white;
     background: #ee076e;
     }
+
+    .ant-switch{
+        width: 44px;
+    }
 `;
 
 export default Styles;

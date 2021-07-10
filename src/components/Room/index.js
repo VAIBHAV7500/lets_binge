@@ -11,7 +11,7 @@ import firestore from '../../config/firestore';
 import SvgIcon from '../../common/SvgIcon';
 import PageLoader from '../../common/PageLoader';
 import helper from './helper';
-import { FcCollapse, FcExpand } from "react-icons/fc";
+import { FcCollapse, FcExpand, FcKindle } from "react-icons/fc";
 import Modal from '../../common/Modal';
 import settingsData from '../../config/settings';
 import { useHistory } from 'react-router-dom';
@@ -20,6 +20,7 @@ import ChatFloater from './ChatFloater';
 let prevMsg = 0;
 let mouseTimer;
 const copyText = 'COPY LINK';
+let loadingTitle = "Loading Room...";
 
 const defaultPermissions = {
     lock: false,
@@ -251,12 +252,46 @@ function Room() {
         }
     }
 
+    const isAllowedUpdate = (type) => {
+        if(currUser?.isHost){
+            return true;
+        }
+        console.log(settings);
+        if(settings?.sections){
+            const section = settings.sections[0];
+            const inputs = section.inputs;
+            let value = false;
+            if(inputs){
+                inputs.forEach((input) => {
+                    if(input.key === type){
+                        value = input.value;
+                    }
+                });
+            }
+            if(value){
+                return true;
+            }
+        }
+        return false;
+    }
+
     const checkRoomDetails = async (first = false) => {
         const res = await firestore.getARoom(id);
         if (res) {
             const data = res.data();
+            if(data == null || data == undefined){
+                if(first){
+                    goToHome();
+                }
+                return null;
+            }
+            console.log(data);
+            console.log(first);
+            if(!data?.isActive && first){
+                goToHome();
+            }
             let perm = {};
-            if(data.settings){
+            if(data?.settings){
                 setSettings(data.settings);
 
                 const isLocked = helper.getSettingsData(data.settings, "lock");
@@ -391,6 +426,10 @@ function Room() {
             case config.EVENT.SETTINGS.KEYWORD:
                 checkRoomDetails();
                 break;
+            case config.EVENT.DESTROY.KEYWORD:
+                if(user !== userId){
+                    goToHome(history);
+                }
             default:
                 break;
         }
@@ -406,6 +445,7 @@ function Room() {
                             updateMembers = {updateMembers}
                             isMinized = {isMinized}
                             theatreMode={theatreMode}
+                            isAllowedUpdate = {isAllowedUpdate}
                         />
         }, 
         {
@@ -423,6 +463,7 @@ function Room() {
                             isMinized = {isMinized}
                             theatreMode={theatreMode}
                             canPlay = {canPlay}
+                            isAllowedUpdate = {isAllowedUpdate}
                         />
         },
         {
@@ -576,7 +617,7 @@ function Room() {
         if(!isMinized){
             
         }
-        hideNav(false);
+        //hideNav(false);
         setMinimize(!isMinized);
     }
 
@@ -598,6 +639,7 @@ function Room() {
     }
 
     const onSubmitSettings = (data) => {
+        data.buttons.pop();
         setSettings(data);
         setTimeout(() => {
             updateRoomProgress().then(() => {
@@ -637,14 +679,46 @@ function Room() {
          }
     }
     
+    const onClickDestroy = () =>{
+        setShowSettings(false);
+        loadingTitle = "Destroying Room...";
+        setLoading(true);
+        createEvent(config.EVENT.DESTROY.KEYWORD);
+        setTimeout(async () => {
+            await firestore.destroyRoom(id);
+            goToHome(history);
+        },2000);
+    }
+    
+    const getSettingsBody = () => {
+        let data = settings;
+        let buttons = data.buttons;
+        if(!buttons.find(x => x.type === 'destroy_button')){
+            buttons.push({
+                type: 'destroy_button',
+                text: 'Destroy',
+                float: 'right',
+                onClick: onClickDestroy
+            });
+        }
+        data.buttons = buttons;
+        return data;
+    }
+
+    const goToHome = () => {
+        history.push({
+            pathname: `/`
+        });
+    }
+
     return (
         <div className={styles.room_container} id ="room">
             {floatChat && theatreMode && isMinized && <ChatFloater data={floatChat} onBodyClick={() => {setMinimize(false)}} onFloatClose={() => {setFloatChat()}}/>}
-            {loading && <PageLoader title="Loading Room..."/>}
+            {loading && <PageLoader title={loadingTitle}/>}
             { showSettings && <Modal 
                 showModal={true} 
                 title={"Settings"} 
-                body={settings} 
+                body = {getSettingsBody()}
                 showHook = {setShowSettings}
                 onSubmit = {onSubmitSettings}
             /> }
@@ -678,7 +752,10 @@ function Room() {
                         {theatreMode ? 'Disable' : 'Enable'} Theatre Mode
                     </a>
                 </nav>
-            </div> : <FcExpand className={styles.expand_nav} onClick={() => {hideNav(false)}}/>
+            </div> : <>
+                <FcKindle className={styles.side_bar_icon} onClick={handleMinize}/>
+                <FcExpand className={styles.expand_nav} onClick={() => {hideNav(false)}}/> 
+                </>
              }
             { !isMinized && <nav className={styles.options}>
                 {navigation.map((nav, index) => {

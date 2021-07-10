@@ -30,7 +30,6 @@
 }
 
 .input_message input:focus {
-    transform: scale(1.01);
     box-shadow: 10px 10px 20px #0d0d0d,
     -10px -10px 20px #353535;
 }
@@ -41,9 +40,8 @@
     outline: none;
     border-radius: 4px;
     height: 40px;
-    width: 80px;
-    background-color: rgb(155, 47, 255);
-    color: white;
+    width: fit-content;
+    margin-right: 5px;
     transition: all 0.4s;
 }
 
@@ -58,11 +56,12 @@
     margin-left: 5%;
     position: relative;
     padding: 10px;
-    border: 2px solid white;
+    margin-bottom: 10px;
     border-radius: 15px;
     box-shadow: 10px 10px 20px #0d0d0d,
     -10px -10px 20px #353535;
     overflow-x: hidden; 
+    border: 2px solid white;
 }
 
 .bubble{
@@ -197,4 +196,14 @@
     display: inline-block;
     border-radius: 3px;
     cursor: pointer;
+}
+
+.gif_icon{
+    color: white;
+    background-color: transparent;
+}
+
+.gif_icon_active{
+    background-color: white;
+    color: black;
 }

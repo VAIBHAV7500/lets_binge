@@ -49,7 +49,8 @@ const createRoom = async () => {
         src: '',
         progress: 0,
         playlist: [],
-        settings
+        settings,
+        isActive: true
     });
     return res.id;
 }
@@ -156,6 +157,7 @@ const findMemberByUsername = async (room,username) => {
 const updateRoomDetails = (room, data) => {
     const firestore = getFireStore();
     Object.keys(data).forEach(key => data[key] === undefined && delete data[key])
+    console.log(data);
     firestore.collection(room_collection).doc(room).update(data);
 }
 
@@ -180,8 +182,14 @@ const sendMessage = async (data) => {
     return res.id;
 }
 
+const destroyRoom = (room) => {
+    const firestore = getFireStore();
+    return firestore.collection(room_collection).doc(room).delete();
+}
+
 export default {
     initializeFirebase,
+    getFireStore,
     createRoom,
     createMember,
     rooms,
@@ -198,5 +206,6 @@ export default {
     updateMembers,
     onOffline,
     createFirebaseMember,
-    findMemberByUsername
+    findMemberByUsername,
+    destroyRoom
 }

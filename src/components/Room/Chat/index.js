@@ -5,7 +5,7 @@ import { Gif, Grid } from "@giphy/react-components";
 import config from '../../../config';
 import Button from '../../../common/Button';
 import helper from '../helper';
-
+import { trendingGifs } from './tenor';
 const giphyFetch = new GiphyFetch(config.GIPHY.KEY);
 
 const gifHeight = 200;
@@ -15,7 +15,8 @@ function GiphyGrid({
     createEvent,
     setGif,
     setSearch,
-    clearSearchBox
+    clearSearchBox,
+    width
 }) {
 
     const onClickGif = (g,e) => {
@@ -46,9 +47,6 @@ function GiphyGrid({
             });
         }
     };
-
-
-    const [width] = useState(0.3 * window.innerWidth);
     return (
         <>
         <Grid
@@ -76,14 +74,30 @@ function GifSingle({gifId}) {
 function Chat({messages, createEvent, height, isMinized,
     theatreMode, canPlay, playListAction}) {
     const dummy = useRef();
+    const chatRef = useRef();
 
     const [gif, setGif] = useState(false);
     const [search, setSearch] = useState('');
     const [suggestion, setSuggestion] = useState();
+    const [width, setWidth] = useState(0.3 * window.innerWidth);
+
+    const fun =  async () => {
+        const res = await trendingGifs();
+        console.log(res);
+    }
+
+    useEffect(() => {
+        fun();
+    });
 
     useEffect(() => {
         dummy.current.scrollIntoView();
     },[messages]);
+
+    useEffect(() => {
+        console.log(chatRef.current.offsetWidth);
+        setWidth(chatRef.current.offsetWidth);
+    },[chatRef.current]);
 
     const addMessage = (msg) => {
         const result = helper.containsLink(msg);
@@ -118,11 +132,7 @@ function Chat({messages, createEvent, height, isMinized,
         if(msg && !gif){
             addMessage(msg);
         }else{
-            if (msg.includes(`/giphy`)) {
-                setSearch(msg.split(`/giphy`)[1]?.trim());
-            } else {
-                setGif(false);
-            }
+            handleGifButton();
         }
         element.value = '';
     }
@@ -132,7 +142,7 @@ function Chat({messages, createEvent, height, isMinized,
         let msg = element.value;
         if (e.which === 13) {
             if(gif){
-                setSearch(msg.split(`/giphy`)[1]?.trim());
+                setSearch(msg.split(`/giphy`)[msg.length - 1]?.trim());
             }else{
                 sendMessage();
             }
@@ -142,12 +152,21 @@ function Chat({messages, createEvent, height, isMinized,
             msg = msg.toLowerCase();
             const processedMsg = msg.split(' ');
             if (processedMsg[0].includes(`/giphy`)) {
-                setGif(true);
+                //setGif(true);
             } else {
-                setGif(false);
-                setSearch('');
+                //setSearch('');
             }
         }       
+    }
+
+    const handleGifButton = () => {
+        if(gif){
+            setGif(false);
+            setSearch('');
+            clearSearchBox();
+        }else{
+            setGif(true);
+        }
     }
 
     const openLink = (url) => {
@@ -214,7 +233,7 @@ function Chat({messages, createEvent, height, isMinized,
 
     return (
         <div className={styles.body} style={{height}}>
-            <div className={styles.message_area}>
+            <div className={styles.message_area} ref={chatRef}>
                 {search === '' && messages && messages.map((msg,index) => {
                     return (msg?.message) ? getChatBubble(msg,index) : ''
                 })}
@@ -225,15 +244,17 @@ function Chat({messages, createEvent, height, isMinized,
                         setGif = {setGif}
                         setSearch = {setSearch}
                         clearSearchBox = {clearSearchBox}
+                        width={width}
                     />
                 }
                 <span ref={dummy}></span>
             </div>
-            { (gif != '' && !isMinized) && <div className={styles.giphy}><span className={styles.giphy_text}>Powered By Giphy</span><span className={styles.giphy_close} onClick={() => { setGif(false); setSearch(''); clearSearchBox(); }}>CLOSE</span></div> }
+            {/* { (gif != '' && !isMinized) && <div className={styles.giphy}><span className={styles.giphy_text}>Powered By Giphy</span><span className={styles.giphy_close} onClick={() => { setGif(false); setSearch(''); clearSearchBox(); }}>CLOSE</span></div> } */}
             {!(isMinized) && <div className={styles.input_message}>
                 <input onKeyDown={handleKey} type="text" id="msg" autoComplete="off" placeholder={suggestion} style={{
                     width: (theatreMode ? '95%': '70%')
                 }}></input>
+                <button className={`${styles.gif_icon} ${(gif ? styles.gif_icon_active : '')}`} onClick={handleGifButton}>GIF</button>
                 {!theatreMode && <Button width={true} onClick={sendMessage}>
                     {gif ? 'search' : 'send'}
                 </Button>}

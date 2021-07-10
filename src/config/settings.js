@@ -13,12 +13,6 @@ const settings = {
                     value: "",
                     placeholder: 'Enter Room Name'
                 },{
-                    key: "destroy_room",
-                    title: "Destroy Room",
-                    type: "input",
-                    sub_type: "toggle",
-                    value: false
-                },{
                     key: "lock",
                     title: "Lock Room",
                     type: "input",

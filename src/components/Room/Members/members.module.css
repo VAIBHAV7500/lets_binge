@@ -46,11 +46,11 @@
     right: 0;
     padding: none;
     font-size: inherit;
-    height: 40px;
+    height: 33px;
     border-radius: 8px;
     outline: none;
     cursor: pointer;
-    max-width: 180px;
+    width: 180px;
     font-family: inherit;
     box-shadow:inset 0px 1px 0px 0px #ffffff;
     background:linear-gradient(to bottom, #f9f9f9 5%, #e9e9e9 100%);
