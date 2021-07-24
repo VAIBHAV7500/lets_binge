@@ -1,0 +1,18 @@
+.block_gif{
+    display: inline-block;  
+    border-radius: 5px;
+}
+
+.block_gif:hover{
+    border: 2px solid #ee076e;
+    cursor: pointer;
+}
+
+.gif_wrapper{
+
+}
+
+.load_more{
+    padding: 10px;
+    cursor:pointer;
+}

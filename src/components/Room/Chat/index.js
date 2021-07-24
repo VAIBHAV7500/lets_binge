@@ -1,75 +1,9 @@
 import React, {useEffect,useState, useRef} from 'react';
 import styles from './chat.module.css';
-import { GiphyFetch } from "@giphy/js-fetch-api";
-import { Gif, Grid } from "@giphy/react-components";
 import config from '../../../config';
 import Button from '../../../common/Button';
 import helper from '../helper';
-import { trendingGifs } from './tenor';
-const giphyFetch = new GiphyFetch(config.GIPHY.KEY);
-
-const gifHeight = 200;
-
-function GiphyGrid({
-    search,
-    createEvent,
-    setGif,
-    setSearch,
-    clearSearchBox,
-    width
-}) {
-
-    const onClickGif = (g,e) => {
-        e.preventDefault();
-        const gifId = g.id;
-        if(gifId){
-            createEvent(config.EVENT.GIF.KEYWORD, gifId);
-        }   
-        setGif(false);
-        setSearch('');
-        clearSearchBox();
-    }
-
-    const Overlay = ({ gif, isHovered }) => {
-        return <div className={styles.overlay}>{isHovered ? <span className={styles.send}>SEND</span> : ''}</div> 
-    }
-    
-    const fetchGifs = (offset = 10) => {
-        if(search){
-            return giphyFetch.search( search , {
-                offset,
-                limit: 10
-            })
-        }else{
-            return giphyFetch.trending({
-                offset,
-                limit: 10
-            });
-        }
-    };
-    return (
-        <>
-        <Grid
-            onGifClick={onClickGif}
-            fetchGifs={fetchGifs}
-            width={width}
-            columns={3}
-            gutter={6}
-            overlay={Overlay}
-        />
-        </>
-    );
-}
-
-function GifSingle({gifId}) {
-  const [gif, setGif] = useState(null);
-  useEffect(() => {
-    giphyFetch.gif(gifId).then(({data}) => {
-        setGif(data);
-    })
-  },[gifId]);
-  return gif && <Gif gif={gif} width={gifHeight} className={styles.single_giphy}/>;
-}
+import Tenor from '../Tenor';
 
 function Chat({messages, createEvent, height, isMinized,
     theatreMode, canPlay, playListAction}) {
@@ -80,15 +14,6 @@ function Chat({messages, createEvent, height, isMinized,
     const [search, setSearch] = useState('');
     const [suggestion, setSuggestion] = useState();
     const [width, setWidth] = useState(0.3 * window.innerWidth);
-
-    const fun =  async () => {
-        const res = await trendingGifs();
-        console.log(res);
-    }
-
-    useEffect(() => {
-        fun();
-    });
 
     useEffect(() => {
         dummy.current.scrollIntoView();
@@ -131,10 +56,10 @@ function Chat({messages, createEvent, height, isMinized,
         const msg = element.value;
         if(msg && !gif){
             addMessage(msg);
-        }else{
-            handleGifButton();
+            element.value = '';
+        }else if(gif){
+            handleGifButton(msg);
         }
-        element.value = '';
     }
 
     const handleKey = (e) => {
@@ -142,7 +67,7 @@ function Chat({messages, createEvent, height, isMinized,
         let msg = element.value;
         if (e.which === 13) {
             if(gif){
-                setSearch(msg.split(`/giphy`)[msg.length - 1]?.trim());
+               setSearch(msg);
             }else{
                 sendMessage();
             }
@@ -159,14 +84,8 @@ function Chat({messages, createEvent, height, isMinized,
         }       
     }
 
-    const handleGifButton = () => {
-        if(gif){
-            setGif(false);
-            setSearch('');
-            clearSearchBox();
-        }else{
-            setGif(true);
-        }
+    const handleGifButton = (msg) => {
+        setSearch(msg);
     }
 
     const openLink = (url) => {
@@ -196,7 +115,12 @@ function Chat({messages, createEvent, height, isMinized,
 
     useEffect(() => {
         updateChatSuggestions();
-    },[])
+    },[]);
+
+    const onClickGIF = (url) => {
+        createEvent(config.EVENT.GIF.KEYWORD, url);
+        setGif(false);
+    }
 
     const getChatBubble = (data,index) => {
         const packet = data.message;
@@ -221,7 +145,8 @@ function Chat({messages, createEvent, height, isMinized,
             return (<div className={styles.bubble} key={index}>
                 {data.username && <div className={styles.username}>{data.username}:</div>}
                 <div className={styles.message}>
-                    <GifSingle gifId={data.message} className={styles.single_giphy}/>
+                    {/* <GifSingle gifId={data.message} className={styles.single_giphy}/> */}
+                    <img src={data.message} className={styles.single_giphy} alt="tenor GIF"/>
                 </div>
             </div>);
         }else{
@@ -234,27 +159,18 @@ function Chat({messages, createEvent, height, isMinized,
     return (
         <div className={styles.body} style={{height}}>
             <div className={styles.message_area} ref={chatRef}>
-                {search === '' && messages && messages.map((msg,index) => {
+                { !gif && messages && messages.map((msg,index) => {
                     return (msg?.message) ? getChatBubble(msg,index) : ''
                 })}
-                {
-                    search != '' && < GiphyGrid 
-                        search={search}
-                        createEvent = {createEvent}
-                        setGif = {setGif}
-                        setSearch = {setSearch}
-                        clearSearchBox = {clearSearchBox}
-                        width={width}
-                    />
-                }
+                {gif && <Tenor searchKey={search} onClickGIF = {onClickGIF} />}
                 <span ref={dummy}></span>
             </div>
             {/* { (gif != '' && !isMinized) && <div className={styles.giphy}><span className={styles.giphy_text}>Powered By Giphy</span><span className={styles.giphy_close} onClick={() => { setGif(false); setSearch(''); clearSearchBox(); }}>CLOSE</span></div> } */}
             {!(isMinized) && <div className={styles.input_message}>
                 <input onKeyDown={handleKey} type="text" id="msg" autoComplete="off" placeholder={suggestion} style={{
-                    width: (theatreMode ? '95%': '70%')
+                    width: (theatreMode ? '80%': '65%')
                 }}></input>
-                <button className={`${styles.gif_icon} ${(gif ? styles.gif_icon_active : '')}`} onClick={handleGifButton}>GIF</button>
+                <button className={`${styles.gif_icon} ${(gif ? styles.gif_icon_active : '')}`} onClick={() => {setGif(!gif)}}>GIF</button>
                 {!theatreMode && <Button width={true} onClick={sendMessage}>
                     {gif ? 'search' : 'send'}
                 </Button>}

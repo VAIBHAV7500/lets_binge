@@ -135,6 +135,8 @@
 
 .single_giphy{
     text-align: center;
+    height: 200px;
+    background-color: #ee076e;
     object-position: center;
     width: 100%;
 }

@@ -130,6 +130,7 @@ function Room() {
                 break;
             case 1:
                 response = await appendToPlaylist(url);
+                setActive(1);
                 break;
             case 2:
                 url = src;
@@ -672,10 +673,13 @@ function Room() {
 
             return `${100 - sub}vh`;
          }else{
+            if(isMinized && isNavHidden){
+                return '100vh';
+            }
             if(isMinized){
                 return '90%';
             }
-             return '70%';
+             return '80%';
          }
     }
     

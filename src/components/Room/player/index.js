@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useImperativeHandle, forwardRef} from 'react';
+import React, {useEffect, useRef, useImperativeHandle, forwardRef, useState} from 'react';
 import SvgIcon from '../../../common/SvgIcon';
 import ReactPlayer from 'react-player';
 import CONFIG from '../../../config';
@@ -20,6 +20,7 @@ function Player({
 }, ref) {
     const player = useRef();
     const PLAYER_CONFIG = CONFIG.EVENT.PLAYER;
+    const [error, setError] = useState('Some Error');
 
     useImperativeHandle(ref, () => ({
         seek: (type, duration) => {
@@ -149,16 +150,38 @@ function Player({
             />);
     }
 
+    const addToPlaylist = () => {
+        const el = document.getElementById('player_url');
+        if(el){
+            const url = el.value;
+            playListAction(1, url).then((response) => {
+                console.log(response);
+            });
+        }
+    }
+
+    const getBlankTemplate = () => {
+        return <div>
+            <div className={styles.playlist}>
+                <input type="text" id="player_url" placeholder='Paste your URL here' className={styles.url_input}></input>
+                <button className={styles.playlist_button} onClick={addToPlaylist}>Play</button>
+            </div>
+            <div className={styles.svg_placeholder}>
+                <SvgIcon 
+                    src= "loading_1.svg"
+                    width="50%"
+                    height="50%"
+                />
+            </div>
+        </div>
+    }
+
     return (
         <div className={styles.player} style={{
             width: (isMinized ? '100%' : '70%'),
             boxShadow: (isMinized ? 'none' : undefined)
         }}>
-            {src ? (getPlayer()) : <SvgIcon 
-                    src= "loading_1.svg"
-                    width="50%"
-                    height="50%"
-                    center={true}></SvgIcon>}
+            {src ? (getPlayer()) : getBlankTemplate()}
         </div>
     )
 }

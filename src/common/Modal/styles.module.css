@@ -45,8 +45,7 @@
 
 .footer{
     height: 20%;
-    margin-left: 10px;
-    padding: 10px;
+    padding: 0 10px;
 }
 
 .body{
@@ -81,7 +80,7 @@
 
 .btn{
     background: linear-gradient(145deg,#f81f01,#ee076e);
-    color: '#fff';
+    color: white;
     font-size: 1rem;
     font-weight: 700;
     min-width: 100px; 

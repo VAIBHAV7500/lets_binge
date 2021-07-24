@@ -16,9 +16,6 @@ const config = {
     USERNAME_KEY: 'username',
     BUFFER_TIME: 5,
     TOTAL_LOADING_SVG: 8,
-    GIPHY: {
-        KEY: 'some_key'
-    },
     TENOR: {
         KEY: 'some_key'
     },
