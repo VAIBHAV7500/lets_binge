@@ -17,13 +17,13 @@
 
 .input_message input {
     height: 50px;
-    margin-left: 5%;
+    margin-left: 20px;
     font-family: inherit;
     border-radius: 5px;
     outline: none;
     color: black;
     transition: all 0.3s;
-    width: 90%;
+    width: 95%;
 }
 
 .input_message input:focus {
@@ -33,16 +33,40 @@
 
 .input_message button {
     text-transform: uppercase;
+    font-weight: bolder;
     font-family: inherit;
     border: none;
     outline: none;
     border-radius: 4px;
-    height: 40px;
-    background-color: rgb(155, 47, 255);
     color: white;
-    width: fit-content;
     margin-top: 10px;
-    margin-left: 5%;
+}
+
+.buttons{
+    display: flex;
+    flex-direction: row;
+}
+
+.playlist_btn{
+    margin-left: 20px;
+    margin-top: 10px;
+    padding: 5px;
+    background: linear-gradient(145deg, #f81f01, #ee076e);
+    display: inline-block;
+    border-radius: 3px;
+    cursor: pointer;
+    width: 50%;
+}
+
+.explore_btn {
+    margin-left: 10px;
+    margin-top: 10px;
+    padding: 5px;
+    background: linear-gradient(145deg, #f81f01, #ee076e);
+    display: inline-block;
+    border-radius: 3px;
+    cursor: pointer;
+    width: 50%;
 }
 
 .message_area{

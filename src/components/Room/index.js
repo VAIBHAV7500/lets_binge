@@ -16,6 +16,7 @@ import Modal from '../../common/Modal';
 import settingsData from '../../config/settings';
 import { useHistory } from 'react-router-dom';
 import ChatFloater from './ChatFloater';
+import Explore from './Explore';
 
 let prevMsg = 0;
 let mouseTimer;
@@ -51,6 +52,7 @@ function Room() {
     const [permissions, setPermissions] = useState(defaultPermissions);
     const [floatChat, setFloatChat] = useState();
     const [roomName, setRoomName] = useState("Untitled Room");
+    const [explore, setExplore] = useState(false);
     let [activeIndex, setActiveIndex] = useState();
     let [ id, setId ] = useState(null);
     let [ userId, setUserId ] = useState(null);
@@ -465,6 +467,7 @@ function Room() {
                             theatreMode={theatreMode}
                             canPlay = {canPlay}
                             isAllowedUpdate = {isAllowedUpdate}
+                            setExplore = {setExplore}
                         />
         },
         {
@@ -715,8 +718,14 @@ function Room() {
         });
     }
 
+    const videoFromExplore = (url) => {
+        playListAction(1, url);
+        setExplore(false);
+    }
+
     return (
         <div className={styles.room_container} id ="room">
+            {explore && <Explore onClickVideo = {videoFromExplore} onClose={() => {setExplore(false)}} />}
             {floatChat && theatreMode && isMinized && <ChatFloater data={floatChat} onBodyClick={() => {setMinimize(false)}} onFloatClose={() => {setFloatChat()}}/>}
             {loading && <PageLoader title={loadingTitle}/>}
             { showSettings && <Modal 
@@ -780,6 +789,7 @@ function Room() {
                     theatreMode={theatreMode}
                     seek={seek} 
                     ref = {ref}
+                    setExplore = {setExplore}
                 />
                 {!isMinized && <div className={`${styles.side_bar} ${!isMinized ? styles.appearing_animation : styles.closing_animation}`}>
                     {navigation[active].component}

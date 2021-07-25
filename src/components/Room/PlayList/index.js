@@ -13,7 +13,8 @@ function PlayList({
     theatreMode,
     activeIndex,
     canPlay,
-    isAllowedUpdate
+    isAllowedUpdate,
+    setExplore
 }) {
     const dummy = useRef();
     const [error, setError] = useState();
@@ -85,7 +86,10 @@ function PlayList({
             </div>
             <div className={styles.input_message}>
                 <input onKeyPress={handleKey} type="text" id="url" autoComplete="off" placeholder={"DROP YOUR LINK HERE"}></input>
-                <Button width={true} id="playlist" onClick={onAppend}>Add to PlayList</Button>
+                <div className={styles.buttons}>
+                    <button width={true} id="playlist" className={styles.playlist_btn} onClick={onAppend}>Add to PlayList</button>
+                    <button id="explore-btn" className={styles.explore_btn} onClick={() => {setExplore(true)}} >Explore</button>
+                </div>
                 {error && <div className={styles.error}>{error}</div>}
             </div>
         </div>

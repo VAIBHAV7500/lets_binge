@@ -16,7 +16,8 @@ function Player({
     seek,
     playListAction,
     isMinized,
-    theatreMode
+    theatreMode,
+    setExplore
 }, ref) {
     const player = useRef();
     const PLAYER_CONFIG = CONFIG.EVENT.PLAYER;
@@ -165,6 +166,7 @@ function Player({
             <div className={styles.playlist}>
                 <input type="text" id="player_url" placeholder='Paste your URL here' className={styles.url_input}></input>
                 <button className={styles.playlist_button} onClick={addToPlaylist}>Play</button>
+                <button className={styles.playlist_button} onClick={() => {setExplore(true)}}>Explore</button>
             </div>
             <div className={styles.svg_placeholder}>
                 <SvgIcon 
