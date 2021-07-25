@@ -19,6 +19,10 @@ const config = {
     TENOR: {
         KEY: 'some_key'
     },
+    TWITCH: {
+        CLIENT_ID: 'abcd',
+        ACCESS_TOKEN: 'abcdef',
+    },
     EVENT: {
         ADD: {
             KEYWORD: 'add',

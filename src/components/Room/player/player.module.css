@@ -42,6 +42,7 @@
     border: none;
     border-radius: 5px;
     font-size: 18px;
+    cursor: pointer;
 }
 
 .playlist_button:active{

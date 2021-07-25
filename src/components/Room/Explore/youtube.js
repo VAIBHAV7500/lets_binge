@@ -19,7 +19,8 @@ const getVideosData = (dataArr) => {
                 id,
                 title,
                 label,
-                thumbnail
+                thumbnail,
+                type: 'youtube'
             });
         }
     });
@@ -28,7 +29,7 @@ const getVideosData = (dataArr) => {
 }
 
 
-const search = (term, next = '', limit = 20) => {
+const search = (term, next = '', limit = 30) => {
     let endpoint = BASE_URL + `search?part=snippet&key=${config.FIREBASE.API_KEY}&maxResults=${limit}`;
     if(next !== '' && next != null){
         endpoint += `&pageToken=${next}`;

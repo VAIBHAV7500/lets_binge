@@ -66,9 +66,12 @@
     flex-direction: row;
     flex-wrap: wrap;
     justify-content:center;
-    margin-top: 50px;
+    margin-top: 20px;
     overflow-y: scroll;
-    z-index: 10001;
+    overflow-x: hidden;
+    min-height: 500px;
+    min-width: 500px;
+    z-index: 1001;
 }
 
 .item{
@@ -89,10 +92,44 @@
     box-shadow: 0px 2px 5px 11px rgba(0, 0, 0, 0.5);
     -webkit-box-shadow: 0px 2px 5px 11px rgba(0, 0, 0, 0.5);
     -moz-box-shadow: 0px 2px 5px 11px rgba(0, 0, 0, 0.5);
+    z-index: 1005;
 }
 
 .title{
     padding: 4px;
     font-size: 12px;
+    font-weight: bold;
     background-color: rgba(0, 0, 0, 0.8);
+}
+
+.source{
+    padding: 2px;
+    width: fit-content;
+    font-size: 10px;
+    text-transform:capitalize;
+}
+
+.source_twitch {
+    background-color: rgb(171, 95, 241);
+}
+
+.source_youtube {
+    background-color: #d62b14;
+}
+
+.sources_nav{
+    display: flex;
+    flex-direction: row;
+    margin-top: 25px;
+}
+
+.source_nav_item{
+    margin-right: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.3s;
+}
+
+.source_nav_item:hover{
+    background-color:  #ee076e;
 }
