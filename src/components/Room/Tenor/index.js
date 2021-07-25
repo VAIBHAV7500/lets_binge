@@ -76,8 +76,12 @@ const Tenor = ({searchKey,height,width, onClickGIF}) => {
     const handleTrending = async () => {
         const response = (await tenor.trending(next)).data;
         const media = getMedia(response);
+        if(next == null && next === ''){
+            setData(media);
+        }else{
+            setData(data.concat(media));
+        }
         next = Number(response.next);
-        setData(media);
     }
 
     const getStyles = () => {
