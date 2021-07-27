@@ -9,7 +9,6 @@ const Tenor = ({searchKey,height,width, onClickGIF}) => {
     const [data, setData] = useState([]);
     
     useEffect(() => {
-        console.log(searchKey);
         next = 0;
         setData([]);
         handleSearch(true);
@@ -40,7 +39,6 @@ const Tenor = ({searchKey,height,width, onClickGIF}) => {
                 tinyGIF: tinyGIF?.url || gif.url
             }
         });
-        console.log(media);
         return media;
     }
 
@@ -52,8 +50,6 @@ const Tenor = ({searchKey,height,width, onClickGIF}) => {
         }
         const response = (await tenor.search(searchKey,next, limit)).data;
         const media = getMedia(response);
-        console.log(media);
-        console.log(change);
         next = Number(response.next);
         if(change === true){
             setData(media);
@@ -68,7 +64,6 @@ const Tenor = ({searchKey,height,width, onClickGIF}) => {
                 next--;
                 finalData.pop();
             }
-            console.log('setting final');
             setData(finalData);
         }
     }
@@ -105,7 +100,6 @@ const Tenor = ({searchKey,height,width, onClickGIF}) => {
     }
 
     const onClickGIFExtension = (url) => {
-        console.log(url);
         if (onClickGIF){
             onClickGIF(url);
         }

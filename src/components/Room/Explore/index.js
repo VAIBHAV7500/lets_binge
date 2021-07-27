@@ -2,10 +2,12 @@ import React, { useRef, useState, useEffect } from 'react';
 import styles from './explore.module.css';
 import youtube from './youtube';
 import twitch from './twitch';
+import vimeo from './vimeo';
 
 let youtubeNext = '';
 const youtubeBase = 'https://www.youtube.com/watch?v=';
 const twitchBase = 'https://www.twitch.tv/';
+const vimeoBase = 'https://www.vimeo.com';
 const sources = ['All', 'Twitch', 'Youtube'];
 let prevSearchKey;
 
@@ -14,16 +16,14 @@ const Explore = ({onClickVideo, onClose}) => {
     const [data, setData] = useState([]);
     const [youtubeData, setYTData] = useState([]);
     const [twitchData, setTwitchData] = useState([]);
+    const [vimeoData, setVimeoData] = useState([]);
     const [loading, setLoading] = useState(false);
 
 
     const handleYoutubeSearch = async (key) => {
-        setLoading(true);
         const result = await youtube.search(key, youtubeNext).catch((err) => {}) || {data: {items: []}};
-        console.log(result);
         prevSearchKey = key;
         const [temp, nextToken] = youtube.getVideosData(result.data);
-        setLoading(false);
         if(youtubeNext === '' || youtubeNext == null){
             setYTData(temp);
             youtubeNext = nextToken;
@@ -39,6 +39,13 @@ const Explore = ({onClickVideo, onClose}) => {
         const result = await twitch.search(key).catch((err) => {}) || [];
         const temp = twitch.getVideosData(result);
         setTwitchData(temp);
+        return temp;
+    }
+
+    const handleVimeoSearch = async (key) => {
+        const result = await vimeo.search(key).catch((err) => {}) || {data: []};
+        const temp = vimeo.getVideosData(result);
+        setVimeoData(temp);
         return temp;
     }
 
@@ -58,25 +65,15 @@ const Explore = ({onClickVideo, onClose}) => {
     }
 
     const mergeData = (dataArray) => {
-        const youtubeData = dataArray[0];
-        const twitchData = dataArray[1];
-        if ((youtubeData == null || youtubeData.length === 0) && (twitchData == null || twitchData.length === 0)){
-            setData([]);
-        }
-        else if(youtubeData == null || youtubeData.length === 0){
-            setData(twitchData);
-        }
-        else if (twitchData == null || twitchData.length === 0){
-            setData(youtubeData);
-        }else{
-            setData(shuffle(youtubeData.concat(twitchData)));
-        }
+        const youtubeData = dataArray[0] || [];
+        const twitchData = dataArray[1] || [];
+        const vimeoData = dataArray[2] || [];
+        setData(shuffle(youtubeData.concat(twitchData).concat(vimeoData)));
     }
     
     const onClickSearch = async () => {
         youtubeNext = '';
         const value = searchInputRef.current.value;
-        console.log('In Search');
         handleYoutubeSearch(value);
         const searches = [];
         searches.push(new Promise((res,rej) => {
@@ -85,7 +82,12 @@ const Explore = ({onClickVideo, onClose}) => {
         searches.push(new Promise((res,rej) => {
             handleTwitchSearch(value).then((result) => {res(result)}).catch((err) => {rej(err)});
         }));
+        searches.push(new Promise((res,rej) => {
+            handleVimeoSearch(value).then((result) => {res(result)}).catch((err) => {rej(err)});
+        }));
+        setLoading(true);
         const results = await Promise.all(searches);
+        setLoading(false);
         mergeData(results);
     }
 
@@ -98,8 +100,9 @@ const Explore = ({onClickVideo, onClose}) => {
         }else if(type === 'twitch'){
             const name = video.name;
             url = twitchBase + name;
+        }else if(type === 'vimeo'){
+            url = video.url;
         }
-        console.log(url);
         onClickVideo(url);
     }
 
@@ -115,8 +118,6 @@ const Explore = ({onClickVideo, onClose}) => {
 
     const handleScroll = (event) => {
         const target = event.target;
-        console.log(target.scrollHeight - target.scrollTop);
-        console.log(target.clientHeight);
         if( (target.scrollHeight - target.scrollTop <= (target.clientHeight + 300)) && target.clientHeight !== 0 && loading === false){
             // disabling it to reduce the number of calls and sticking to some results
             //handleYoutubeSearch(prevSearchKey);
@@ -149,6 +150,7 @@ const Explore = ({onClickVideo, onClose}) => {
             {/* <div className={styles.sources_nav}>
                 {sources.map((source) => {return <div className={styles.source_nav_item}>{source}</div>})}
             </div> */}
+            {loading === true && <div className={styles.loading}>Fetching Results...</div>}
             {data && data.length !== 0 && <div className={styles.show_case} onScroll={handleScroll}>
                 {data.length !== 0 && data.map((video, index) => {
                     return <div className = {
@@ -161,7 +163,7 @@ const Explore = ({onClickVideo, onClose}) => {
                     } >
                         {/* <img src={video.thumbnail} alt={video.description}></img> */}
                         <div className={styles.title}>{video.title}</div>
-                        <div className={`${styles.source} ${video.type === 'youtube' ? styles.source_youtube : styles.source_twitch}`}>{video.type}</div>
+                        <div className={`${styles.source} ${video.type === 'youtube' ? styles.source_youtube : (video.type === 'twitch' ? styles.source_twitch : styles.source_vimeo)}`}>{video.type}</div>
                     </div>
                 })}
             </div>}

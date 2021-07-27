@@ -117,6 +117,10 @@
     background-color: #d62b14;
 }
 
+.source_vimeo {
+    background-color: #18beff;
+}
+
 .sources_nav{
     display: flex;
     flex-direction: row;
@@ -132,4 +136,9 @@
 
 .source_nav_item:hover{
     background-color:  #ee076e;
+}
+
+.loading{
+    margin-top: 10px;
+    font-weight: bold;
 }

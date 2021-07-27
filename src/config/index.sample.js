@@ -23,6 +23,11 @@ const config = {
         CLIENT_ID: 'abcd',
         ACCESS_TOKEN: 'abcdef',
     },
+    VIMEO: {
+        CLIENT_ID: 'abc',
+        CLIENT_SECRET: 'secret',
+        ACCESS_TOKEN: 'token'
+    },
     EVENT: {
         ADD: {
             KEYWORD: 'add',

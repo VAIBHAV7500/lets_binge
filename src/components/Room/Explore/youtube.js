@@ -7,7 +7,6 @@ const BASE_URL = 'https://youtube.googleapis.com/youtube/v3/';
 const getVideosData = (dataArr) => {
     const data = [];
     const videos = dataArr.items;
-    console.log(videos);
     videos.forEach((video) => {
         if(video.id.kind === "youtube#video"){
             const id = video.id.videoId;
@@ -24,7 +23,6 @@ const getVideosData = (dataArr) => {
             });
         }
     });
-    console.log(data);
     return [data,dataArr.nextPageToken];
 }
 

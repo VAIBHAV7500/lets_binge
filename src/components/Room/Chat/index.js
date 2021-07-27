@@ -20,7 +20,6 @@ function Chat({messages, createEvent, height, isMinized,
     },[messages]);
 
     useEffect(() => {
-        console.log(chatRef.current.offsetWidth);
         setWidth(chatRef.current.offsetWidth);
     },[chatRef.current]);
 

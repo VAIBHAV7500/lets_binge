@@ -259,7 +259,6 @@ function Room() {
         if(currUser?.isHost){
             return true;
         }
-        console.log(settings);
         if(settings?.sections){
             const section = settings.sections[0];
             const inputs = section.inputs;
@@ -288,8 +287,6 @@ function Room() {
                 }
                 return null;
             }
-            console.log(data);
-            console.log(first);
             if(!data?.isActive && first){
                 goToHome();
             }

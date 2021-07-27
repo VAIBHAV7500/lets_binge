@@ -31,7 +31,6 @@ function PrintableBlock({data}) {
                 newElement.push(<ul className={styles.list}>
                     {listElement}
                 </ul>);
-                console.log(newElement);
                 elements.push(newElement);
             }
         });
