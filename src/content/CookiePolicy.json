@@ -2,39 +2,47 @@
     "title": "Privacy Policy",
     "sections": [
         {
-            "title": "Terms of Service",
-            "body": [
-                {
-                    "type": "text",
-                    "data": "By using this service you agree to the following terms:"
-                },{
-                    "type": "bullet",
-                    "data": [
-                        "You are over 13 years of age",
-                        "Your use of the service may be terminated if you are found to be sharing illegal or infringing content",
-                        "The service provides no guarantee of uptime or availability",
-                        "You use the service at your own risk of encountering objectionable content, as we do not actively moderate rooms unless content is found to be illegal or infringing"
-                    ]
-                }
-            ]
-        },{
-            "title": "Subscriptions",
+            "title": "Rooms",
             "body": [
                 {
                     "type": "bullet",
                     "data": [
-                        "If you are dissatisfied with the service for any reason or believe you have been charged in error, please contact abc@xyz.com.",
-                        "We will provide a full refund of the most recent payment, no questions asked."
+                        "By Default, Rooms are permanent and can be accessible any time.",
+                        "We store the chats, playlist, username and settings from the Room but as the service is open to all, we don't store any details about any User.",
+                        "To Destroy the Rooms, you can do it exclusively from the Room's Setting which will delete all the details including Chats, Username, Playlist from the room and won't be accessible from then."
                     ]
                 }
             ]
         },{
-            "title": "Youtube",
+            "title": "Personal Information",
             "body": [
                 {
                     "type": "text",
                     "data": [
-                        "The service provides the ability to search and play YouTube videos. By using the YouTube search you agree to the <a href=\" https://www.youtube.com/t/terms \">YouTube Terms of Service"
+                        "Lets Binge is an Open to all service and do not store any personal information."
+                    ]
+                }
+            ]
+        },{
+            "title": "Cookies & Local Storage",
+            "body": [
+                {
+                    "type": "bullet",
+                    "data": [
+                        "We use services such as Google Analytics to measure usage. These services may set cookies or other information locally on your device.",
+                        "We use Firebase, which sets sessions on Local Storage",
+                        "We locally store the Username of the user for future usage.",
+                        "We locally store the Room Ids for easy access of the user.",
+                        "The services you use in our room might set some cookies as well."
+                    ]
+                }
+            ]
+        },{
+            "body": [
+                {
+                    "type": "text",
+                    "data": [
+                        "Version: 1.0.0"
                     ]
                 }
             ]

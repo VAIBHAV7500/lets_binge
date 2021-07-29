@@ -41,11 +41,15 @@ const Contact = ({ title, content, id, t, sendMessage}) => {
       <S.Contact>
         <Row type="flex" justify="space-between" align="middle">
           <Col lg={12} md={11} sm={24}>
-            <img src='/vaibhav.jpeg' alt="Vaibhav Solanki" style={{ width: '100', clipPath: 'circle(50%)'}}/>
+            <div>
+              <p>Made with ❤️ by Vaibhav Solanki. <br/>
+                Hope you'll like it.<br/>
+                You can fill up the Feedback form <br/> Or can directly Mail me @ vbhvsolanki7500@gmail.com
+              </p>
+            </div>
           </Col>
           <Col lg={12} md={12} sm={24}>
             <S.FormGroup autoComplete="off" onSubmit={onClickSubmit}>
-              <h6>{t(title)}</h6>
               <Col span={24}>
                 <Input
                   type="text"

@@ -3,16 +3,23 @@ import { Row } from "antd";
 import i18n from "i18next";
 import { withTranslation } from "react-i18next";
 import Fade from "react-reveal/Fade";
+import { useHistory } from 'react-router-dom';
 
 import * as S from "./styles";
 
 const SvgIcon = lazy(() => import("../../common/SvgIcon"));
 const Container = lazy(() => import("../../common/Container"));
 
+const linkStyle = {
+  cursor: 'pointer'
+};
+
 const Footer = ({ t }) => {
   // const handleChange = (event) => {
   //   i18n.changeLanguage(event.target.value);
   // };
+
+  const history = useHistory();
 
   const SocialLink = ({ href, src }) => {
     return (
@@ -27,6 +34,10 @@ const Footer = ({ t }) => {
       </a>
     );
   };
+
+  const goToPage = (src) => {
+    history.push(src);
+  }
 
   return (
     <Fragment>
@@ -90,6 +101,9 @@ const Footer = ({ t }) => {
                   />
                 </S.LogoContainer>
               </S.NavLink>
+              <div style ={linkStyle} onClick={() => {goToPage('/terms-and-conditions')}}>Terms and Conditions</div>
+              <div style ={linkStyle} onClick={() => {goToPage('/privacy-policy')}}>Privacy Policy</div>
+              <div style ={linkStyle} onClick={() => {goToPage('/')}}>FAQs (Coming Soon)</div>
               <S.FooterContainer>
                 <SocialLink
                   href="https://github.com/VAIBHAV7500/lets_watch"

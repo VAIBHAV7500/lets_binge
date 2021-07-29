@@ -37,13 +37,8 @@ const Header = ({ t }) => {
         <S.CustomNavLinkSmall onClick={() => scrollTo("playlist")}>
           <S.Span>{t("Features")}</S.Span>
         </S.CustomNavLinkSmall>
-        <S.CustomNavLinkSmall
-          style={{ width: "180px" }}
-          onClick={() => scrollTo("feedback")}
-        >
-          <S.Span>
-            <Button>{t("Feedback")}</Button>
-          </S.Span>
+        <S.CustomNavLinkSmall onClick={() => scrollTo("feedback")}>
+          <S.Span>{t("Feedback")}</S.Span>
         </S.CustomNavLinkSmall>
       </Fragment>
     );

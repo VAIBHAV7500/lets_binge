@@ -2,6 +2,28 @@
     "title": "Terms & Conditions",
     "sections": [
         {
+            "title": "Brief",
+            "body": [
+                {
+                    "type": "text",
+                    "data": "Letsbinge.co.in is a Video Platform which allows user to watch videos in Sync and Chat. We are trying to be a Social Media Platform where people can watch videos together across the globe."
+                }
+            ]
+        },
+        {
+            "title": "Who's who",
+            "body": [
+                {
+                    "type": "text",
+                    "data": "Throughout these Terms, “you” applies to both individuals and entities that access or use our Services. If you are an individual using our Services on behalf of an entity, you represent and warrant that you have the authority to bind that entity to the Agreement and that by using our Service(s), you are accepting the Agreement on behalf of that entity."
+                },
+                {
+                    "type": "text",
+                    "data": "We are in India, so the Indian laws applies to us."
+                }
+            ]
+        },
+        {
             "title": "Terms of Service",
             "body": [
                 {
@@ -13,7 +35,12 @@
                         "You are over 13 years of age",
                         "Your use of the service may be terminated if you are found to be sharing illegal or infringing content",
                         "The service provides no guarantee of uptime or availability",
-                        "You use the service at your own risk of encountering objectionable content, as we do not actively moderate rooms unless content is found to be illegal or infringing"
+                        "You use the service at your own risk of encountering objectionable content, as we do not actively moderate rooms until and unless content is found to be illegal or infringing",
+                        "We don't endorse any item or video you encounter while streaming here.",
+                        "LetsBinge has all the rights to place Advertisement in the Room.",
+                        "We are not a party to, and will have no responsibility or liability for, any communications, transactions, interactions, or disputes between you and the provider of any Content.",
+                        "Please note that additional third party terms and conditions may apply to the downloading, copying, purchase, or use of Content.",
+                        "If you post Content, comment on a website, or otherwise make (or allow any third party to make) Content available on our Services, you are entirely responsible for the Content, and any harm resulting from, that Content or your conduct."
                     ]
                 }
             ]
@@ -23,19 +50,45 @@
                 {
                     "type": "bullet",
                     "data": [
-                        "If you are dissatisfied with the service for any reason or believe you have been charged in error, please contact abc@xyz.com.",
-                        "We will provide a full refund of the most recent payment, no questions asked."
+                        "We currently don't offer any subscription plans and hence won't charge for anything.",
+                        "Letsbinge.co.in is a free service to use as of now."
                     ]
                 }
             ]
         },{
-            "title": "Youtube",
+            "title": "Services",
             "body": [
                 {
                     "type": "text",
+                    "data": "We use services like Youtube, Twitch, Vimeo etc to play it on our website. By using the videos from these sources, you agree to their terms and condtions as well. Below are terms and conditions from some of the services we offer"
+                },
+                {
+                    "type": "bullet",
                     "data": [
-                        "The service provides the ability to search and play YouTube videos. By using the YouTube search you agree to the <a href=\" https://www.youtube.com/t/terms target='_blank' \">YouTube Terms of Service"
+                        "<a href=\"https://www.youtube.com/t/terms\" target='_blank'>Yotube</a>",
+                        "<a href=\"https://www.twitch.tv/p/terms-of-service\" target='_blank'>Twitch</a>",
+                        "<a href=\"https://vimeo.com/terms\" target='_blank'>Vimeo</a>"
                     ]
+                }
+            ]
+        },{
+            "title": "Miscellaneous",
+            "body": [
+                {
+                    "type": "text",
+                    "data": "The Agreement constitutes the entire agreement between letsbinge.co.in and you concerning the subject matter hereof. If any part of the Agreement is held invalid or unenforceable, that part will be construed to reflect the parties’ original intent, and the remaining portions will remain in full force and effect. A waiver by either party of any term or condition of the Agreement or any breach thereof, in any one instance, will not waive such term or condition or any subsequent breach thereof."
+                },
+                {
+                    "type": "text",
+                    "data": "You may assign your rights under the Agreement to any party that consents to, and agrees to be bound by, its terms and conditions; letsbinge.co.in may assign its rights under the Agreement without condition. The Agreement will be binding upon and will inure to the benefit of the parties, their successors and permitted assigns."
+                },
+                {
+                    "type": "text",
+                    "data": "Proudly adapted the ToS from Other Video Sync Websites."
+                },
+                {
+                    "type": "text",
+                    "data": "Version: 1.0.2"
                 }
             ]
         }
