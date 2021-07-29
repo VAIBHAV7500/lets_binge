@@ -44,7 +44,6 @@ const Contact = ({ title, content, id, t, sendMessage}) => {
             <div>
               <p>Made with ❤️ by Vaibhav Solanki. <br/>
                 Hope you'll like it.<br/>
-                You can fill up the Feedback form <br/> Or can directly Mail me @ vbhvsolanki7500@gmail.com
               </p>
             </div>
           </Col>
