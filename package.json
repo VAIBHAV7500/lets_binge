@@ -27,6 +27,7 @@
     "react-scripts": "4.0.3",
     "react-spinners": "^0.10.6",
     "react-tenor": "^2.2.0",
+    "react-toastify": "^7.0.4",
     "react-transition-group": "^4.4.1",
     "reactjs-localstorage": "^1.0.1",
     "styled-components": "^5.2.1",

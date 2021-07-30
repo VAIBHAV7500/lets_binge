@@ -717,7 +717,7 @@ function Room() {
 
     const videoFromExplore = (url) => {
         playListAction(1, url);
-        setExplore(false);
+        //setExplore(false);
     }
 
     return (

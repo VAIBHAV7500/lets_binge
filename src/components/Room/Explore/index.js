@@ -3,12 +3,15 @@ import styles from './explore.module.css';
 import youtube from './youtube';
 import twitch from './twitch';
 import vimeo from './vimeo';
+import { ToastContainer, toast, Flip } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 let youtubeNext = '';
 const youtubeBase = 'https://www.youtube.com/watch?v=';
 const twitchBase = 'https://www.twitch.tv/';
 const vimeoBase = 'https://www.vimeo.com';
 const sources = ['All', 'Twitch', 'Youtube'];
+const animals = ['🐶', '🐵', '🐴', '🦄', '🦌', '🐷', '🐘', '🐭', '🐁', '🐹', '🦒', '🐻', '🐻‍❄️', '🐼', '🐤', '🐧', '🕊️', '🦩'];
 let prevSearchKey;
 
 const Explore = ({onClickVideo, onClose}) => {
@@ -103,6 +106,15 @@ const Explore = ({onClickVideo, onClose}) => {
         }else if(type === 'vimeo'){
             url = video.url;
         }
+        toast.success(`${animals[Math.floor(Math.random() * animals.length)]} Added to the Playlist!`, {
+            position: "top-left",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+        });
         onClickVideo(url);
     }
 
@@ -142,6 +154,18 @@ const Explore = ({onClickVideo, onClose}) => {
 
     return (
         <div className={`${styles.modal}`}>
+            <ToastContainer
+            position="top-left"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            transition={Flip}
+            pauseOnHover
+            />
             <div className={styles.search_container} >
                 <input placeholder="Type your Keyword here" onKeyDown={handleKey} ref={searchInputRef} className={styles.search_input}></input>
                 <button className={styles.go_button} onClick={onClickSearch} >Search</button>
