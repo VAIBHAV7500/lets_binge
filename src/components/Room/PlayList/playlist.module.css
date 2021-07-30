@@ -117,7 +117,7 @@
 
 .message {
     padding: 5px;
-    padding-left: 20px;
+    padding-left: 10px;
 }
 
 .active_item{
@@ -133,6 +133,36 @@
     font-size: smaller;
     animation: shake 0.3s;
 }
+
+.wrapper{
+    display: flex;
+    align-items: flex-start;
+    margin-top: 10px;
+}
+
+.preview_image{
+    
+}
+
+.preview_image img{
+    width: 100px;
+}
+
+.details{
+    flex-grow: 4;
+    padding-left: 5px;
+}
+
+.item_title{
+    overflow: hidden !important;
+    text-overflow: ellipsis;
+}
+
+
+.url{
+    font-size: 12px;
+}
+
 
 @keyframes shake {
     0% {

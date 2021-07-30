@@ -71,7 +71,15 @@ function PlayList({
         const className =  `${styles.bubble} ${(isActive) ? styles.active_item : ''}`;
         return (<div className= {className} key={index} onClick={(event) => {onLoad(event,index)}}>
                     {playitem.username && <div className={styles.username}>{`${(isActive ? '▶': '')} ${playitem.username}`}:</div>}
-                    <div className={styles.message}>{playitem.url}</div>
+                    <div className={styles.wrapper}>
+                        <div className={styles.preview_image}>
+                            {playitem.preview && <img src={playitem.preview}></img>}
+                        </div>
+                        <div className={styles.details}>
+                            {playitem.title && <div className={styles.item_title}>{playitem.title}</div>}
+                            <div className={styles.url}>{playitem.url}</div>
+                        </div>
+                    </div>
                     <p className={styles.delete} onClick={() => { deletePlaylistItem(index) }}>Delete</p>
                 </div>);  
     }
