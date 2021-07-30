@@ -38,7 +38,12 @@ function Members({
         if(element?.value){
             let value = element.value;
             value = value.replaceAll(hostSymbol, '').trim();
-            if (usernameExists(value)){
+            if(value == null || value === ''){
+                setError('Username cannot be empty');
+                setTimeout(() => {
+                    setError();
+                }, 2000);
+            }else if (usernameExists(value)){
                 setError(config.USERNAME_ERROR);
                 setTimeout(() => {
                     setError();
