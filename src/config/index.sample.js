@@ -28,6 +28,9 @@ const config = {
         CLIENT_SECRET: 'secret',
         ACCESS_TOKEN: 'token'
     },
+    FACEBOOK: {
+        APP_ID: 'abcd'
+    },
     EVENT: {
         ADD: {
             KEYWORD: 'add',

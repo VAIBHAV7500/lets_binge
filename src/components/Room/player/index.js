@@ -127,7 +127,7 @@ function Player({
             }
         },
         facebook: {
-            appId: '12345'
+            appId: CONFIG.FACEBOOK.APP_ID
         }
     }
 
