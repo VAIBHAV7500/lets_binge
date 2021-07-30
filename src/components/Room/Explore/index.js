@@ -10,7 +10,7 @@ let youtubeNext = '';
 const youtubeBase = 'https://www.youtube.com/watch?v=';
 const twitchBase = 'https://www.twitch.tv/';
 const vimeoBase = 'https://www.vimeo.com';
-const sources = ['All', 'Twitch', 'Youtube'];
+const sources = ['All', 'Twitch', 'Youtube', 'Vimeo'];
 const animals = ['🐶', '🐵', '🐴', '🦄', '🦌', '🐷', '🐘', '🐭', '🐁', '🐹', '🦒', '🐻', '🐻‍❄️', '🐼', '🐤', '🐧', '🕊️', '🦩'];
 let prevSearchKey;
 
@@ -20,7 +20,9 @@ const Explore = ({onClickVideo, onClose}) => {
     const [youtubeData, setYTData] = useState([]);
     const [twitchData, setTwitchData] = useState([]);
     const [vimeoData, setVimeoData] = useState([]);
+    const [allData, setAllData] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [active, setActive] = useState(0);
 
 
     const handleYoutubeSearch = async (key) => {
@@ -71,7 +73,13 @@ const Explore = ({onClickVideo, onClose}) => {
         const youtubeData = dataArray[0] || [];
         const twitchData = dataArray[1] || [];
         const vimeoData = dataArray[2] || [];
-        setData(shuffle(youtubeData.concat(twitchData).concat(vimeoData)));
+        const shuffledData = shuffle(youtubeData.concat(twitchData).concat(vimeoData));
+        setAllData(shuffledData);
+        setTwitchData(twitchData);
+        setVimeoData(vimeoData);
+        setYTData(youtubeData);
+        setData(shuffledData);
+        setActive(0);
     }
     
     const onClickSearch = async () => {
@@ -148,9 +156,22 @@ const Explore = ({onClickVideo, onClose}) => {
         return styleJson;
     }
 
+    const onClickNavItem = (index) => {
+        setActive(index);
+        if(index === 0){
+            setData(allData);
+        }else if(index === 1){
+            setData(twitchData);
+        }else if(index === 2){
+            setData(youtubeData);
+        }else if(index === 3){
+            setData(vimeoData);
+        }
+    }
+
     useEffect(() => {
         searchInputRef.current.focus();
-    }, [])
+    }, []);
 
     return (
         <div className={`${styles.modal}`}>
@@ -171,10 +192,10 @@ const Explore = ({onClickVideo, onClose}) => {
                 <button className={styles.go_button} onClick={onClickSearch} >Search</button>
                 <button className={styles.go_button} onClick={onClickClose} >Close</button>
             </div>
-            {/* <div className={styles.sources_nav}>
-                {sources.map((source) => {return <div className={styles.source_nav_item}>{source}</div>})}
-            </div> */}
             {loading === true && <div className={styles.loading}>Fetching Results...</div>}
+            {allData && allData.length !== 0 && <div className={styles.sources_nav}>
+                {sources.map((source, index) => {return <div key={index} onClick={() => {onClickNavItem(index)}} className={`${styles.source_nav_item} ${index === active ? styles.source_nav_active : ''}`}>{source}</div>})}
+            </div>}
             {data && data.length !== 0 && <div className={styles.show_case} onScroll={handleScroll}>
                 {data.length !== 0 && data.map((video, index) => {
                     return <div className = {
