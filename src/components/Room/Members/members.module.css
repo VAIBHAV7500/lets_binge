@@ -45,12 +45,12 @@
 .username_btn{
     right: 0;
     padding: none;
-    font-size: inherit;
+    font-size: 10px;
     height: 33px;
     border-radius: 8px;
     outline: none;
     cursor: pointer;
-    width: 180px;
+    width: fit-content;
     font-family: inherit;
     box-shadow:inset 0px 1px 0px 0px #ffffff;
     background:linear-gradient(to bottom, #f9f9f9 5%, #e9e9e9 100%);
@@ -80,6 +80,8 @@
     font-family: inherit;
     border-radius: 5px;
     outline: none;
+    border: 1px solid rgb(32, 32, 32);
+    padding: 5px;
     transition: all 0.3s;
     z-index: 10;
     background: inherit;
