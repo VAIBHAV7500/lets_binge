@@ -1,5 +1,5 @@
 <h1 align='center'>
-  Lets Watch
+  Lets Binge
   
   [![GitHub version](https://badge.fury.io/gh/vaibhav7500%2Flets_watch.svg)](https://badge.fury.io/gh/vaibhav7500%2Flets_watch)
   
@@ -7,7 +7,7 @@
 </h1>
 
 <p align='center'>
-  Let's Watch is a video platform which allows user to watch videos in Sync. We support a variety of URLs, including file paths, YouTube, Facebook, Twitch, SoundCloud, Streamable, Vimeo, Wistia, Mixcloud, DailyMotion and Kaltura.
+  Let's Binge is a video platform which allows user to watch videos in Sync. We support a variety of URLs, including file paths, YouTube, Facebook, Twitch, SoundCloud, Streamable, Vimeo, Wistia, Mixcloud, DailyMotion and Kaltura.
 </p>
 
 ### Prerequisites
