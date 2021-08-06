@@ -10,7 +10,7 @@ const getVideosData = (channels) => {
     channels.forEach((channel) => {
         data.push({
             id: channel.id,
-            title: `${channel.isLive ? '[Live]' : '[Not Live]'} ${channel.displayName} playing ${channel.gameName} ` ,
+            title: `${channel.isLive ? '🟢' : '🔴'} ${channel.displayName} playing ${channel.gameName} `,
             thumbnail: channel.thumbnailUrl,
             name: channel.name,
             type: 'twitch'
