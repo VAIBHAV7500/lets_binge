@@ -44,13 +44,16 @@ const getDatabase = () => {
 
 const createRoom = async () => {
     const firestore = getFireStore();
+    var d = new Date();
+    var n = d.getTime();
     const res = await firestore.collection(room_collection).add({
         name: 'Demo Room',
         src: '',
         progress: 0,
         playlist: [],
         settings,
-        isActive: true
+        isActive: true,
+        createdAt: n
     });
     return res.id;
 }
