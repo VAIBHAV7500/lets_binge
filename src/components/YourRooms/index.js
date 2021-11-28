@@ -38,8 +38,12 @@ const YourRooms =() => {
     let [rooms, setRooms ] = useState([]);
     const getRoomIds = async () => {
         const data = utils.get('rooms');
+        if(data == null || data.length === 0){
+            setLoading(false);
+            return;
+        }
         const ids = data.map(x => x.id);
-        const response = await firestore.getARoom(ids);
+        const response = ( await firestore.getARoom(ids) ) || [];
         const rData = [];
         const promiseArr = [];
         response.forEach((r) => {
