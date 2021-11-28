@@ -2,16 +2,18 @@ import { useState, Fragment, lazy } from "react";
 import { Row, Col, Drawer } from "antd";
 import { CSSTransition } from "react-transition-group";
 import { withTranslation } from "react-i18next";
+import { useHistory } from 'react-router-dom';
 
 import * as S from "./styles";
 
 const SvgIcon = lazy(() => import("../../common/SvgIcon"));
 const Button = lazy(() => import("../../common/Button"));
 
-const Header = ({ t }) => {
+const Header = ({ t, mini }) => {
   const [isNavVisible] = useState(false);
   const [isSmallScreen] = useState(false);
   const [visible, setVisibility] = useState(false);
+  const logoHeight = mini ? "50px" : "100px";
 
   const showDrawer = () => {
     setVisibility(!visible);
@@ -22,6 +24,13 @@ const Header = ({ t }) => {
   };
 
   const MenuItem = () => {
+    const history = useHistory();
+    const goToYourRoom = () => {
+      history.push({
+        pathname: `/your-rooms`,
+        search: `?source=home`
+      });
+    }
     const scrollTo = (id) => {
       const element = document.getElementById(id);
       element.scrollIntoView({
@@ -40,6 +49,9 @@ const Header = ({ t }) => {
         <S.CustomNavLinkSmall onClick={() => scrollTo("feedback")}>
           <S.Span>{t("Feedback")}</S.Span>
         </S.CustomNavLinkSmall>
+         <S.CustomNavLinkSmall onClick={goToYourRoom}>
+          <S.Span>{t("Your Rooms")}</S.Span>
+        </S.CustomNavLinkSmall>
       </Fragment>
     );
   };
@@ -49,10 +61,10 @@ const Header = ({ t }) => {
       <S.Container>
         <Row type="flex" justify="space-between" gutter={20}>
           <S.LogoContainer to="/" aria-label="homepage">
-            <SvgIcon src="mask.svg" width="100px" height="100px" />
+            <SvgIcon src="mask.svg" width={logoHeight} height={logoHeight} />
           </S.LogoContainer>
           <S.NotHidden>
-            <MenuItem />
+            {!mini && <MenuItem />}
           </S.NotHidden>
           <S.Burger onClick={showDrawer}>
             <S.Outline />

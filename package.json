@@ -17,6 +17,7 @@
     "plyr": "^3.6.7",
     "plyr-react": "^3.0.8",
     "react": "^17.0.2",
+    "react-bar-loader": "^1.0.0",
     "react-dom": "^17.0.2",
     "react-firebase-hooks": "^3.0.4",
     "react-i18next": "^11.8.5",

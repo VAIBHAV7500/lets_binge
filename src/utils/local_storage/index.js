@@ -28,9 +28,20 @@ const clearStorage = () => {
     return reactLocalStorage.clear();
 }
 
+const setRoom = (data) => {
+    const value = {
+        id: data.id
+    };
+    const key = 'rooms';
+    const rooms = get(key) || [];
+    rooms.push(value);
+    set(key, rooms.filter((v, i, a) => a.indexOf(v) === i));
+}
+
 export default {
     set,
     get,
     remove,
-    clearStorage
+    clearStorage,
+    setRoom
 }

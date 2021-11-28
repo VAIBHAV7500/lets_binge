@@ -3,6 +3,7 @@ import 'firebase/firestore';
 import 'firebase/auth';
 import config from './index';
 import settings from '../config/settings';
+import utils from '../utils/local_storage';
 
 require('firebase/auth');
 require('firebase/database');
@@ -54,6 +55,10 @@ const createRoom = async () => {
         settings,
         isActive: true,
         createdAt: n
+    });
+    console.log(res);
+    utils.setRoom({
+        id: res.id
     });
     return res.id;
 }
@@ -128,7 +133,7 @@ const getLastEvents = async (room) => {
     return await eventRef.limit(25).get();
 }
 
-const getMembers = async (room) => {
+const getMembers = async (room, onlineOnly = true) => {
     const database = getDatabase();
     const result = (await database.ref(`/room/${room}/members`).get()).val();
     // Changing it to list
@@ -136,7 +141,7 @@ const getMembers = async (room) => {
     for(let key in result){
         if(result.hasOwnProperty(key)){
             const member = result[key];
-            if(member.hasOwnProperty('isOnline') && member.isOnline === false){
+            if(onlineOnly && member.hasOwnProperty('isOnline') && member.isOnline === false){
                 continue;
             }
             list.push(member);
@@ -173,9 +178,10 @@ const updatePlaylist = async (playlist,room) => {
     }
 }
 
-const getARoom = async (room) => {
+const getARoom = async (rooms) => {
     const firestore = getFireStore();
-    const memberRef = firestore.collection(room_collection).doc(room);
+    //const memberRef = firestore.collection(room_collection).doc(room);
+    const memberRef = firestore.collection(room_collection).where(firebase.firestore.FieldPath.documentId(), 'in', rooms);
     return await memberRef.get();
 }
 

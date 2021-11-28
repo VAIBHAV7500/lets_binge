@@ -15,6 +15,10 @@ const routes = [
         path: ["/privacy-policy"],
         exact: true,
         component: "PrivacyPolicy",
+    },{
+        path: ["/your-rooms"],
+        exact: true,
+        component: "YourRooms",
     }
 ]
 

@@ -1,0 +1,46 @@
+.block{
+    padding: 50px;
+}
+
+.roomGrid{
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    width: 100%;
+}
+
+.tile{
+    margin: 10px;
+    font-size: 12px;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    width: 300px;
+    background-color: #ee5f9f;
+    border-radius: 5px;
+    padding: 10px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.tile:hover{
+    z-index: 20;
+    box-shadow: 6px 8px 5px -1px rgba(0, 0, 0, 0.18);
+    -webkit-box-shadow: 6px 8px 5px -1px rgba(235, 232, 232, 0.18);
+    -moz-box-shadow: 6px 8px 5px -1px rgba(0, 0, 0, 0.18);
+    transform: scale(1.04);
+    border-radius: 10px;
+}
+
+.title{
+    font-weight: bolder;
+}
+
+.date{
+    font-size: 10px;
+}
+
+.noRooms{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+}

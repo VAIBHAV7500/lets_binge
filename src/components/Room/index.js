@@ -30,7 +30,7 @@ const defaultPermissions = {
 }
 
 function Room() {
-     const history = useHistory();
+    const history = useHistory();
     const location = useLocation();
     const ref = useRef();
     const [src, setSrc] = useState();
@@ -278,7 +278,7 @@ function Room() {
     }
 
     const checkRoomDetails = async (first = false) => {
-        const res = await firestore.getARoom(id);
+        const res = (await firestore.getARoom([id]))[0];
         if (res) {
             const data = res.data();
             if(data == null || data == undefined){
