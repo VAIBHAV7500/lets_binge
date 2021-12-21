@@ -182,7 +182,8 @@ const getARoom = async (rooms) => {
     const firestore = getFireStore();
     //const memberRef = firestore.collection(room_collection).doc(room);
     const memberRef = firestore.collection(room_collection).where(firebase.firestore.FieldPath.documentId(), 'in', rooms);
-    return await memberRef.get();
+    const result = await memberRef.get();
+    return result?.docs;
 }
 
 const sendMessage = async (data) => {
