@@ -1,0 +1,55 @@
+
+.player {
+    flex: 7;
+    height: 100%;
+    width: 100%;
+    z-index: 10;
+    border-radius: 34px;
+    box-shadow: 14px 14px 12px #161616,
+    -14px -14px 12px #2c2c2c;
+    transition: all 0.9s;
+}   
+.react_player {
+    border-radius: 10px;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.url_input{
+    height: 50px;
+    font-family: inherit;
+    border-radius: 10px;
+    outline: none;
+    color: black;
+    transition: all 0.3s;
+    font-size: 18px;
+    width: 90%;
+    padding-left: 10px;
+}
+
+.playlist{
+    margin: 5%;
+    display: flex;
+    height:50px;
+}
+
+.playlist_button{
+    margin-left: 10px;
+    color: white;
+    font-weight: bolder;
+    background: linear-gradient(145deg, #f81f01, #ee076e);
+    outline: none;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.playlist_button:active{
+    transform: translateY(2px);
+}
+
+.svg_placeholder{
+    margin-left: 30%;
+    margin-top: 10%;
+}
