@@ -39,9 +39,7 @@ function PlayList({
         const element = document.getElementById('url');
         const url = element.value;
         let errorText;
-        if (!isAllowedUpdate('playlist_allow')){
-            errorText = 'You are not allowed to update the playlist. Please ask your Host to enable it from Settings.';
-        }else if(!url){
+        if(!url){
             errorText = 'Add URL first';
         }else if(!canPlay(url) && prevForceURL !== url){
             errorText = 'Looks like we cannot play this URL, Press "Add to Playlist" again to Force add it!';
@@ -96,7 +94,7 @@ function PlayList({
                 <input onKeyPress={handleKey} type="text" id="url" autoComplete="off" placeholder={"DROP YOUR LINK HERE"}></input>
                 <div className={styles.buttons}>
                     <button width={true} id="playlist" className={styles.playlist_btn} onClick={onAppend}>Add to PlayList</button>
-                    <button id="explore-btn" className={styles.explore_btn} onClick={() => {setExplore(true)}} >Explore</button>
+                    <button id="explore-btn" className={styles.explore_btn} onClick={() => {setExplore(true)}} isAllowedUpdate={isAllowedUpdate} >Explore</button>
                 </div>
                 {error && <div className={styles.error}>{error}</div>}
             </div>

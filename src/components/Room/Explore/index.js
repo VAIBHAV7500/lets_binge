@@ -14,7 +14,7 @@ const sources = ['All', 'Twitch', 'Youtube', 'Vimeo'];
 const animals = ['🐶', '🐵', '🐴', '🦄', '🦌', '🐷', '🐘', '🐭', '🐁', '🐹', '🦒', '🐻', '🐻‍❄️', '🐼', '🐤', '🐧', '🕊️', '🦩'];
 let prevSearchKey;
 
-const Explore = ({onClickVideo, onClose}) => {
+const Explore = ({onClickVideo, onClose, isAllowedUpdate}) => {
     const searchInputRef = useRef();
     const [data, setData] = useState([]);
     const [youtubeData, setYTData] = useState([]);
@@ -114,16 +114,18 @@ const Explore = ({onClickVideo, onClose}) => {
         }else if(type === 'vimeo'){
             url = video.url;
         }
-        toast.success(`${animals[Math.floor(Math.random() * animals.length)]} Added to the Playlist!`, {
-            position: "top-left",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-        });
-        onClickVideo(url);
+        const response = onClickVideo(url);
+        if(isAllowedUpdate('playlist_allow')){
+            toast.success(`${animals[Math.floor(Math.random() * animals.length)]} Added to the Playlist!`, {
+                position: "top-left",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+        }
     }
 
     const handleKey = (event) => {

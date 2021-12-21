@@ -17,6 +17,8 @@ import settingsData from '../../config/settings';
 import { useHistory } from 'react-router-dom';
 import ChatFloater from './ChatFloater';
 import Explore from './Explore';
+import { ToastContainer, toast, Flip } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 let prevMsg = 0;
 let mouseTimer;
@@ -126,12 +128,27 @@ function Room() {
 
     const playListAction = async (type,url='',force = false, index = 0) => {
         let response;
+        const errorConfig = {
+            position: "top-left",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+        };
+        const errorMsg = `You are not allowed to update the Playlist. Please Reach out to your host!`;
         switch(type) {
             case 0:
                 response = await loadMedia(url);
                 break;
             case 1:
-                response = await appendToPlaylist(url);
+                if(!isAllowedUpdate('playlist_allow')){
+                    toast.error(errorMsg, errorConfig);
+                }else{
+                    await appendToPlaylist(url);
+                    response = true;
+                }
                 setActive(1);
                 break;
             case 2:
@@ -139,7 +156,11 @@ function Room() {
                 response = mediaEnd();
                 break;
             case 3:
-                response = deletePlaylistItem(index);
+                if(!isAllowedUpdate('playlist_allow')){
+                    toast.error(errorMsg, errorConfig);
+                }else{
+                    response = deletePlaylistItem(index) || true;
+                }
                 break;
             default:
                 break;
@@ -281,6 +302,7 @@ function Room() {
         const res = (await firestore.getARoom([id]))[0];
         if (res) {
             const data = res.data();
+            console.log(data);
             if(data == null || data == undefined){
                 if(first){
                     goToHome();
@@ -722,7 +744,19 @@ function Room() {
 
     return (
         <div className={styles.room_container} id ="room">
-            {explore && <Explore onClickVideo = {videoFromExplore} onClose={() => {setExplore(false)}} />}
+            <ToastContainer
+            position="top-left"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            transition={Flip}
+            pauseOnHover
+            />
+            {explore && <Explore onClickVideo = {videoFromExplore} onClose={() => {setExplore(false)}} isAllowedUpdate={isAllowedUpdate} />}
             {floatChat && theatreMode && isMinized && <ChatFloater data={floatChat} onBodyClick={() => {setMinimize(false)}} onFloatClose={() => {setFloatChat()}}/>}
             {loading && <PageLoader title={loadingTitle}/>}
             { showSettings && <Modal 
