@@ -50,7 +50,7 @@ const YourRooms =() => {
             promiseArr.push(new Promise(async (res, rej) => {
                 const members = await firestore.getMembers(r.id, false);
                 const room = r.data();
-                if (room.isActive) {
+                if (room.isActive && members.find(x => x.isHost === true)) {
                     rData.push({
                         id: r.id,
                         name: room.settings?.sections[0]?.inputs[0]?.value || "Untitled Room",
