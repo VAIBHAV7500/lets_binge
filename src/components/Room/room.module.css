@@ -135,6 +135,7 @@ linear-gradient(145deg, #f81f01, #ee076e);
 
 .side_bar{
     flex: 3;
+    width: 30vw;
     height: 100%;
     transition: all;
 }

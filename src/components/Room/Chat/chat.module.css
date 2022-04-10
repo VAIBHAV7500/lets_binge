@@ -151,6 +151,7 @@
     width: 85%;
     margin-left: 5%;
     font-size: 14px;
+    overflow-wrap:break-word;
 }
 
 .message_type:hover {
