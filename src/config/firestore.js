@@ -178,12 +178,20 @@ const updatePlaylist = async (playlist,room) => {
     }
 }
 
-const getARoom = async (rooms) => {
+const getARoom = async (roomsArr) => {
     const firestore = getFireStore();
     //const memberRef = firestore.collection(room_collection).doc(room);
-    const memberRef = firestore.collection(room_collection).where(firebase.firestore.FieldPath.documentId(), 'in', rooms);
-    const result = await memberRef.get();
-    return result?.docs;
+    const chunkedRooms = utils.chunkify(roomsArr, 10);
+    const promiseArr = [];
+    chunkedRooms.forEach((rooms) => {
+        promiseArr.push( new Promise(async (res,rej) => {
+            const memberRef = firestore.collection(room_collection).where(firebase.firestore.FieldPath.documentId(), 'in', rooms);
+            const result = await memberRef.get();
+            res(result?.docs);
+        }))
+    });
+    const result = await Promise.all(promiseArr);
+    return [].concat(...result); // flattening the array
 }
 
 const sendMessage = async (data) => {

@@ -38,10 +38,23 @@ const setRoom = (data) => {
     set(key, rooms.filter((v, i, a) => a.indexOf(v) === i));
 }
 
+const chunkify =  (items, size) => {  
+    const chunks = []
+    items = [].concat(...items)
+  
+    while (items.length) {
+      chunks.push(
+        items.splice(0, size)
+      )
+    }
+    return chunks
+  }
+
 export default {
     set,
     get,
     remove,
     clearStorage,
-    setRoom
+    setRoom,
+    chunkify
 }
