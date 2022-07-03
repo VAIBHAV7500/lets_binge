@@ -14,7 +14,7 @@
     font-size: 12px;
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
     width: 300px;
-    background-color: #ee5f9f;
+    background-image: linear-gradient(145deg,#f81f01,#ee076e);
     border-radius: 5px;
     padding: 10px;
     cursor: pointer;
@@ -32,10 +32,12 @@
 
 .title{
     font-weight: bolder;
+    font-size: 13px;
 }
 
 .date{
     font-size: 10px;
+    float: right;
 }
 
 .noRooms{

@@ -22,15 +22,39 @@ const YourRooms =() => {
         });
     }
 
+    const getTime= (time) => {
+        const today = new Date();
+        const prev = new Date(time);
+        console.log(today);
+        console.log(prev);
+        const diff = today - prev;
+        console.log(diff);
+        const seconds = parseInt(diff/1000);
+        const minutes = parseInt(seconds/60);
+        const hours = parseInt(minutes/ 60);
+        const days = parseInt(hours/24);
+        const years = parseInt(days/365);
+        if(years){
+            return `${years} ${years === 1 ? "year" : "years"} ago`;
+        }
+        if(days){
+            return `${days} ${days === 1 ? "day" : "days"} ago`;
+        }
+        if(minutes){
+            return `${minutes} ${minutes === 1 ? "minute" : "minutes"} ago`;
+        }
+        return `A few seconds ago`;
+    }
+
     const Tile = ({room}) => {
         return <div className={styles.tile} onClick={(event) => { onClickTile(room.id, event)}}>
             <div className={styles.title}>{room.name}</div>
             {room.playlist.length} videos available in the Playlist <br/>
             Hosted by {room.host.username} <br/>
-            Total Online Users: {room.online} <br/>
+            Online Users: {room.online} <br/>
             Total Members: {room.totalMembers}
             <div className={styles.date}>
-                {room.createdAt}
+                {getTime(room.createdAt)}
             </div>
         </div>
     }
