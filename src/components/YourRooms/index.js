@@ -40,6 +40,9 @@ const YourRooms =() => {
         if(days){
             return `${days} ${days === 1 ? "day" : "days"} ago`;
         }
+        if(hours){
+            return `${hours} ${hours === 1 ? "hour" : "hours"} ago`
+        }
         if(minutes){
             return `${minutes} ${minutes === 1 ? "minute" : "minutes"} ago`;
         }
