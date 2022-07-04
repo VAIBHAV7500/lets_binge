@@ -33,9 +33,13 @@ const YourRooms =() => {
         const minutes = parseInt(seconds/60);
         const hours = parseInt(minutes/ 60);
         const days = parseInt(hours/24);
-        const years = parseInt(days/365);
+        const months = parseInt(days/30);
+        const years = parseInt(months/12);
         if(years){
             return `${years} ${years === 1 ? "year" : "years"} ago`;
+        }
+        if(months){
+            return `${months} ${months === 1 ? "month" : "months"} ago`;
         }
         if(days){
             return `${days} ${days === 1 ? "day" : "days"} ago`;
