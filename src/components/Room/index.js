@@ -821,6 +821,7 @@ function Room() {
                     seek={seek} 
                     ref = {ref}
                     setExplore = {setExplore}
+                    checkRoomDetails = {checkRoomDetails}
                 />
                 {!isMinized && <div className={`${styles.side_bar} ${!isMinized ? styles.appearing_animation : styles.closing_animation}`}>
                     {navigation[active].component}
