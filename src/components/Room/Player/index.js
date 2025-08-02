@@ -17,8 +17,7 @@ function Player({
     playListAction,
     isMinized,
     theatreMode,
-    setExplore,
-    checkRoomDetails
+    setExplore
 }, ref) {
     const player = useRef();
     const PLAYER_CONFIG = CONFIG.EVENT.PLAYER;
@@ -61,7 +60,6 @@ function Player({
     }));
 
     const onPlay = () => {
-        checkRoomDetails();
         if(playing === false){
             createEvent(PLAYER_CONFIG.PLAY.KEYWORD);
         }
@@ -69,7 +67,6 @@ function Player({
 
     const onPause = () => {
         if(playing === true){
-            checkRoomDetails();
             createEvent(PLAYER_CONFIG.PAUSE.KEYWORD);
         }
     }

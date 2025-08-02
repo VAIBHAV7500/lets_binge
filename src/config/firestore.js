@@ -17,15 +17,22 @@ const feedback_collection = "feedback"
 
 
 const initializeFirebase = () => {
-    firebase.initializeApp({
-        apiKey: FIREBASE.API_KEY,
-        authDomain: FIREBASE.AUTH_DOMAIN,
-        projectId: FIREBASE.PROJECT_ID,
-        storageBucket: FIREBASE.STORAGE_BUCKET,
-        messagingSenderId: FIREBASE.MESSAGING_SENDER_ID,
-        appId: FIREBASE.APP_ID,
-        measurementId: FIREBASE.MEASUREMENT_ID
-    });
+    try {
+        firebase.initializeApp({
+            apiKey: FIREBASE.API_KEY,
+            authDomain: FIREBASE.AUTH_DOMAIN,
+            databaseURL: FIREBASE.DATABASE_URL,
+            projectId: FIREBASE.PROJECT_ID,
+            storageBucket: FIREBASE.STORAGE_BUCKET,
+            messagingSenderId: FIREBASE.MESSAGING_SENDER_ID,
+            appId: FIREBASE.APP_ID,
+            measurementId: FIREBASE.MEASUREMENT_ID
+        });
+        console.log('Firebase initialized successfully');
+    } catch (error) {
+        console.error('Error initializing Firebase:', error);
+        throw error;
+    }
 }
 
 const getFireStore = (database = false) => {
@@ -41,6 +48,18 @@ const getFireStore = (database = false) => {
 
 const getDatabase = () => {
     return getFireStore(true);
+}
+
+const checkDatabaseConnection = async () => {
+    try {
+        const database = getDatabase();
+        const connectedRef = database.ref('.info/connected');
+        const connected = await connectedRef.once('value');
+        return connected.val();
+    } catch (error) {
+        console.error('Error checking database connection:', error);
+        return false;
+    }
 }
 
 const createRoom = async () => {
@@ -75,16 +94,40 @@ const createMember = async (room, username, isHost) => {
 }
 
 const createFirebaseMember = async (room,member) => {
-    const database = getDatabase();
-    member.isOnline = member.isOnline || true;
-    await database.ref(`/room/${room}/members/${member.id}/`).set(member);
+    try {
+        const database = getDatabase();
+        member.isOnline = member.isOnline || true;
+        
+        // Check if database is connected
+        const connectedRef = database.ref('.info/connected');
+        const connected = await connectedRef.once('value');
+        
+        if (!connected.val()) {
+            console.warn('Firebase client is offline. Retrying connection...');
+            // Wait a bit and try again
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            const retryConnected = await connectedRef.once('value');
+            if (!retryConnected.val()) {
+                throw new Error('Firebase client is offline and cannot connect');
+            }
+        }
+        
+        await database.ref(`/room/${room}/members/${member.id}/`).set(member);
+    } catch (error) {
+        console.error('Error creating Firebase member:', error);
+        throw error;
+    }
 }
 
 const onOffline = (room,member) => {
-    const database = getDatabase();
-    const data = member;
-    data.isOnline = false;
-    database.ref(`/room/${room}/members/${member.id}/`).onDisconnect().set(data);
+    try {
+        const database = getDatabase();
+        const data = member;
+        data.isOnline = false;
+        database.ref(`/room/${room}/members/${member.id}/`).onDisconnect().set(data);
+    } catch (error) {
+        console.error('Error setting offline status:', error);
+    }
 }
 
 const updateMembers = (room,member) => {
@@ -134,20 +177,27 @@ const getLastEvents = async (room) => {
 }
 
 const getMembers = async (room, onlineOnly = true) => {
-    const database = getDatabase();
-    const result = (await database.ref(`/room/${room}/members`).get()).val();
-    // Changing it to list
-    const list = [];
-    for(let key in result){
-        if(result.hasOwnProperty(key)){
-            const member = result[key];
-            if(onlineOnly && member.hasOwnProperty('isOnline') && member.isOnline === false){
-                continue;
+    try {
+        const database = getDatabase();
+        const result = (await database.ref(`/room/${room}/members`).get()).val();
+        // Changing it to list
+        const list = [];
+        if (result) {
+            for(let key in result){
+                if(result.hasOwnProperty(key)){
+                    const member = result[key];
+                    if(onlineOnly && member.hasOwnProperty('isOnline') && member.isOnline === false){
+                        continue;
+                    }
+                    list.push(member);
+                }
             }
-            list.push(member);
         }
+        return list;
+    } catch (error) {
+        console.error('Error getting members:', error);
+        return [];
     }
-    return list;
 }
 
 const findMember = async (id,room) => {
@@ -225,5 +275,6 @@ export default {
     onOffline,
     createFirebaseMember,
     findMemberByUsername,
-    destroyRoom
+    destroyRoom,
+    checkDatabaseConnection
 }

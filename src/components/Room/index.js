@@ -591,8 +591,19 @@ function Room() {
         });
     }
 
-    const onRoomLoad = () => {
+    const onRoomLoad = async () => {
         setRoomId();
+        
+        // Check Firebase connection first
+        try {
+            const isConnected = await firestore.checkDatabaseConnection();
+            if (!isConnected) {
+                console.warn('Firebase is offline. Some features may not work properly.');
+            }
+        } catch (error) {
+            console.error('Firebase connection check failed:', error);
+        }
+        
         checkRoomDetails(true).then((data) => {
             
             const username = checkUsername();
@@ -609,12 +620,24 @@ function Room() {
                 }
                 createMember(username).then(([res, isCreated]) => {
                     setCurrUser(res);
-                    firestore.createFirebaseMember(id, res).then(() => {
-                        firestore.onOffline(id, res);
-                        setHost(res.isHost);
-                        roomWatcher();
-                        memberWatcher();
-                    });
+                    // Temporarily disable Firebase for testing
+                    // firestore.createFirebaseMember(id, res).then(() => {
+                    //     firestore.onOffline(id, res);
+                    //     setHost(res.isHost);
+                    //     roomWatcher();
+                    //     memberWatcher();
+                    // }).catch((error) => {
+                    //     console.error('Error creating Firebase member:', error);
+                    //     // Continue with the flow even if Firebase fails
+                    //     setHost(res.isHost);
+                    //     roomWatcher();
+                    //     memberWatcher();
+                    // });
+                    
+                    // Fallback without Firebase
+                    setHost(res.isHost);
+                    roomWatcher();
+                    memberWatcher();
                     setTimeout(() => {
                         setLoading(false);
                     }, 500);

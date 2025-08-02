@@ -6,6 +6,7 @@ const config = {
     DEFAULT_SRC: "https://www.youtube.com/watch?v=7bv_eqtkKqQ",
     FIREBASE: {
         API_KEY: "api_key",
+        DATABASE_URL: "database_url",
         AUTH_DOMAIN: "auth_domain",
         PROJECT_ID: "your_project_id",
         STORAGE_BUCKET: "storage_bucket",
